@@ -1,0 +1,94 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Button from '@/components/Button.astro';
+import CTA from '@/components/CTA.astro';
+const endpoint = import.meta.env.PUBLIC_CONTACT_ENDPOINT || '';
+---
+<BaseLayout meta={{ title: 'Start a Project — Raju Das Rudro', description: 'Tell Raju Das Rudro about your AI UGC, AI video, spokesperson or web project.', pathname: '/contact/' }}>
+  <section class="section contact-page"><div class="container contact-grid">
+    <aside class="contact-intro stack">
+      <p class="eyebrow">Start a Project</p><h1>Tell Me About Your Project.</h1><p class="lede">Share your ideas, goals and requirements. I’ll review your inquiry and get back to you with next steps and a clear plan.</p>
+      <div class="contact-benefits"><span>⚡ <strong>Fast Response</strong><small>Usually within 24 hours</small></span><span>◎ <strong>Tailored Solutions</strong><small>Based on your goals</small></span><span>♡ <strong>No Obligation</strong><small>Just a friendly conversation</small></span></div>
+      <div class="contact-portrait surface"><img src="/images/raju-das-rudro.webp" width="635" height="640" alt="Raju Das Rudro" loading="lazy" /></div>
+    </aside>
+
+    <div class="form-card surface">
+      <h2>Project Inquiry Form</h2><p class="muted form-card__intro">Fill in the details below and let’s start the conversation.</p>
+      <div class="alert alert--success" hidden data-success role="status"><strong>Project received.</strong><span>Thank you. Your inquiry has been submitted successfully.</span></div>
+      <div class="alert alert--error" hidden data-submit-error role="alert"><strong>Something went wrong while sending your inquiry.</strong><span>Please check the highlighted fields and try again.</span></div>
+      <form novalidate data-contact-form data-endpoint={endpoint}>
+        <div class="field-grid">
+          <label class="field"><span>Name <b>*</b></span><input name="name" autocomplete="name" required minlength="2" placeholder="Your full name" /><em data-error-for="name"></em></label>
+          <label class="field"><span>Work Email <b>*</b></span><input name="email" type="email" autocomplete="email" required placeholder="you@company.com" /><em data-error-for="email"></em></label>
+        </div>
+        <label class="field"><span>Company / Brand <small>(Optional)</small></span><input name="company" autocomplete="organization" placeholder="Your company or brand name" /></label>
+        <fieldset class="field service-options"><legend>What do you need? <b>*</b></legend><div class="option-grid">
+          <label><input type="radio" name="service" value="AI UGC Video Ads" required /><span>AI UGC Video Ads</span></label>
+          <label><input type="radio" name="service" value="AI Video Production" /><span>AI Video Production</span></label>
+          <label><input type="radio" name="service" value="AI Spokesperson Videos" /><span>AI Spokesperson Videos</span></label>
+          <label><input type="radio" name="service" value="Web Design & Development" /><span>Web Design & Development</span></label>
+          <label><input type="radio" name="service" value="Custom AI Project" /><span>Custom AI Project</span></label>
+          <label><input type="radio" name="service" value="Something Else" /><span>Something Else</span></label>
+        </div><em data-error-for="service"></em></fieldset>
+        <label class="field"><span>Project Details <b>*</b></span><textarea name="details" required minlength="20" maxlength="1000" rows="6" placeholder="Tell me about your project, goals, target audience, style preferences, references and timeline."></textarea><div class="field__meta"><em data-error-for="details"></em><small><span data-char-count>0</span>/1000</small></div></label>
+        <div class="field-grid">
+          <label class="field"><span>Budget Range <small>(Optional)</small></span><select name="budget"><option value="">Select a budget range</option><option>Under $500</option><option>$500 – $1,000</option><option>$1,000 – $2,500</option><option>$2,500+</option><option>Not sure yet</option></select></label>
+          <label class="field"><span>Timeline <small>(Optional)</small></span><select name="timeline"><option value="">Select a timeline</option><option>As soon as possible</option><option>Within 1–2 weeks</option><option>Within a month</option><option>Flexible / Not sure</option></select></label>
+        </div>
+        <div class="honeypot" aria-hidden="true"><label>Leave this field empty<input name="website" tabindex="-1" autocomplete="off" /></label></div>
+        <button class="submit" type="submit" data-submit>Send Project Inquiry <span aria-hidden="true">→</span></button>
+        <p class="privacy-note">Your information is used only to discuss your project. Read the <a href="/privacy-policy/">Privacy Policy</a>.</p>
+      </form>
+    </div>
+  </div></section>
+  <section class="section section--soft"><div class="container next-grid"><div><h2>What Happens Next?</h2><div class="steps"><article><strong>01</strong><h3>Submit</h3><p>You’ve sent your inquiry.</p></article><article><strong>02</strong><h3>Review</h3><p>I’ll review your details, usually within 24 hours.</p></article><article><strong>03</strong><h3>Next Step</h3><p>We’ll discuss the best approach and next steps.</p></article></div></div><div class="surface fiverr"><h2>Prefer Fiverr?</h2><p>If you’d prefer to work with me on Fiverr, you can check out my profile there.</p><Button href="https://www.fiverr.com/rajudasrudro" variant="secondary">View Fiverr Profile ↗</Button></div></div></section>
+</BaseLayout>
+<script is:inline>
+(() => {
+  const form = document.querySelector('[data-contact-form]');
+  if (!form) return;
+  const submit = form.querySelector('[data-submit]');
+  const success = document.querySelector('[data-success]');
+  const submitError = document.querySelector('[data-submit-error]');
+  const details = form.elements.details;
+  const charCount = form.querySelector('[data-char-count]');
+  const endpoint = form.dataset.endpoint || '';
+
+  const setFieldError = (name, message='') => {
+    const el = form.querySelector(`[data-error-for="${name}"]`);
+    if (el) el.textContent = message;
+    const control = form.elements[name];
+    if (control && 'setAttribute' in control) control.setAttribute('aria-invalid', message ? 'true' : 'false');
+  };
+  const validate = () => {
+    let ok = true;
+    ['name','email','details'].forEach(name => setFieldError(name,''));
+    setFieldError('service','');
+    if (form.elements.name.value.trim().length < 2) { setFieldError('name','Please enter your name.'); ok=false; }
+    if (!form.elements.email.validity.valid) { setFieldError('email','Please enter a valid email address.'); ok=false; }
+    if (form.elements.details.value.trim().length < 20) { setFieldError('details','Please add at least 20 characters of project detail.'); ok=false; }
+    if (!form.querySelector('input[name="service"]:checked')) { setFieldError('service','Please select a service.'); ok=false; }
+    return ok;
+  };
+  details?.addEventListener('input', () => { if (charCount) charCount.textContent = String(details.value.length); });
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault(); success.hidden = true; submitError.hidden = true;
+    if (!validate()) return;
+    submit.disabled = true; submit.textContent = 'Sending…';
+    try {
+      if (!endpoint) throw new Error('Contact endpoint is not configured');
+      const body = Object.fromEntries(new FormData(form).entries());
+      const res = await fetch(endpoint, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+      if (!res.ok) throw new Error('Submission failed');
+      form.reset(); if (charCount) charCount.textContent = '0'; success.hidden = false; success.scrollIntoView({behavior:'smooth',block:'center'});
+    } catch (err) {
+      submitError.hidden = false;
+    } finally {
+      submit.disabled = false; submit.innerHTML = 'Send Project Inquiry <span aria-hidden="true">→</span>';
+    }
+  });
+})();
+</script>
+<style>
+.contact-grid{display:grid;grid-template-columns:.78fr 1.22fr;gap:2.5rem;align-items:start}.contact-intro h1{font-size:var(--fs-hero);max-width:10ch}.contact-benefits{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem}.contact-benefits span{display:grid;gap:.15rem;font-size:.75rem}.contact-benefits small{font-size:.63rem;color:var(--color-text-muted)}.contact-portrait{overflow:hidden;margin-top:.5rem}.contact-portrait img{width:100%;aspect-ratio:4/3;object-fit:cover;object-position:center 28%}.form-card{padding:1.4rem}.form-card__intro{font-size:.82rem;margin:.3rem 0 1rem}.form-card form{display:grid;gap:1rem}.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}.field{display:grid;gap:.4rem;border:0;padding:0;margin:0}.field>span,.field legend{font-size:.75rem;font-weight:600}.field b,.service-options b{color:var(--color-brand)}.field small{font-weight:400;color:var(--color-text-muted)}.field input,.field textarea,.field select{width:100%;border:1px solid #cbd5e1;border-radius:var(--radius-md);background:#fff;padding:.72rem .75rem;color:var(--color-text);font-size:.82rem}.field textarea{resize:vertical}.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--color-focus);box-shadow:var(--focus);outline:0}.field [aria-invalid="true"]{border-color:var(--color-error)}.field em{min-height:.85rem;color:var(--color-error);font-size:.65rem;font-style:normal}.field__meta{display:flex;justify-content:space-between;gap:1rem}.field__meta small{font-size:.65rem}.option-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.55rem}.option-grid label{position:relative}.option-grid input{position:absolute;opacity:0;pointer-events:none}.option-grid span{display:flex;align-items:center;justify-content:center;min-height:2.75rem;border:1px solid var(--color-border);border-radius:var(--radius-md);padding:.5rem;text-align:center;font-size:.7rem;cursor:pointer}.option-grid input:checked+span{border-color:var(--color-brand);background:#fff7f7;color:var(--color-brand)}.option-grid input:focus-visible+span{box-shadow:var(--focus)}.submit{display:flex;align-items:center;justify-content:center;min-height:2.9rem;border:1px solid var(--color-brand);border-radius:var(--radius-md);background:var(--color-brand);color:#fff;font-weight:700;cursor:pointer}.submit:disabled{background:#cbd5e1;border-color:#cbd5e1;cursor:wait}.privacy-note{text-align:center;color:var(--color-text-muted);font-size:.65rem}.privacy-note a{text-decoration:underline}.honeypot{position:absolute;left:-9999px}.alert{display:grid;gap:.15rem;padding:.85rem 1rem;border-radius:var(--radius-md);font-size:.75rem}.alert--success{background:#ecfdf5;color:#047857}.alert--error{background:#fff1f2;color:#b91c1c}.next-grid{display:grid;grid-template-columns:1.6fr .8fr;gap:1rem}.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem;margin-top:.8rem}.steps article{border:1px solid var(--color-border);border-radius:var(--radius-md);padding:1rem}.steps strong{color:var(--color-brand);font-family:var(--font-display);font-size:1.25rem}.steps h3{font-size:.95rem;margin:.25rem 0}.steps p,.fiverr p{font-size:.72rem;color:var(--color-text-muted)}.fiverr{padding:1rem;display:grid;align-content:start;gap:.7rem}.fiverr .button{justify-self:start}@media(max-width:47.99rem){.contact-grid,.next-grid{grid-template-columns:1fr}.contact-intro h1{font-size:2.3rem;max-width:none}.contact-portrait{display:none}.contact-benefits{grid-template-columns:repeat(3,1fr)}.field-grid{grid-template-columns:1fr}.option-grid{grid-template-columns:1fr}.steps{grid-template-columns:1fr}.form-card{padding:1rem}}
+</style>

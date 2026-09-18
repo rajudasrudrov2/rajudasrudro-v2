@@ -1,0 +1,5 @@
+---
+const { value, label, icon = '★' } = Astro.props;
+---
+<div class="trust"><span class="trust__icon" aria-hidden="true">{icon}</span><span><strong>{value}</strong><small>{label}</small></span></div>
+<style>.trust{display:flex;align-items:center;gap:.65rem;padding:.85rem 1rem;min-width:0}.trust__icon{display:grid;place-items:center;font-size:1.15rem}.trust span:last-child{display:grid;line-height:1.15}.trust strong{font-family:var(--font-display);font-size:1.1rem}.trust small{font-size:.68rem;color:var(--color-text-muted);margin-top:.15rem}</style>
