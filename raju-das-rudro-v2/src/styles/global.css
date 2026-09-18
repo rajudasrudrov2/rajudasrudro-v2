@@ -1,5 +1,13 @@
 @import "./tokens.css";
 
+@font-face {
+  font-family: "Inter";
+  src: local("Inter Variable"), local("InterVariable"), local("Inter");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
 *, *::before, *::after { box-sizing: border-box; }
 html { color-scheme: light; scroll-behavior: smooth; }
 body {
@@ -17,7 +25,13 @@ img { height: auto; }
 button, input, select, textarea { font: inherit; }
 a { color: inherit; text-decoration: none; }
 p { margin: 0; }
-h1, h2, h3, h4 { margin: 0; font-family: var(--font-display); line-height: 1.08; letter-spacing: -.02em; }
+h1, h2, h3, h4 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: var(--weight-bold);
+  line-height: 1.04;
+  letter-spacing: -.035em;
+}
 h1 { font-size: var(--fs-h1); }
 h2 { font-size: var(--fs-h2); }
 h3 { font-size: var(--fs-h3); }
@@ -28,15 +42,21 @@ ul, ol { margin: 0; padding: 0; }
 
 .container { width: min(calc(100% - (var(--page-pad) * 2)), var(--container)); margin-inline: auto; }
 .reading { width: min(100%, var(--reading)); }
-.section { padding-block: var(--space-12); }
+.section { padding-block: var(--space-10); }
 .section--soft { background: var(--color-bg-soft); }
 .stack { display: grid; gap: var(--space-4); }
 .cluster { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
 .grid-2 { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: var(--space-6); }
 .grid-3 { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: var(--space-4); }
 .grid-4 { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: var(--space-4); }
-.eyebrow { color: var(--color-text-muted); font-size: var(--fs-caption); font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
-.lede { color: var(--color-text-muted); font-size: var(--fs-body-lg); line-height: 1.45; }
+.eyebrow {
+  color: var(--color-text-muted);
+  font-size: .69rem;
+  font-weight: var(--weight-semibold);
+  letter-spacing: .075em;
+  text-transform: uppercase;
+}
+.lede { color: var(--color-text-muted); font-size: var(--fs-body-lg); line-height: 1.46; }
 .muted { color: var(--color-text-muted); }
 .surface { border: var(--border); border-radius: var(--radius-lg); background: #fff; box-shadow: var(--shadow-card); }
 .visually-hidden { position: absolute!important; width: 1px!important; height: 1px!important; padding: 0!important; margin: -1px!important; overflow: hidden!important; clip: rect(0,0,0,0)!important; white-space: nowrap!important; border: 0!important; }

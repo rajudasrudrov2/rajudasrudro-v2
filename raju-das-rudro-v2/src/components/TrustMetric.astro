@@ -1,5 +1,14 @@
 ---
-const { value, label, icon = '★' } = Astro.props;
+import Icon from './Icon.astro';
+const { value, label, icon = 'star' } = Astro.props;
+const namedIcons = new Set(['star','users','briefcase','globe','video','spark','monitor','arrow','check']);
+const useNamedIcon = typeof icon === 'string' && namedIcons.has(icon);
 ---
-<div class="trust"><span class="trust__icon" aria-hidden="true">{icon}</span><span><strong>{value}</strong><small>{label}</small></span></div>
-<style>.trust{display:flex;align-items:center;gap:.65rem;padding:.85rem 1rem;min-width:0}.trust__icon{display:grid;place-items:center;font-size:1.15rem}.trust span:last-child{display:grid;line-height:1.15}.trust strong{font-family:var(--font-display);font-size:1.1rem}.trust small{font-size:.68rem;color:var(--color-text-muted);margin-top:.15rem}</style>
+<div class="trust">
+  <span class="trust__icon" aria-hidden="true">{useNamedIcon ? <Icon name={icon} size={21} /> : icon}</span>
+  <span><strong>{value}</strong><small>{label}</small></span>
+</div>
+<style>
+.trust{display:flex;align-items:center;justify-content:center;gap:.62rem;padding:.72rem 1rem;min-width:0}.trust__icon{display:grid;place-items:center;color:#0f2743;font-size:1.05rem}.trust span:last-child{display:grid;line-height:1.1}.trust strong{font-family:var(--font-body);font-size:1rem;font-weight:800;letter-spacing:-.03em}.trust small{font-size:.58rem;color:var(--color-text-muted);margin-top:.14rem;white-space:nowrap}
+@media(max-width:47.99rem){.trust{justify-content:flex-start;padding:.7rem .68rem}.trust__icon{font-size:.95rem}.trust strong{font-size:.88rem}.trust small{font-size:.54rem}}
+</style>

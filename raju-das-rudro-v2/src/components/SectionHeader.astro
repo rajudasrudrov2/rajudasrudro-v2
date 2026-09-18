@@ -1,10 +1,10 @@
 ---
-const { eyebrow, title, description, linkHref, linkLabel = 'View all' } = Astro.props;
+const { eyebrow, title, description, linkHref, linkLabel = 'View all', id } = Astro.props;
 ---
 <div class="section-header">
-  <div>{eyebrow && <p class="eyebrow">{eyebrow}</p>}<h2>{title}</h2>{description && <p>{description}</p>}</div>
+  <div>{eyebrow && <p class="eyebrow">{eyebrow}</p>}<h2 id={id}>{title}</h2>{description && <p>{description}</p>}</div>
   {linkHref && <a href={linkHref}>{linkLabel} <span aria-hidden="true">→</span></a>}
 </div>
 <style>
-.section-header{display:flex;justify-content:space-between;align-items:end;gap:1rem;margin-bottom:1.1rem}.section-header>div{display:grid;gap:.2rem}.section-header p:not(.eyebrow){font-size:.82rem;color:var(--color-text-muted)}.section-header>a{font-size:.78rem;color:#2563eb;font-weight:600;white-space:nowrap}@media(max-width:47.99rem){.section-header{align-items:center}.section-header p:not(.eyebrow){font-size:.75rem}.section-header>a{font-size:.7rem}}
+.section-header{display:flex;justify-content:space-between;align-items:end;gap:1rem;margin-bottom:1rem}.section-header>div{display:grid;gap:.2rem}.section-header h2{font-size:1.65rem;font-weight:750;line-height:1.04}.section-header p:not(.eyebrow){font-size:.72rem;color:var(--color-text-muted);line-height:1.4}.section-header>a{font-size:.68rem;color:#2563eb;font-weight:700;white-space:nowrap}.section-header>a:hover{text-decoration:underline;text-underline-offset:.18em}@media(max-width:47.99rem){.section-header{align-items:center;margin-bottom:.7rem}.section-header h2{font-size:1.24rem}.section-header p:not(.eyebrow){font-size:.64rem}.section-header>a{font-size:.62rem}}
 </style>

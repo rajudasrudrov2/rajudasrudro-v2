@@ -4,10 +4,7 @@ import ReviewCard from '@/components/ReviewCard.astro';
 import TrustMetric from '@/components/TrustMetric.astro';
 import CTA from '@/components/CTA.astro';
 import { verifiedTrust } from '@/data/site';
-const publicReviewSummaries = [
-  { rating: 5, name: 'sbennett008', text: 'Praised accurate brief understanding, high-quality delivery and a result that did not require revisions.', context: 'AI UGC · Fiverr · Australia' },
-  { rating: 5, name: 'giuse96', text: 'Highlighted professional communication, responsiveness and repeated positive experience with AI video work.', context: 'AI Video · Fiverr · Italy' },
-];
+import { publicReviewSummaries } from '@/data/reviews';
 ---
 <BaseLayout meta={{ title: 'Client Reviews — Raju Das Rudro', description: 'Public client feedback and Fiverr trust signals for Raju Das Rudro.', pathname: '/reviews/' }}>
   <section class="section"><div class="container reviews-hero"><div class="stack"><p class="eyebrow">Client Reviews</p><h1>What Clients Say</h1><p class="lede">Real feedback from public client profiles and review sources. Review data should remain attributable and never be invented.</p></div><div class="review-metrics surface">{verifiedTrust.map((m,i)=><TrustMetric value={m.value} label={m.label} icon={i===0?'★':'✦'} />)}</div></div></section>
