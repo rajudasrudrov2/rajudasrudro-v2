@@ -1,0 +1,14 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Chip from '@/components/Chip.astro';
+import EmptyState from '@/components/EmptyState.astro';
+import CTA from '@/components/CTA.astro';
+import { getArticles } from '@/content-or-cms/client';
+const articles = await getArticles();
+---
+<BaseLayout meta={{ title: 'Insights — Raju Das Rudro', description: 'Practical insights about AI UGC, AI video creative, marketing content and web experiences.', pathname: '/insights/' }}>
+  <section class="section"><div class="container stack"><p class="eyebrow">Insights</p><h1>Insights</h1><p class="lede">Useful ideas, practical guides and observations about AI creative, UGC, video production and modern web experiences.</p><div class="cluster"><Chip active>All</Chip><Chip>AI UGC</Chip><Chip>AI Video</Chip><Chip>Web Design</Chip><Chip>Marketing</Chip></div></div></section>
+  <section class="section section--soft"><div class="container">{articles.length ? <div class="grid-3"></div> : <EmptyState title="Article migration pending" description="Existing valuable articles will be preserved or redirected deliberately after the legacy URL audit." />}</div></section>
+  <div class="container cta-wrap"><CTA /></div>
+</BaseLayout>
+<style>h1{font-size:var(--fs-hero)}.cta-wrap{padding-block:1rem 2rem}</style>

@@ -1,0 +1,9 @@
+---
+import Chip from './Chip.astro';
+const { project } = Astro.props;
+---
+<article class="project-card surface">
+  <div class="project-card__media"><div class="project-card__placeholder" aria-hidden="true"></div><span class="project-card__play" aria-hidden="true">▶</span>{project.duration && <span class="project-card__duration">{project.duration}</span>}</div>
+  <div class="project-card__body"><h3>{project.title}</h3><div class="cluster">{project.tags?.map((t:any) => <Chip tone={t.tone || 'brand'}>{t.label || t}</Chip>)}</div><a href={project.href}>View Project <span aria-hidden="true">→</span></a></div>
+</article>
+<style>.project-card{overflow:hidden}.project-card__media{position:relative;aspect-ratio:16/9;overflow:hidden}.project-card__placeholder{width:100%;height:100%;background:linear-gradient(135deg,#dbe4ea,#f8fafc 58%,#cbd5e1)}.project-card__play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:2.5rem;height:2.5rem;border-radius:50%;display:grid;place-items:center;background:rgba(15,23,42,.72);border:2px solid white;color:white;font-size:.75rem}.project-card__duration{position:absolute;right:.4rem;bottom:.4rem;background:rgba(0,0,0,.68);color:#fff;padding:.12rem .32rem;border-radius:.2rem;font-size:.62rem}.project-card__body{display:grid;gap:.5rem;padding:.8rem}.project-card h3{font-size:1rem}.project-card__body>a{font-size:.75rem;color:var(--color-brand);font-weight:600}</style>

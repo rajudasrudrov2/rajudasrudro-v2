@@ -1,0 +1,19 @@
+---
+import type { Project } from '@/types/content';
+import { getProjects } from '@/content-or-cms/client';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Breadcrumbs from '@/components/Breadcrumbs.astro';
+import CTA from '@/components/CTA.astro';
+
+export async function getStaticPaths() {
+  const projects = await getProjects();
+  return projects.map((project: Project) => ({ params: { slug: project.slug }, props: { project } }));
+}
+const { project } = Astro.props as { project: Project };
+---
+<BaseLayout meta={{ title: project.seoTitle || `${project.title} — Case Study`, description: project.metaDescription || project.shortSummary, pathname: `/work/${project.slug}/` }}>
+  <section class="section"><div class="container stack"><Breadcrumbs items={[{label:'Work',href:'/work/'},{label:project.title,href:`/work/${project.slug}/`}]} /><h1>{project.title}</h1><p class="lede">{project.shortSummary}</p></div></section>
+  <section class="section section--soft"><div class="container case-grid"><article><h2>Project Overview</h2><p>{project.overview}</p></article><article><h2>The Challenge</h2><p>{project.challenge}</p></article><article><h2>The Approach</h2><ul>{project.approach?.map(x=><li>{x}</li>)}</ul></article></div></section>
+  <div class="container cta-wrap"><CTA title="Want something similar for your brand?" /></div>
+</BaseLayout>
+<style>.case-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem}.case-grid article{display:grid;gap:.6rem}.case-grid p,.case-grid li{font-size:.82rem;color:var(--color-text-muted)}.case-grid ul{padding-left:1.1rem}.cta-wrap{padding-block:1rem 2rem}@media(max-width:47.99rem){.case-grid{grid-template-columns:1fr}}</style>

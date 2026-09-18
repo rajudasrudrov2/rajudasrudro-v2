@@ -1,0 +1,14 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Chip from '@/components/Chip.astro';
+import EmptyState from '@/components/EmptyState.astro';
+import CTA from '@/components/CTA.astro';
+import { getProjects } from '@/content-or-cms/client';
+const projects = await getProjects();
+---
+<BaseLayout meta={{ title: 'Selected Work — Raju Das Rudro', description: 'Selected AI UGC, AI video and web projects by Raju Das Rudro.', pathname: '/work/' }}>
+  <section class="section work-hero"><div class="container stack"><p class="eyebrow">Portfolio / Selected Work</p><h1>Selected Work</h1><p class="lede">A collection of AI UGC, AI video creative and web projects created for global brands. Real ideas. Real content. Real results.</p><div class="cluster"><Chip active>All</Chip><Chip>AI UGC</Chip><Chip>AI Video</Chip><Chip>AI Spokesperson</Chip><Chip>Web Design</Chip><Chip>Web Development</Chip></div></div></section>
+  <section class="section section--soft"><div class="container stack"><h2>All Projects</h2>{projects.length ? <div class="grid-4"></div> : <EmptyState title="No verified V2 projects published yet" description="The migration layer is ready; only real projects should be added through the fresh CMS." />}</div></section>
+  <div class="container cta-wrap"><CTA /></div>
+</BaseLayout>
+<style>.work-hero h1{font-size:var(--fs-hero)}.work-hero .lede{max-width:42rem}.cta-wrap{padding-block:1rem 2rem}</style>
