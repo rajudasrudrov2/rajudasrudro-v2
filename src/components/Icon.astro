@@ -1,6 +1,3 @@
----
-type IconName = 'star' | 'users' | 'briefcase' | 'globe' | 'video' | 'spark' | 'monitor' | 'arrow' | 'check';
-const { name, size = 22, title } = Astro.props as { name: IconName; size?: number; title?: string };
 const common = {
   width: size,
   height: size,
@@ -11,8 +8,8 @@ const common = {
   'stroke-linecap': 'round',
   'stroke-linejoin': 'round',
   'aria-hidden': title ? undefined : 'true',
-  role: title ? ('img' as const) : undefined,
-};
+  role: title ? 'img' : undefined,
+} as const;
 ---
 <svg {...common}>
   {title && <title>{title}</title>}
