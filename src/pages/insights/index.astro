@@ -6,6 +6,8 @@ import CTA from '@/components/CTA.astro';
 import EmptyState from '@/components/EmptyState.astro';
 import Icon from '@/components/Icon.astro';
 import { getArticles } from '@/content-or-cms/client';
+import { isProductionEnvironment } from '@/config/environment';
+import { isArticleRouteEligible } from '@/lib/articles';
 
 const articles = await getArticles();
 const featuredArticle = articles.find((article) => article.featured) ?? articles[0];
@@ -17,7 +19,7 @@ const categories = ['AI UGC', 'AI Video', 'AI Creative', 'Web Design & Developme
 const initialVisibleCount = 3;
 const filtersEnabled = listingArticles.length >= 4 && categories.length >= 2;
 const loadMoreEnabled = listingArticles.length > initialVisibleCount;
-const featuredIsLinkable = featuredArticle?.publicationStatus === 'published' && !featuredArticle?.developmentPreview;
+const featuredIsLinkable = featuredArticle ? isArticleRouteEligible(featuredArticle, isProductionEnvironment) : false;
 const featuredHref = featuredArticle && featuredIsLinkable ? `/insights/${featuredArticle.slug}/` : undefined;
 
 const topicCards = [
@@ -93,9 +95,9 @@ const topicCards = [
                 {featuredArticle.readingTime && <span>{featuredArticle.readingTime}</span>}
               </div>
               {featuredHref ? (
-                <Button href={featuredHref}>Read Article <Icon name="arrow" size={16} /></Button>
+                <Button href={featuredHref}>{featuredArticle.developmentPreview ? 'Preview Article' : 'Read Article'} <Icon name="arrow" size={16} /></Button>
               ) : (
-                <span class="insights-featured__status">Detail article intentionally unavailable until the Single Article/CMS milestone.</span>
+                <span class="insights-featured__status">Detail article is unavailable for this record until it has an eligible published or controlled preview state.</span>
               )}
             </div>
           </article>

@@ -1,21 +1,227 @@
 ---
-import type { Article } from '@/types/content';
+import type { Article, WorkProject } from '@/types/content';
 import { getArticles } from '@/content-or-cms/client';
+import { isProductionEnvironment } from '@/config/environment';
+import { buildArticleOutline, getRelatedArticles, isArticleRouteEligible } from '@/lib/articles';
+import { services } from '@/data/services';
+import { site } from '@/data/site';
+import { allWorkProjects } from '@/lib/work-projects';
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import ArticleBody from '@/components/ArticleBody.astro';
+import ArticleCard from '@/components/ArticleCard.astro';
 import Breadcrumbs from '@/components/Breadcrumbs.astro';
+import Button from '@/components/Button.astro';
 import CTA from '@/components/CTA.astro';
+import ProjectCard from '@/components/ProjectCard.astro';
+import Icon from '@/components/Icon.astro';
 
 export async function getStaticPaths() {
   const articles = await getArticles();
   return articles
-    .filter((article: Article) => article.publicationStatus === 'published' && !article.developmentPreview)
+    .filter((article: Article) => isArticleRouteEligible(article, isProductionEnvironment))
     .map((article: Article) => ({ params: { slug: article.slug }, props: { article } }));
 }
+
 const { article } = Astro.props as { article: Article };
-const articleMeta = [article.publishedDate, article.readingTime].filter(Boolean).join(' · ');
+const allArticles = await getArticles();
+const isDevelopmentPreview = article.publicationStatus === 'development-preview' && article.developmentPreview === true;
+const bodySections = article.body || [];
+const outline = buildArticleOutline(bodySections);
+const headingIds = Object.fromEntries(outline.map((item) => [item.key, item.id]));
+const tocRendered = outline.filter((item) => item.level === 2).length >= 3;
+const relatedArticles = getRelatedArticles(article, allArticles, 3);
+const contextualService = (article.relatedServiceSlugs || [])
+  .map((slug) => services.find((service) => service.slug === slug))
+  .find(Boolean);
+const relatedWork = (article.relatedWorkIds || [])
+  .map((id) => allWorkProjects.find((project) => project.id === id))
+  .filter((project): project is WorkProject => Boolean(project))
+  .slice(0, 2);
+
+const metadataItems = [
+  article.author ? { type: 'text', value: article.author } : null,
+  article.publishedDate ? { type: 'date', value: article.publishedDate } : null,
+  article.readingTime ? { type: 'text', value: article.readingTime } : null,
+].filter(Boolean) as Array<{ type: 'text' | 'date'; value: string }>;
+
+const schemaEligible =
+  article.publicationStatus === 'published' &&
+  article.developmentPreview !== true &&
+  Boolean(article.author && article.publishedDate && article.featureImage?.src);
+
+const articleSchema = schemaEligible
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: article.title,
+      description: article.metaDescription || article.excerpt,
+      image: new URL(article.ogImage?.src || article.featureImage!.src, site.url).toString(),
+      datePublished: article.publishedDate,
+      ...(article.updatedDate ? { dateModified: article.updatedDate } : {}),
+      author: { '@type': 'Person', name: article.author, url: site.url },
+      mainEntityOfPage: new URL(`/insights/${article.slug}/`, site.url).toString(),
+    }
+  : null;
 ---
-<BaseLayout meta={{ title: article.seoTitle || article.title, description: article.metaDescription || article.excerpt, pathname: `/insights/${article.slug}/`, type: 'article' }}>
-  <article class="section article"><div class="container article__grid"><aside><Breadcrumbs items={[{label:'Insights',href:'/insights/'},{label:article.title,href:`/insights/${article.slug}/`}]} /><nav class="toc" aria-label="Table of contents"><strong>Table of Contents</strong><p>Generated from validated H2/H3 headings during the CMS phase.</p></nav></aside><div class="reading stack"><p class="eyebrow">{article.category}</p><h1>{article.title}</h1><p class="lede">{article.excerpt}</p>{articleMeta && <p class="meta">{articleMeta}</p>}<div class="article__body" set:html={article.bodyHtml || ''}></div></div></div></article>
-  <div class="container cta-wrap"><CTA title="Need hands-on creative support?" secondaryHref="/services/" secondaryLabel="Explore Services" /></div>
+<BaseLayout
+  meta={{
+    title: article.seoTitle || `${article.title} — Raju Das Rudro`,
+    description: article.metaDescription || article.excerpt,
+    pathname: `/insights/${article.slug}/`,
+    image: article.ogImage?.src || article.featureImage?.src,
+    type: 'article',
+    noindex: isDevelopmentPreview,
+  }}
+>
+  {articleSchema && <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />}
+
+  <article class="article-page" data-article-state={article.publicationStatus || 'unknown'}>
+    <header class="article-hero">
+      <div class="container">
+        <div class="article-breadcrumbs">
+          <Breadcrumbs items={[{ label: 'Insights', href: '/insights/' }, { label: article.title, href: `/insights/${article.slug}/` }]} />
+        </div>
+
+        <div class="article-hero__grid">
+          <div class="article-hero__copy">
+            <div class="article-hero__labels">
+              {article.category && <span class="article-category">{article.category}</span>}
+              {isDevelopmentPreview && <span class="article-preview">Development preview</span>}
+            </div>
+            <h1>{article.title}</h1>
+            <p class="lede">{article.excerpt}</p>
+
+            {metadataItems.length > 0 && (
+              <div class="article-meta" aria-label="Article metadata">
+                {metadataItems.map((item) => (
+                  item.type === 'date'
+                    ? <time datetime={item.value}>{item.value}</time>
+                    : <span>{item.value}</span>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div class="article-hero__media">
+            {article.featureImage ? (
+              <img
+                src={article.featureImage.src}
+                alt={article.featureImage.alt}
+                width={article.featureImage.width || 1200}
+                height={article.featureImage.height || 675}
+                loading="eager"
+                fetchpriority="high"
+                decoding="async"
+              />
+            ) : (
+              <div class="article-hero__fallback" role="img" aria-label="Article feature media unavailable">
+                <span>Insights</span>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section class="article-content-wrap">
+      <div class="container article-layout">
+        <aside class="article-left-rail" aria-label="Article navigation and related service">
+          {tocRendered && (
+            <nav class="article-toc article-toc--desktop surface" aria-label="Table of contents">
+              <strong>Table of Contents</strong>
+              <ol>
+                {outline.map((item) => (
+                  <li class:list={{ 'is-subheading': item.level === 3 }}><a href={`#${item.id}`}>{item.label}</a></li>
+                ))}
+              </ol>
+            </nav>
+          )}
+
+          {tocRendered && (
+            <details class="article-toc article-toc--mobile surface">
+              <summary>Table of Contents <span aria-hidden="true">⌄</span></summary>
+              <nav aria-label="Table of contents">
+                <ol>
+                  {outline.map((item) => (
+                    <li class:list={{ 'is-subheading': item.level === 3 }}><a href={`#${item.id}`}>{item.label}</a></li>
+                  ))}
+                </ol>
+              </nav>
+            </details>
+          )}
+
+          {contextualService && (
+            <section class="article-service surface" aria-labelledby="article-service-title">
+              <p class="eyebrow">Related service</p>
+              <h2 id="article-service-title">Need hands-on help with this?</h2>
+              <p>{contextualService.short}</p>
+              <Button href={contextualService.href} size="sm">Explore Service <Icon name="arrow" size={14} /></Button>
+            </section>
+          )}
+        </aside>
+
+        <div class="article-main">
+          {bodySections.length > 0 ? (
+            <ArticleBody sections={bodySections} headingIds={headingIds} />
+          ) : (
+            <section class="article-body-empty surface" aria-labelledby="article-body-empty-title">
+              <h2 id="article-body-empty-title">Article content is not available yet</h2>
+              <p>This record does not currently contain validated body content.</p>
+            </section>
+          )}
+
+          {relatedWork.length > 0 && (
+            <section class="article-work" aria-labelledby="article-work-title">
+              <div class="article-section-heading">
+                <div>
+                  <p class="eyebrow">Relevant work</p>
+                  <h2 id="article-work-title">Related Work Preview</h2>
+                  <p>Development-preview work is shown for context only and is not presented as proof of this article’s claims.</p>
+                </div>
+                <a href="/work/">View all work <Icon name="arrow" size={14} /></a>
+              </div>
+              <div class="article-work__grid">
+                {relatedWork.map((project) => <ProjectCard project={project} />)}
+              </div>
+            </section>
+          )}
+        </div>
+
+        <aside class="article-right-rail" aria-label="Related articles">
+          {relatedArticles.length > 0 && (
+            <section class="article-related surface" aria-labelledby="article-related-title">
+              <div class="article-related__heading">
+                <h2 id="article-related-title">Related Articles</h2>
+                <a href="/insights/">View all <Icon name="arrow" size={13} /></a>
+              </div>
+              <div class="article-related__list">
+                {relatedArticles.map((related) => <ArticleCard article={related} compact />)}
+              </div>
+              {relatedArticles.some((related) => related.developmentPreview) && (
+                <p class="article-related__note">Preview records without an explicitly enabled detail route remain non-clickable.</p>
+              )}
+            </section>
+          )}
+        </aside>
+      </div>
+    </section>
+  </article>
+
+  <div class="container article-final-cta">
+    <CTA
+      title="Planning a website or creative project?"
+      description="Share the goal and I’ll help map the clearest next step for the project."
+      primaryHref="/contact/"
+      primaryLabel="Start a Project"
+      secondaryHref="/services/"
+      secondaryLabel="Explore Services"
+    />
+  </div>
 </BaseLayout>
-<style>.article__grid{display:grid;grid-template-columns:14rem 1fr;gap:3rem;align-items:start}.article h1{font-size:var(--fs-hero)}.toc{position:sticky;top:6rem;display:grid;gap:.5rem;border:1px solid var(--color-border);border-radius:var(--radius-md);padding:1rem}.toc strong{font-size:var(--fs-meta)}.toc p,.meta{font-size:var(--fs-meta);color:var(--color-text-muted)}.article__body :global(p){margin-block:1rem;color:#334155}.article__body :global(h2){margin-top:2rem}.cta-wrap{padding-block:1rem 2rem}@media(max-width:47.99rem){.article__grid{grid-template-columns:1fr}.toc{position:static}.article h1{font-size:2.35rem}}</style>
+
+<style>
+.article-page{background:#fff}.article-hero{border-bottom:1px solid var(--color-border);background:linear-gradient(90deg,#fff 0%,#fff 58%,#f8fafc 100%)}.article-breadcrumbs{padding-top:.9rem}.article-hero__grid{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(24rem,.92fr);gap:2rem;align-items:center;padding-block:1rem 1.35rem}.article-hero__copy{display:grid;gap:.72rem;align-content:center;min-width:0}.article-hero__labels{display:flex;align-items:center;flex-wrap:wrap;gap:.45rem}.article-category,.article-preview{display:inline-flex;align-items:center;min-height:1.75rem;padding:.26rem .55rem;border-radius:999px;font-size:var(--fs-caption);font-weight:750;line-height:1}.article-category{background:#fee2e2;color:var(--color-brand-strong)}.article-preview{border:1px solid #cbd5e1;background:#fff;color:#64748b}.article-hero h1{max-width:42rem;font-size:clamp(2.45rem,4.2vw,3.8rem)}.article-hero .lede{max-width:40rem;font-size:var(--fs-body-lg);line-height:1.52}.article-meta{display:flex;align-items:center;flex-wrap:wrap;gap:.5rem;color:var(--color-text-muted);font-size:var(--fs-meta)}.article-meta>*+*::before{content:"•";margin-right:.5rem;color:#94a3b8}.article-hero__media{overflow:hidden;aspect-ratio:16/9;border:1px solid var(--color-border);border-radius:var(--radius-lg);background:#eef2f7}.article-hero__media img{width:100%;height:100%;object-fit:cover}.article-hero__fallback{display:grid;place-items:center;width:100%;height:100%;background:linear-gradient(135deg,#eef2f7,#dbe5ed);color:#64748b;font-weight:800;text-transform:uppercase;letter-spacing:.05em}
+.article-content-wrap{padding-block:1.4rem 1.2rem}.article-layout{display:grid;grid-template-columns:minmax(11.5rem,13rem) minmax(0,1fr) minmax(15rem,17rem);gap:1.35rem;align-items:start}.article-left-rail,.article-right-rail{display:grid;gap:.8rem;min-width:0}.article-toc{padding:.9rem;box-shadow:none}.article-toc>strong,.article-toc summary{font-size:var(--fs-meta);font-weight:800;color:var(--color-text)}.article-toc ol{display:grid;gap:.35rem;margin-top:.65rem;padding-left:1.1rem;color:#475569;font-size:var(--fs-caption);line-height:1.35}.article-toc li::marker{color:#94a3b8}.article-toc li.is-subheading{margin-left:.45rem}.article-toc a{display:inline-flex;min-height:1.8rem;align-items:center;text-decoration:underline;text-decoration-color:transparent;text-underline-offset:.18em}.article-toc a:hover{text-decoration-color:currentColor;color:var(--color-brand-strong)}.article-toc--desktop{position:sticky;top:5.25rem}.article-toc--mobile{display:none}.article-service{display:grid;gap:.55rem;padding:.9rem;box-shadow:none}.article-service h2{font-size:1.12rem}.article-service>p:not(.eyebrow){font-size:var(--fs-caption);line-height:1.45;color:var(--color-text-muted)}.article-service :global(.button){width:100%}.article-main{display:grid;gap:2rem;min-width:0;max-width:var(--reading);width:100%;margin-inline:auto}.article-body-empty{padding:1.1rem}.article-body-empty h2{font-size:1.35rem}.article-body-empty p{margin-top:.4rem;color:var(--color-text-muted)}.article-section-heading{display:flex;align-items:end;justify-content:space-between;gap:1rem;margin-bottom:.7rem}.article-section-heading h2{font-size:1.5rem}.article-section-heading p:not(.eyebrow){margin-top:.2rem;color:var(--color-text-muted);font-size:var(--fs-body-sm);line-height:1.45}.article-section-heading>a{display:inline-flex;align-items:center;gap:.2rem;min-height:2.2rem;color:var(--color-brand-strong);font-size:var(--fs-meta);font-weight:750;white-space:nowrap}.article-work{padding-top:.2rem}.article-work__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem}.article-work__grid>:only-child{max-width:24rem}.article-related{padding:.8rem;box-shadow:none}.article-related__heading{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:.6rem}.article-related__heading h2{font-size:1.12rem}.article-related__heading a{display:inline-flex;align-items:center;gap:.15rem;color:var(--color-brand-strong);font-size:var(--fs-caption);font-weight:750}.article-related__list{display:grid;gap:.55rem}.article-related__note{margin-top:.6rem;color:var(--color-text-muted);font-size:var(--fs-caption);line-height:1.4}.article-final-cta{padding-block:.35rem 1.5rem}
+@media(max-width:63.99rem){.article-hero__grid{grid-template-columns:1.05fr .95fr;gap:1rem}.article-layout{grid-template-columns:minmax(10.5rem,12rem) minmax(0,1fr)}.article-right-rail{grid-column:1/-1}.article-related__list{grid-template-columns:repeat(3,minmax(0,1fr))}.article-main{max-width:none}}
+@media(max-width:47.99rem){.article-hero{background:#fff}.article-breadcrumbs{padding-top:.65rem}.article-hero__grid{grid-template-columns:1fr;gap:.8rem;padding-block:.7rem .9rem}.article-hero__copy{gap:.55rem}.article-hero h1{font-size:var(--fs-h1);max-width:100%}.article-hero .lede{font-size:var(--fs-body);line-height:1.5}.article-meta{font-size:var(--fs-caption)}.article-hero__media{grid-row:auto;aspect-ratio:16/9}.article-content-wrap{padding-block:.8rem}.article-layout{grid-template-columns:1fr;gap:1rem}.article-left-rail{gap:.65rem}.article-toc--desktop{display:none}.article-toc--mobile{display:block;padding:0}.article-toc--mobile summary{display:flex;align-items:center;justify-content:space-between;gap:1rem;min-height:2.9rem;padding:.7rem .8rem;cursor:pointer;list-style:none}.article-toc--mobile summary::-webkit-details-marker{display:none}.article-toc--mobile nav{padding:0 .8rem .8rem}.article-toc--mobile ol{margin-top:0}.article-service{padding:.8rem}.article-service h2{font-size:1.08rem}.article-main{gap:1.5rem}.article-section-heading{align-items:start;flex-direction:column;gap:.35rem}.article-section-heading h2{font-size:var(--fs-h2)}.article-work__grid{grid-template-columns:1fr}.article-work__grid>:only-child{max-width:none}.article-right-rail{grid-column:auto}.article-related{padding:.75rem}.article-related__list{grid-template-columns:1fr}.article-final-cta{padding-block:0 1rem}}
+</style>
