@@ -1,9 +1,0 @@
----
-import Button from './Button.astro';
-const { service, compact = false } = Astro.props;
----
-<article class:list={["service-card surface", {compact}]}>
-  <div class="service-card__media" aria-hidden="true"><span>{service.title.split(' ')[0]}</span></div>
-  <div class="service-card__body"><h3>{service.title}</h3><p>{service.short}</p>{!compact && <ul>{service.bullets.map((item:string) => <li>{item}</li>)}</ul>}<Button href={service.href} variant="ghost" size="sm">Explore Service <span aria-hidden="true">→</span></Button></div>
-</article>
-<style>.service-card{overflow:hidden}.service-card__media{aspect-ratio:16/9;display:grid;place-items:center;background:linear-gradient(135deg,#e2e8f0,#f8fafc);color:#94a3b8;font-family:var(--font-display);font-size:1.35rem}.service-card__body{display:grid;gap:.55rem;padding:1rem}.service-card h3{font-size:1.12rem}.service-card p{font-size:.78rem;color:var(--color-text-muted)}.service-card ul{display:grid;gap:.35rem;list-style:none}.service-card li{font-size:.72rem;color:#475569}.service-card li::before{content:'●';font-size:.5rem;color:var(--color-brand);margin-right:.5rem}.service-card .button{justify-self:start}.service-card.compact{display:grid;grid-template-columns:8rem 1fr}.service-card.compact .service-card__media{aspect-ratio:auto;min-height:7rem}@media(max-width:47.99rem){.service-card:not(.compact){display:grid;grid-template-columns:7rem 1fr}.service-card:not(.compact) .service-card__media{aspect-ratio:auto;min-height:7rem}.service-card__body{padding:.8rem}.service-card ul{display:none}}</style>
