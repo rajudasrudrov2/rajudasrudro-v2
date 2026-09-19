@@ -21,9 +21,142 @@ const developmentPreviewArticles: Article[] = [
       width: 1200,
       height: 675,
     },
+    ogImage: {
+      src: '/images/insights/featured-web-framework-preview.svg',
+      alt: 'Development preview artwork showing a responsive website planning layout',
+      width: 1200,
+      height: 675,
+    },
     featured: true,
     publicationStatus: 'development-preview',
     developmentPreview: true,
+    previewDetailEnabled: true,
+    relatedServiceSlugs: ['web-design-development'],
+    relatedWorkIds: ['work-ecommerce-web-preview'],
+    seoTitle: 'Planning a High-Converting Website — Development Preview | Raju Das Rudro',
+    metaDescription: 'Controlled development-preview article used to validate the reusable Single Article experience for Raju Das Rudro V2. Not migrated production content.',
+    body: [
+      {
+        title: 'Start With the Business Goal',
+        blocks: [
+          {
+            type: 'paragraph',
+            text: 'A useful business website starts by deciding what a visitor should understand, trust and do. Visual polish matters, but the page structure becomes much clearer when the business goal and visitor goal are defined first.',
+          },
+          {
+            type: 'paragraph',
+            text: 'For a service-led site, that may mean explaining the offer clearly, showing relevant proof and creating a straightforward path to contact. For an ecommerce or product site, the priority may be helping visitors evaluate the product and reach the next purchase step without unnecessary friction.',
+          },
+          {
+            type: 'callout',
+            title: 'Practical principle',
+            text: 'A page should make the next useful decision easier. Design, copy and interaction should support that decision rather than compete for attention.',
+          },
+        ],
+      },
+      {
+        title: 'Build the Information Structure Before Styling',
+        blocks: [
+          {
+            type: 'paragraph',
+            text: 'Before refining colors, imagery or motion, define the information hierarchy. The page needs a clear opening message, enough supporting detail to answer common questions and a visible path to the next action.',
+          },
+          {
+            type: 'steps',
+            items: [
+              { title: 'Clarify the offer', description: 'State what the business provides and who the page is for.' },
+              { title: 'Order the evidence', description: 'Place useful details, proof and examples where they reduce uncertainty.' },
+              { title: 'Shape the journey', description: 'Move visitors from understanding to evaluation and then to action.' },
+              { title: 'Refine the interface', description: 'Apply the visual system after the content hierarchy is stable.' },
+            ],
+          },
+        ],
+      },
+      {
+        title: 'Make the Offer Easy to Understand',
+        blocks: [
+          {
+            type: 'paragraph',
+            text: 'A conversion-focused page does not need to feel aggressive. It needs to reduce ambiguity. Clear headings, specific descriptions and obvious next steps usually do more useful work than adding more decorative sections.',
+          },
+          {
+            type: 'comparison',
+            items: [
+              {
+                title: 'Harder to scan',
+                points: ['Generic headlines', 'Several competing actions', 'Dense copy without hierarchy', 'Important proof buried low on the page'],
+              },
+              {
+                title: 'Easier to understand',
+                points: ['Specific value proposition', 'Primary action is visually clear', 'Sections answer one question at a time', 'Relevant proof sits near decisions'],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        title: 'Design for Responsive Clarity',
+        blocks: [
+          {
+            type: 'paragraph',
+            text: 'Responsive design is not only about making desktop sections stack on a smaller screen. The priority, order and reading rhythm should still make sense when the viewport changes.',
+          },
+          { type: 'subheading', title: 'Keep the mobile path simple' },
+          {
+            type: 'unordered-list',
+            items: [
+              'Keep the opening message short enough to scan without losing context.',
+              'Make primary actions easy to reach and large enough to use comfortably.',
+              'Use predictable card and media ratios so the layout does not jump while loading.',
+              'Avoid shrinking substantive copy just to preserve a desktop-style density.',
+            ],
+          },
+        ],
+      },
+      {
+        title: 'Protect Performance and SEO Foundations',
+        blocks: [
+          {
+            type: 'paragraph',
+            text: 'A polished interface still needs a clean technical foundation. Performance-conscious media, semantic structure and sensible metadata help the site remain usable and easier for search systems to understand.',
+          },
+          {
+            type: 'unordered-list',
+            items: [
+              'Reserve media dimensions to reduce layout movement.',
+              'Load below-fold imagery only when it is needed.',
+              'Use one clear H1 and a logical H2/H3 hierarchy.',
+              'Give each important page a unique title, description and canonical path.',
+              'Keep interactive behavior lightweight when static HTML and native controls are enough.',
+            ],
+          },
+        ],
+      },
+      {
+        title: 'Review the Path to Action Before Launch',
+        blocks: [
+          {
+            type: 'paragraph',
+            text: 'Before launch, review the site from the visitor’s point of view rather than only checking whether every section exists. The strongest final QA asks whether the page communicates clearly, works across devices and makes the next step easy to understand.',
+          },
+          {
+            type: 'ordered-list',
+            items: [
+              'Read the page from top to bottom at normal browser zoom.',
+              'Check the main journey on mobile, tablet and desktop widths.',
+              'Verify every visible action has a real destination or function.',
+              'Review headings, metadata, media loading and accessibility states.',
+              'Remove sections that add density without helping the visitor make a decision.',
+            ],
+          },
+          {
+            type: 'callout',
+            title: 'Development-preview note',
+            text: 'This article record exists to validate the reusable Single Article architecture. It is not a migrated historical post and does not claim rankings, traffic, client results or prior publication history.',
+          },
+        ],
+      },
+    ],
   },
   {
     id: 'insights-preview-ai-ugc-testing',
