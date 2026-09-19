@@ -9,6 +9,7 @@ import CTA from '@/components/CTA.astro';
 import AIUGCServicePage from '@/components/AIUGCServicePage.astro';
 import AIVideoServicePage from '@/components/AIVideoServicePage.astro';
 import AISpokespersonServicePage from '@/components/AISpokespersonServicePage.astro';
+import WebDesignServicePage from '@/components/WebDesignServicePage.astro';
 import { services, type ServiceDefinition } from '@/data/services';
 
 export function getStaticPaths() {
@@ -19,7 +20,8 @@ const { service } = Astro.props as { service: ServiceDefinition };
 const isAiUgcDetail = service.slug === 'ai-ugc-video-ads' && service.detail?.kind === 'ai-ugc';
 const isAiVideoDetail = service.slug === 'ai-video-production' && service.detail?.kind === 'ai-video';
 const isAiSpokespersonDetail = service.slug === 'ai-spokesperson-videos' && service.detail?.kind === 'ai-spokesperson';
-const hasCustomDetail = isAiUgcDetail || isAiVideoDetail || isAiSpokespersonDetail;
+const isWebDesignDetail = service.slug === 'web-design-development' && service.detail?.kind === 'web-design-development';
+const hasCustomDetail = isAiUgcDetail || isAiVideoDetail || isAiSpokespersonDetail || isWebDesignDetail;
 const pageTitle = hasCustomDetail ? service.detail!.seoTitle : `${service.title} — Raju Das Rudro`;
 const pageDescription = hasCustomDetail ? service.detail!.metaDescription : service.short;
 const pageImage = hasCustomDetail ? service.media.src : undefined;
@@ -43,6 +45,8 @@ const serviceFaq = [
     <AIVideoServicePage service={service} />
   ) : isAiSpokespersonDetail ? (
     <AISpokespersonServicePage service={service} />
+  ) : isWebDesignDetail ? (
+    <WebDesignServicePage service={service} />
   ) : (
     <>
       <section class="section service-hero"><div class="container stack"><Breadcrumbs items={[{label:'Services',href:'/services/'},{label:service.title,href:service.href}]} /><div class="service-hero__grid"><div class="stack"><p class="eyebrow">Professional Service</p><h1>{service.title} Built for Modern Brands.</h1><p class="lede">{service.short}</p><div class="cluster"><Button href="/contact/">Start a Project →</Button><Button href="/work/" variant="secondary">View Related Work</Button></div></div><div class="service-hero__visual surface"><span>{service.title}</span></div></div></div></section>
