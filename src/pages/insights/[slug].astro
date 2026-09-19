@@ -7,12 +7,15 @@ import CTA from '@/components/CTA.astro';
 
 export async function getStaticPaths() {
   const articles = await getArticles();
-  return articles.map((article: Article) => ({ params: { slug: article.slug }, props: { article } }));
+  return articles
+    .filter((article: Article) => article.publicationStatus === 'published' && !article.developmentPreview)
+    .map((article: Article) => ({ params: { slug: article.slug }, props: { article } }));
 }
 const { article } = Astro.props as { article: Article };
+const articleMeta = [article.publishedDate, article.readingTime].filter(Boolean).join(' · ');
 ---
 <BaseLayout meta={{ title: article.seoTitle || article.title, description: article.metaDescription || article.excerpt, pathname: `/insights/${article.slug}/`, type: 'article' }}>
-  <article class="section article"><div class="container article__grid"><aside><Breadcrumbs items={[{label:'Insights',href:'/insights/'},{label:article.title,href:`/insights/${article.slug}/`}]} /><nav class="toc" aria-label="Table of contents"><strong>Table of Contents</strong><p>Generated from validated H2/H3 headings during the CMS phase.</p></nav></aside><div class="reading stack"><p class="eyebrow">{article.category}</p><h1>{article.title}</h1><p class="lede">{article.excerpt}</p><p class="meta">{article.publishedDate} · {article.readingTime}</p><div class="article__body" set:html={article.bodyHtml || ''}></div></div></div></article>
-  <div class="container cta-wrap"><CTA title="Need AI UGC for your brand?" /></div>
+  <article class="section article"><div class="container article__grid"><aside><Breadcrumbs items={[{label:'Insights',href:'/insights/'},{label:article.title,href:`/insights/${article.slug}/`}]} /><nav class="toc" aria-label="Table of contents"><strong>Table of Contents</strong><p>Generated from validated H2/H3 headings during the CMS phase.</p></nav></aside><div class="reading stack"><p class="eyebrow">{article.category}</p><h1>{article.title}</h1><p class="lede">{article.excerpt}</p>{articleMeta && <p class="meta">{articleMeta}</p>}<div class="article__body" set:html={article.bodyHtml || ''}></div></div></div></article>
+  <div class="container cta-wrap"><CTA title="Need hands-on creative support?" secondaryHref="/services/" secondaryLabel="Explore Services" /></div>
 </BaseLayout>
 <style>.article__grid{display:grid;grid-template-columns:14rem 1fr;gap:3rem;align-items:start}.article h1{font-size:var(--fs-hero)}.toc{position:sticky;top:6rem;display:grid;gap:.5rem;border:1px solid var(--color-border);border-radius:var(--radius-md);padding:1rem}.toc strong{font-size:var(--fs-meta)}.toc p,.meta{font-size:var(--fs-meta);color:var(--color-text-muted)}.article__body :global(p){margin-block:1rem;color:#334155}.article__body :global(h2){margin-top:2rem}.cta-wrap{padding-block:1rem 2rem}@media(max-width:47.99rem){.article__grid{grid-template-columns:1fr}.toc{position:static}.article h1{font-size:2.35rem}}</style>
