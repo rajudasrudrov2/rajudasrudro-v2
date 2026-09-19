@@ -1,5 +1,0 @@
----
-const { review } = Astro.props;
----
-<article class="review-card surface"><div class="review-card__rating" aria-label={`${review.rating} out of 5 stars`}>{'★'.repeat(Math.round(review.rating))}</div><blockquote>“{review.text}”</blockquote><footer><strong>{review.name}</strong>{review.context && <span>{review.context}</span>}</footer></article>
-<style>.review-card{display:grid;gap:.65rem;padding:1rem}.review-card__rating{color:#f59e0b;letter-spacing:.08em;font-size:.82rem}.review-card blockquote{margin:0;color:#334155;font-size:.82rem;line-height:1.45}.review-card footer{display:grid}.review-card footer strong{font-size:.75rem}.review-card footer span{font-size:.68rem;color:var(--color-text-muted)}</style>
