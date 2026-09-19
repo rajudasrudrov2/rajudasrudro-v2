@@ -1,112 +1,210 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Button from '@/components/Button.astro';
-import { site } from '@/data/site';
+import Icon from '@/components/Icon.astro';
+import { services } from '@/data/services';
+import { site, verifiedTrust } from '@/data/site';
 
-const endpoint = import.meta.env.PUBLIC_CONTACT_ENDPOINT || '';
+type ContactProjectIcon = 'video' | 'monitor' | 'users' | 'spark';
+
+const contactIconForService = (slug: string): ContactProjectIcon => {
+  if (slug === 'web-design-development') return 'monitor';
+  if (slug === 'ai-spokesperson-videos') return 'users';
+  return 'video';
+};
+
+const serviceOptions: Array<{ value: string; label: string; icon: ContactProjectIcon }> = [
+  ...services.map((service) => ({ value: service.slug, label: service.title, icon: contactIconForService(service.slug) })),
+  { value: 'other', label: 'Other / Custom Requirement', icon: 'spark' },
+];
+
+const budgetOptions = [
+  { value: 'under-500', label: 'Under $500' },
+  { value: '500-1000', label: '$500 – $1,000' },
+  { value: '1000-2500', label: '$1,000 – $2,500' },
+  { value: '2500-plus', label: '$2,500+' },
+  { value: 'not-sure', label: 'Not sure yet' },
+] as const;
+
+const timelineOptions = [
+  { value: 'asap', label: 'As soon as possible' },
+  { value: '1-2-weeks', label: 'Within 1–2 weeks' },
+  { value: 'within-month', label: 'Within a month' },
+  { value: 'flexible', label: 'Flexible / Not sure' },
+] as const;
+
+const emailHref = `mailto:${site.email}?subject=${encodeURIComponent('Project inquiry')}`;
 ---
-<BaseLayout meta={{ title: 'Start a Project — Raju Das Rudro', description: 'Tell Raju Das Rudro about your AI UGC, AI video, spokesperson or web project.', pathname: '/contact/' }}>
-  <section class="section contact-page">
+<BaseLayout
+  meta={{
+    title: 'Start a Project — Raju Das Rudro',
+    description: 'Tell Raju Das Rudro about your AI UGC, AI video, spokesperson or web design project and share the context needed to plan the next step.',
+    pathname: '/contact/',
+  }}
+>
+  <section class="section contact-hero">
     <div class="container contact-grid">
       <aside class="contact-intro stack">
         <p class="eyebrow">Start a Project</p>
         <h1>Tell Me About Your Project.</h1>
         <p class="lede">Share your ideas, goals and requirements. I’ll review your inquiry and get back to you with next steps and a clear plan.</p>
-        <div class="contact-benefits">
-          <span>⚡ <strong>Fast Response</strong><small>{site.responseCommitment}</small></span>
-          <span>◎ <strong>Tailored Solutions</strong><small>Based on your goals</small></span>
-          <span>♡ <strong>No Obligation</strong><small>Just a friendly conversation</small></span>
+
+        <div class="contact-benefits" aria-label="Project inquiry benefits">
+          <div><Icon name="arrow" size={21} /><span><strong>Fast Response</strong><small>{site.responseCommitment}</small></span></div>
+          <div><Icon name="spark" size={21} /><span><strong>Tailored Solutions</strong><small>Based on your goals</small></span></div>
+          <div><Icon name="check" size={21} /><span><strong>No Obligation</strong><small>A project conversation first</small></span></div>
         </div>
+
         <div class="contact-portrait surface">
-          <img src="/images/raju-das-rudro.webp" width="635" height="640" alt="Raju Das Rudro" loading="lazy" />
+          <img src="/images/raju-das-rudro.webp" width="635" height="640" alt="Raju Das Rudro" loading="eager" fetchpriority="high" decoding="async" />
+        </div>
+
+        <div class="contact-note surface">
+          <p>A clear brief helps, but you do not need every detail finalized before reaching out. Share the context you already have and we can clarify the rest together.</p>
+          <strong>{site.name}</strong>
+          <span>AI Creative, UGC & Web Specialist</span>
         </div>
       </aside>
 
-      <div class="form-card surface">
-        <h2>Project Inquiry Form</h2>
-        <p class="muted form-card__intro">Fill in the details below and let’s start the conversation.</p>
+      <div class="form-card surface" id="project-inquiry">
+        <div data-form-intro>
+          <h2>Project Inquiry Form</h2>
+          <p class="muted form-card__intro">Fill in the details below and let’s start the conversation.</p>
+        </div>
 
-        <div class="alert alert--validation" hidden data-validation-summary role="alert">
+        <div class="alert alert--validation" hidden data-validation-summary role="alert" tabindex="-1">
           <strong>Please correct the highlighted fields.</strong>
           <span>Each invalid field includes a text explanation.</span>
         </div>
-        <div class="alert alert--success" hidden data-success role="status" tabindex="-1">
-          <strong>Project received.</strong>
-          <span>Thank you. Your inquiry has been submitted successfully.</span>
-        </div>
+
         <div class="alert alert--error" hidden data-submit-error role="alert" tabindex="-1">
           <strong>Something went wrong while sending your inquiry.</strong>
-          <span>Please try again. Your information has not been confirmed as sent.</span>
+          <span>Your details are still here. Please try again or use a direct contact option below.</span>
+          <div class="alert__actions">
+            <a href={emailHref}>Email me directly</a>
+            <a href={site.fiverr} rel="external">View Fiverr Profile</a>
+          </div>
         </div>
+
+        <div class="alert alert--error" hidden data-delivery-unavailable role="alert" tabindex="-1">
+          <strong>Automated delivery is currently unavailable.</strong>
+          <span>Your inquiry was not marked as sent. Please use email or Fiverr instead.</span>
+          <div class="alert__actions">
+            <a href={emailHref}>Email {site.email}</a>
+            <a href={site.fiverr} rel="external">View Fiverr Profile</a>
+          </div>
+        </div>
+
         <p class="visually-hidden" aria-live="polite" aria-atomic="true" data-form-status></p>
 
-        <form novalidate data-contact-form data-endpoint={endpoint}>
+        <div class="no-js-fallback surface">
+          <strong>Automated submission needs JavaScript.</strong>
+          <p>You can still contact me directly by email or through Fiverr.</p>
+          <div class="cluster">
+            <Button href={emailHref} variant="secondary">Email Me</Button>
+            <Button href={site.fiverr} variant="secondary">View Fiverr Profile ↗</Button>
+          </div>
+        </div>
+
+        <form novalidate data-contact-form>
           <div class="field-grid">
             <div class="field">
               <label class="field-label" for="contact-name">Name <span class="required-marker" aria-hidden="true">*</span><span class="visually-hidden"> (required)</span></label>
-              <input id="contact-name" name="name" autocomplete="name" required minlength="2" aria-describedby="name-error" placeholder="Your full name" />
+              <input id="contact-name" name="name" autocomplete="name" required minlength="2" maxlength="80" aria-describedby="name-error" placeholder="Your full name" />
               <p class="field-error" id="name-error" data-error-for="name"></p>
             </div>
             <div class="field">
               <label class="field-label" for="contact-email">Work Email <span class="required-marker" aria-hidden="true">*</span><span class="visually-hidden"> (required)</span></label>
-              <input id="contact-email" name="email" type="email" inputmode="email" autocomplete="email" required aria-describedby="email-error" placeholder="you@company.com" />
+              <input id="contact-email" name="email" type="email" inputmode="email" autocomplete="email" required maxlength="254" aria-describedby="email-error" placeholder="you@company.com" />
               <p class="field-error" id="email-error" data-error-for="email"></p>
             </div>
           </div>
 
           <div class="field">
             <label class="field-label" for="contact-company">Company / Brand <small>(Optional)</small></label>
-            <input id="contact-company" name="company" autocomplete="organization" placeholder="Your company or brand name" />
+            <input id="contact-company" name="company" autocomplete="organization" maxlength="120" placeholder="Your company or brand name" />
           </div>
 
-          <fieldset class="field service-options" aria-describedby="service-error">
-            <legend>What do you need? <span class="required-marker" aria-hidden="true">*</span><span class="visually-hidden"> (required)</span></legend>
-            <div class="option-grid">
-              <label><input type="radio" name="service" value="AI UGC Video Ads" required aria-describedby="service-error" /><span>AI UGC Video Ads</span></label>
-              <label><input type="radio" name="service" value="AI Video Production" aria-describedby="service-error" /><span>AI Video Production</span></label>
-              <label><input type="radio" name="service" value="AI Spokesperson Videos" aria-describedby="service-error" /><span>AI Spokesperson Videos</span></label>
-              <label><input type="radio" name="service" value="Web Design & Development" aria-describedby="service-error" /><span>Web Design & Development</span></label>
-              <label><input type="radio" name="service" value="Custom AI Project" aria-describedby="service-error" /><span>Custom AI Project</span></label>
-              <label><input type="radio" name="service" value="Something Else" aria-describedby="service-error" /><span>Something Else</span></label>
+          <div class="field service-field" data-service-field>
+            <fieldset class="service-desktop" aria-describedby="service-error">
+              <legend>What do you need? <span class="required-marker" aria-hidden="true">*</span><span class="visually-hidden"> (required)</span></legend>
+              <div class="option-grid">
+                {serviceOptions.map((option) => (
+                  <label>
+                    <input type="radio" name="serviceChoice" value={option.value} data-service-radio aria-describedby="service-error" />
+                    <span>{option.label}</span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+            <div class="service-mobile">
+              <label class="field-label" for="contact-service">What do you need? <span class="required-marker" aria-hidden="true">*</span><span class="visually-hidden"> (required)</span></label>
+              <select id="contact-service" data-service-select aria-describedby="service-error" required>
+                <option value="">Select a service</option>
+                {serviceOptions.map((option) => <option value={option.value}>{option.label}</option>)}
+              </select>
             </div>
+            <input type="hidden" name="service" value="" data-service-value />
             <p class="field-error" id="service-error" data-error-for="service"></p>
-          </fieldset>
+          </div>
 
           <div class="field">
-            <label class="field-label" for="contact-details">Project Details <span class="required-marker" aria-hidden="true">*</span><span class="visually-hidden"> (required)</span></label>
-            <textarea id="contact-details" name="details" required minlength="20" maxlength="1000" rows="6" aria-describedby="details-help details-error" placeholder="Tell me about your project, goals, target audience, style preferences, references and timeline."></textarea>
+            <label class="field-label" for="contact-project-details">Project Details <span class="required-marker" aria-hidden="true">*</span><span class="visually-hidden"> (required)</span></label>
+            <textarea
+              id="contact-project-details"
+              name="projectDetails"
+              required
+              minlength="20"
+              maxlength="1000"
+              rows="6"
+              aria-describedby="project-details-help project-details-error"
+              placeholder="Tell me about your project, goals, target audience, style preferences, references (if any) and any other important details."
+            ></textarea>
             <div class="field__meta">
               <div>
-                <small id="details-help">Please provide at least 20 characters.</small>
-                <p class="field-error" id="details-error" data-error-for="details"></p>
+                <small id="project-details-help">Please provide at least 20 characters.</small>
+                <p class="field-error" id="project-details-error" data-error-for="projectDetails"></p>
               </div>
               <small aria-live="off"><span data-char-count>0</span>/1000</small>
             </div>
           </div>
 
-          <div class="field-grid">
-            <div class="field">
-              <label class="field-label" for="contact-budget">Budget Range <small>(Optional)</small></label>
-              <select id="contact-budget" name="budget">
+          <div class="optional-group">
+            <div class="choice-field">
+              <span class="field-label" id="budget-label">Budget Range <small>(Optional)</small></span>
+              <div class="choice-desktop" role="group" aria-labelledby="budget-label">
+                {budgetOptions.map((option) => (
+                  <label>
+                    <input type="radio" name="budgetChoice" value={option.value} data-budget-radio />
+                    <span>{option.label}</span>
+                  </label>
+                ))}
+              </div>
+              <select class="choice-mobile" data-budget-select aria-labelledby="budget-label">
                 <option value="">Select a budget range</option>
-                <option>Under $500</option>
-                <option>$500 – $1,000</option>
-                <option>$1,000 – $2,500</option>
-                <option>$2,500+</option>
-                <option>Not sure yet</option>
+                {budgetOptions.map((option) => <option value={option.value}>{option.label}</option>)}
               </select>
+              <input type="hidden" name="budget" value="" data-budget-value />
             </div>
-            <div class="field">
-              <label class="field-label" for="contact-timeline">Timeline <small>(Optional)</small></label>
-              <select id="contact-timeline" name="timeline">
+
+            <div class="choice-field">
+              <span class="field-label" id="timeline-label">Timeline <small>(Optional)</small></span>
+              <div class="choice-desktop" role="group" aria-labelledby="timeline-label">
+                {timelineOptions.map((option) => (
+                  <label>
+                    <input type="radio" name="timelineChoice" value={option.value} data-timeline-radio />
+                    <span>{option.label}</span>
+                  </label>
+                ))}
+              </div>
+              <select class="choice-mobile" data-timeline-select aria-labelledby="timeline-label">
                 <option value="">Select a timeline</option>
-                <option>As soon as possible</option>
-                <option>Within 1–2 weeks</option>
-                <option>Within a month</option>
-                <option>Flexible / Not sure</option>
+                {timelineOptions.map((option) => <option value={option.value}>{option.label}</option>)}
               </select>
+              <input type="hidden" name="timeline" value="" data-timeline-value />
             </div>
           </div>
+          <p class="qualifier-note">Budget and timeline are optional planning context only. Final scope, pricing and delivery timing are confirmed separately.</p>
 
           <div class="honeypot" aria-hidden="true">
             <label for="contact-website">Leave this field empty</label>
@@ -115,26 +213,82 @@ const endpoint = import.meta.env.PUBLIC_CONTACT_ENDPOINT || '';
 
           <button class="submit" type="submit" data-submit>Send Project Inquiry <span aria-hidden="true">→</span></button>
           <p class="privacy-note">Your information is used only to discuss your project. Read the <a href="/privacy-policy/">Privacy Policy</a>.</p>
+          <p class="direct-email">Prefer email? <a href={emailHref}>{site.email}</a></p>
         </form>
+
+        <section class="submission-success" hidden data-success-state role="status" tabindex="-1" aria-labelledby="contact-success-title">
+          <div class="success-mark" aria-hidden="true"><Icon name="check" size={42} /></div>
+          <h2 id="contact-success-title">Project received.</h2>
+          <p>Thank you for reaching out. Your project inquiry was sent successfully. I’ll review the details and respond {site.responseCommitment.toLowerCase()}.</p>
+          <div class="cluster success-actions">
+            <Button href="/work/">View My Work</Button>
+            <Button href="/" variant="secondary">Return Home</Button>
+          </div>
+          <div class="success-note">
+            <strong>Need to add something?</strong>
+            <span>Email <a href={emailHref}>{site.email}</a> and include any extra context.</span>
+          </div>
+        </section>
       </div>
     </div>
   </section>
 
-  <section class="section section--soft">
+  <section class="section section--soft next-section">
     <div class="container next-grid">
       <div>
+        <p class="eyebrow">Simple and transparent</p>
         <h2>What Happens Next?</h2>
         <div class="steps">
-          <article><strong>01</strong><h3>Submit</h3><p>You’ve sent your inquiry.</p></article>
-          <article><strong>02</strong><h3>Review</h3><p>I’ll review your details. {site.responseCommitment}.</p></article>
-          <article><strong>03</strong><h3>Next Step</h3><p>We’ll discuss the best approach and next steps.</p></article>
+          <article><strong>01</strong><h3>Submit</h3><p>Send your project details and useful context.</p></article>
+          <article><strong>02</strong><h3>Review</h3><p>I’ll review the request and clarify anything important. {site.responseCommitment}.</p></article>
+          <article><strong>03</strong><h3>Next Step</h3><p>We’ll discuss scope, direction and the most suitable next step.</p></article>
         </div>
       </div>
       <div class="surface fiverr">
         <h2>Prefer Fiverr?</h2>
-        <p>If you’d prefer to work with me on Fiverr, you can check out my profile there.</p>
+        <p>If you’d prefer to work with me on Fiverr, you can use my existing profile there.</p>
         <Button href={site.fiverr} variant="secondary">View Fiverr Profile ↗</Button>
+        <p class="fiverr-email">Or email <a href={emailHref}>{site.email}</a></p>
       </div>
+    </div>
+  </section>
+
+  <section class="section contact-context">
+    <div class="container context-grid">
+      <div>
+        <p class="eyebrow">Common Project Types</p>
+        <h2>Choose the closest fit.</h2>
+        <div class="project-types">
+          {serviceOptions.map((option) => (
+            <article class="surface project-type">
+              <span class="project-type__icon"><Icon name={option.icon} size={20} /></span>
+              <strong>{option.label}</strong>
+              <small>{option.value === 'other' ? 'Custom or mixed requirements' : services.find((service) => service.slug === option.value)?.chooser}</small>
+            </article>
+          ))}
+        </div>
+      </div>
+
+      <aside class="trust-panel surface">
+        <p class="eyebrow">Client Feedback</p>
+        <h2>Existing verified trust signals.</h2>
+        <div class="trust-items">
+          {verifiedTrust.map((item) => (
+            <div>
+              <Icon name={item.label.includes('Rating') ? 'star' : 'users'} size={24} />
+              <span><strong>{item.value}</strong><small>{item.label}</small></span>
+            </div>
+          ))}
+        </div>
+        <p>These aggregate Fiverr trust signals are separate from any specific project or service claim.</p>
+      </aside>
+    </div>
+  </section>
+
+  <section class="contact-final">
+    <div class="container contact-final__inner">
+      <div><h2>Ready to share your project?</h2><p>Send the context you have and we can clarify the next step from there.</p></div>
+      <div class="cluster"><Button href="/contact/#project-inquiry">Start a Project</Button><Button href="/work/" variant="dark">View My Work</Button></div>
     </div>
   </section>
 </BaseLayout>
@@ -144,115 +298,244 @@ const endpoint = import.meta.env.PUBLIC_CONTACT_ENDPOINT || '';
   const form = document.querySelector('[data-contact-form]');
   if (!(form instanceof HTMLFormElement)) return;
 
+  const endpoint = '/api/contact';
   const submit = form.querySelector('[data-submit]');
-  const success = document.querySelector('[data-success]');
+  const formIntro = document.querySelector('[data-form-intro]');
+  const successState = document.querySelector('[data-success-state]');
   const submitError = document.querySelector('[data-submit-error]');
+  const deliveryUnavailable = document.querySelector('[data-delivery-unavailable]');
   const validationSummary = document.querySelector('[data-validation-summary]');
   const status = document.querySelector('[data-form-status]');
-  const details = form.elements.namedItem('details');
+  const details = form.elements.namedItem('projectDetails');
   const charCount = form.querySelector('[data-char-count]');
-  const endpoint = form.dataset.endpoint || '';
+  const serviceValue = form.querySelector('[data-service-value]');
+  const serviceSelect = form.querySelector('[data-service-select]');
+  const budgetValue = form.querySelector('[data-budget-value]');
+  const budgetSelect = form.querySelector('[data-budget-select]');
+  const timelineValue = form.querySelector('[data-timeline-value]');
+  const timelineSelect = form.querySelector('[data-timeline-select]');
+
+  let isSubmitting = false;
 
   const setStatus = (message = '') => {
     if (status) status.textContent = message;
   };
 
-  const setFieldError = (name, message = '') => {
-    const error = form.querySelector(`[data-error-for="${name}"]`);
-    if (error) error.textContent = message;
-    form.querySelectorAll(`[name="${name}"]`).forEach((control) => {
-      if (control instanceof HTMLElement) {
-        if (message) control.setAttribute('aria-invalid', 'true');
-        else control.removeAttribute('aria-invalid');
-      }
+  const setHiddenChoice = (type, value) => {
+    const hidden = type === 'service' ? serviceValue : type === 'budget' ? budgetValue : timelineValue;
+    const select = type === 'service' ? serviceSelect : type === 'budget' ? budgetSelect : timelineSelect;
+    const radios = form.querySelectorAll(`[data-${type}-radio]`);
+    if (hidden instanceof HTMLInputElement) hidden.value = value;
+    if (select instanceof HTMLSelectElement) select.value = value;
+    radios.forEach((radio) => {
+      if (radio instanceof HTMLInputElement) radio.checked = radio.value === value;
     });
   };
 
-  const validate = () => {
-    const errors = [];
-    ['name', 'email', 'details', 'service'].forEach((name) => setFieldError(name));
+  ['service', 'budget', 'timeline'].forEach((type) => {
+    form.querySelectorAll(`[data-${type}-radio]`).forEach((radio) => {
+      radio.addEventListener('change', () => {
+        if (radio instanceof HTMLInputElement && radio.checked) setHiddenChoice(type, radio.value);
+      });
+    });
+    const select = form.querySelector(`[data-${type}-select]`);
+    if (select instanceof HTMLSelectElement) {
+      select.addEventListener('change', () => setHiddenChoice(type, select.value));
+    }
+  });
 
+  const setFieldError = (name, message = '') => {
+    const error = form.querySelector(`[data-error-for="${name}"]`);
+    if (error) error.textContent = message;
+
+    const controls = name === 'service'
+      ? form.querySelectorAll('[data-service-radio], [data-service-select]')
+      : form.querySelectorAll(`[name="${name}"]`);
+
+    controls.forEach((control) => {
+      if (!(control instanceof HTMLElement)) return;
+      if (message) control.setAttribute('aria-invalid', 'true');
+      else control.removeAttribute('aria-invalid');
+    });
+  };
+
+  const hideAlerts = () => {
+    [submitError, deliveryUnavailable].forEach((alert) => {
+      if (alert instanceof HTMLElement) alert.hidden = true;
+    });
+  };
+
+  const getValues = () => {
     const name = form.elements.namedItem('name');
     const email = form.elements.namedItem('email');
-    const projectDetails = form.elements.namedItem('details');
+    const company = form.elements.namedItem('company');
+    const projectDetails = form.elements.namedItem('projectDetails');
+    const service = form.elements.namedItem('service');
+    const budget = form.elements.namedItem('budget');
+    const timeline = form.elements.namedItem('timeline');
+    const website = form.elements.namedItem('website');
 
-    if (name instanceof HTMLInputElement && name.value.trim().length < 2) {
-      setFieldError('name', 'Please enter your name.');
-      errors.push(name);
+    return {
+      name: name instanceof HTMLInputElement ? name.value.trim() : '',
+      email: email instanceof HTMLInputElement ? email.value.trim() : '',
+      company: company instanceof HTMLInputElement ? company.value.trim() : '',
+      service: service instanceof HTMLInputElement ? service.value : '',
+      projectDetails: projectDetails instanceof HTMLTextAreaElement ? projectDetails.value.trim() : '',
+      budget: budget instanceof HTMLInputElement ? budget.value : '',
+      timeline: timeline instanceof HTMLInputElement ? timeline.value : '',
+      website: website instanceof HTMLInputElement ? website.value : '',
+    };
+  };
+
+  const validate = () => {
+    const values = getValues();
+    const errors = [];
+    ['name', 'email', 'service', 'projectDetails'].forEach((name) => setFieldError(name));
+
+    const nameControl = form.elements.namedItem('name');
+    const emailControl = form.elements.namedItem('email');
+    const detailsControl = form.elements.namedItem('projectDetails');
+    const firstServiceControl = form.querySelector('[data-service-select]') || form.querySelector('[data-service-radio]');
+
+    if (values.name.length < 2 || values.name.length > 80) {
+      setFieldError('name', 'Please enter a name between 2 and 80 characters.');
+      if (nameControl instanceof HTMLElement) errors.push(nameControl);
     }
-    if (email instanceof HTMLInputElement && !email.validity.valid) {
+
+    if (!(emailControl instanceof HTMLInputElement) || !emailControl.validity.valid || values.email.length > 254) {
       setFieldError('email', 'Please enter a valid email address.');
-      errors.push(email);
+      if (emailControl instanceof HTMLElement) errors.push(emailControl);
     }
-    if (!form.querySelector('input[name="service"]:checked')) {
-      setFieldError('service', 'Please select a service.');
-      const firstService = form.querySelector('input[name="service"]');
-      if (firstService instanceof HTMLInputElement) errors.push(firstService);
+
+    if (!values.service) {
+      setFieldError('service', 'Please select a service or custom requirement.');
+      if (firstServiceControl instanceof HTMLElement) errors.push(firstServiceControl);
     }
-    if (projectDetails instanceof HTMLTextAreaElement && projectDetails.value.trim().length < 20) {
-      setFieldError('details', 'Please add at least 20 characters of project detail.');
-      errors.push(projectDetails);
+
+    if (values.projectDetails.length < 20 || values.projectDetails.length > 1000) {
+      setFieldError('projectDetails', 'Please add between 20 and 1000 characters of project detail.');
+      if (detailsControl instanceof HTMLElement) errors.push(detailsControl);
     }
 
     if (validationSummary instanceof HTMLElement) validationSummary.hidden = errors.length === 0;
     if (errors.length > 0) {
-      errors[0].focus();
-      return false;
+      if (validationSummary instanceof HTMLElement) validationSummary.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      errors[0].focus({ preventScroll: true });
+      return null;
     }
-    return true;
+
+    return values;
   };
 
   if (details instanceof HTMLTextAreaElement) {
     details.addEventListener('input', () => {
       if (charCount) charCount.textContent = String(details.value.length);
-      if (details.getAttribute('aria-invalid') === 'true' && details.value.trim().length >= 20) setFieldError('details');
+      if (details.getAttribute('aria-invalid') === 'true' && details.value.trim().length >= 20 && details.value.trim().length <= 1000) {
+        setFieldError('projectDetails');
+      }
     });
   }
 
+  form.addEventListener('input', (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLInputElement)) return;
+    if (target.name === 'name' && target.value.trim().length >= 2 && target.value.trim().length <= 80) setFieldError('name');
+    if (target.name === 'email' && target.validity.valid) setFieldError('email');
+  });
+
+  form.addEventListener('change', (event) => {
+    const target = event.target;
+    if ((target instanceof HTMLInputElement || target instanceof HTMLSelectElement) && (target.matches('[data-service-radio]') || target.matches('[data-service-select]'))) {
+      if (getValues().service) setFieldError('service');
+    }
+  });
+
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
-    if (success instanceof HTMLElement) success.hidden = true;
-    if (submitError instanceof HTMLElement) submitError.hidden = true;
-    setStatus('');
+    if (isSubmitting) return;
 
-    if (!validate()) return;
+    hideAlerts();
+    setStatus('');
+    if (successState instanceof HTMLElement) successState.hidden = true;
+
+    const values = validate();
+    if (!values) {
+      setStatus('Please correct the highlighted fields.');
+      return;
+    }
     if (validationSummary instanceof HTMLElement) validationSummary.hidden = true;
 
+    isSubmitting = true;
+    form.setAttribute('aria-busy', 'true');
     if (submit instanceof HTMLButtonElement) {
       submit.disabled = true;
       submit.setAttribute('aria-disabled', 'true');
       submit.textContent = 'Sending…';
     }
-    form.setAttribute('aria-busy', 'true');
-    setStatus('Submitting your project inquiry.');
+    setStatus('Sending your project inquiry.');
 
     try {
-      if (!endpoint) throw new Error('Contact endpoint is not configured');
-      const body = Object.fromEntries(new FormData(form).entries());
       const response = await fetch(endpoint, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(values),
       });
-      if (!response.ok) throw new Error('Submission failed');
+
+      let result = null;
+      try {
+        result = await response.json();
+      } catch {
+        result = null;
+      }
+
+      if (response.status === 422 && result?.fieldErrors && typeof result.fieldErrors === 'object') {
+        Object.entries(result.fieldErrors).forEach(([field, message]) => {
+          if (typeof message === 'string') setFieldError(field, message);
+        });
+        if (validationSummary instanceof HTMLElement) {
+          validationSummary.hidden = false;
+          validationSummary.focus({ preventScroll: true });
+        }
+        setStatus('Please correct the highlighted fields.');
+        return;
+      }
+
+      if (!response.ok || !result?.ok) {
+        const unavailable = response.status === 503 || result?.code === 'DELIVERY_UNAVAILABLE';
+        const target = unavailable ? deliveryUnavailable : submitError;
+        if (target instanceof HTMLElement) {
+          target.hidden = false;
+          target.focus({ preventScroll: true });
+          target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        setStatus(unavailable ? 'Automated delivery is currently unavailable.' : 'Your inquiry could not be sent.');
+        return;
+      }
 
       form.reset();
+      setHiddenChoice('service', '');
+      setHiddenChoice('budget', '');
+      setHiddenChoice('timeline', '');
       if (charCount) charCount.textContent = '0';
-      ['name', 'email', 'details', 'service'].forEach((name) => setFieldError(name));
-      setStatus('');
-      if (success instanceof HTMLElement) {
-        success.hidden = false;
-        success.focus({ preventScroll: true });
-        success.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      ['name', 'email', 'service', 'projectDetails'].forEach((name) => setFieldError(name));
+      setStatus('Project inquiry sent successfully.');
+      form.hidden = true;
+      if (formIntro instanceof HTMLElement) formIntro.hidden = true;
+      hideAlerts();
+      if (successState instanceof HTMLElement) {
+        successState.hidden = false;
+        successState.focus({ preventScroll: true });
+        successState.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
     } catch {
-      setStatus('');
       if (submitError instanceof HTMLElement) {
         submitError.hidden = false;
         submitError.focus({ preventScroll: true });
         submitError.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
+      setStatus('A network error prevented submission. Your form values have been preserved.');
     } finally {
+      isSubmitting = false;
       form.removeAttribute('aria-busy');
       if (submit instanceof HTMLButtonElement) {
         submit.disabled = false;
@@ -265,5 +548,151 @@ const endpoint = import.meta.env.PUBLIC_CONTACT_ENDPOINT || '';
 </script>
 
 <style>
-.contact-grid{display:grid;grid-template-columns:.78fr 1.22fr;gap:2.5rem;align-items:start}.contact-intro h1{font-size:var(--fs-hero);max-width:10ch}.contact-benefits{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem}.contact-benefits span{display:grid;gap:.15rem;font-size:var(--fs-meta)}.contact-benefits small{font-size:var(--fs-caption);color:var(--color-text-muted)}.contact-portrait{overflow:hidden;margin-top:.5rem}.contact-portrait img{width:100%;aspect-ratio:4/3;object-fit:cover;object-position:center 28%}.form-card{padding:1.4rem}.form-card__intro{font-size:var(--fs-body-sm);margin:.3rem 0 1rem}.form-card form{display:grid;gap:1rem}.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}.field{display:grid;gap:.4rem;border:0;padding:0;margin:0;min-width:0}.field-label,.field legend{font-size:var(--fs-meta);font-weight:600}.required-marker{color:var(--color-brand)}.field small{font-weight:400;color:var(--color-text-muted)}.field input,.field textarea,.field select{width:100%;min-height:2.75rem;border:1px solid #cbd5e1;border-radius:var(--radius-md);background:#fff;padding:.72rem .75rem;color:var(--color-text);font-size:var(--fs-body)}.field textarea{resize:vertical;min-height:8rem}.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--color-focus);box-shadow:var(--focus);outline:0}.field [aria-invalid="true"]{border-color:var(--color-error)}.field-error{min-height:.85rem;color:var(--color-error);font-size:var(--fs-caption);font-style:normal}.field__meta{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem}.field__meta>div{display:grid;gap:.15rem}.field__meta small{font-size:var(--fs-caption)}.option-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.55rem}.option-grid label{position:relative}.option-grid input{position:absolute;opacity:0;width:1px;height:1px}.option-grid span{display:flex;align-items:center;justify-content:center;min-height:2.75rem;border:1px solid var(--color-border);border-radius:var(--radius-md);padding:.5rem;text-align:center;font-size:var(--fs-meta);cursor:pointer}.option-grid input:checked+span{border-color:var(--color-brand);background:#fff7f7;color:var(--color-brand)}.option-grid input:focus-visible+span{box-shadow:var(--focus)}.option-grid input[aria-invalid="true"]+span{border-color:var(--color-error)}.submit{display:flex;align-items:center;justify-content:center;min-height:2.9rem;border:1px solid var(--color-brand);border-radius:var(--radius-md);background:var(--color-brand);color:#fff;font-weight:700;cursor:pointer}.submit:disabled{background:#cbd5e1;border-color:#cbd5e1;cursor:wait}.privacy-note{text-align:center;color:var(--color-text-muted);font-size:var(--fs-caption)}.privacy-note a{text-decoration:underline}.honeypot{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}.alert{display:grid;gap:.15rem;padding:.85rem 1rem;border-radius:var(--radius-md);font-size:var(--fs-meta)}.alert--success{background:#ecfdf5;color:#047857}.alert--error,.alert--validation{background:#fff1f2;color:#b91c1c}.next-grid{display:grid;grid-template-columns:1.6fr .8fr;gap:1rem}.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem;margin-top:.8rem}.steps article{border:1px solid var(--color-border);border-radius:var(--radius-md);padding:1rem}.steps strong{color:var(--color-brand);font-family:var(--font-display);font-size:1.25rem}.steps h3{font-size:1.05rem;margin:.25rem 0}.steps p,.fiverr p{font-size:var(--fs-meta);color:var(--color-text-muted)}.fiverr{padding:1rem;display:grid;align-content:start;gap:.7rem}.fiverr .button{justify-self:start}@media(max-width:47.99rem){.contact-grid,.next-grid{grid-template-columns:1fr}.contact-intro h1{font-size:2.3rem;max-width:none}.contact-portrait{display:none}.contact-benefits{grid-template-columns:repeat(3,1fr)}.field-grid{grid-template-columns:1fr}.option-grid{grid-template-columns:1fr}.steps{grid-template-columns:1fr}.form-card{padding:1rem}}
+.contact-hero{padding-top:var(--space-8)}
+.contact-grid{display:grid;grid-template-columns:minmax(0,.82fr) minmax(34rem,1.18fr);gap:2rem;align-items:start}
+.contact-intro{padding-top:.9rem}
+.contact-intro h1{font-size:var(--fs-hero);max-width:9ch}
+.contact-intro .lede{max-width:34rem}
+.contact-benefits{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.65rem;margin-top:.4rem}
+.contact-benefits>div{display:flex;align-items:flex-start;gap:.55rem;min-width:0;padding:.4rem 0;color:var(--color-text)}
+.contact-benefits svg{flex:0 0 auto;color:#102a56;margin-top:.05rem}
+.contact-benefits span{display:grid;gap:.08rem;min-width:0}
+.contact-benefits strong{font-size:var(--fs-meta);line-height:var(--lh-ui)}
+.contact-benefits small{font-size:var(--fs-caption);line-height:1.35;color:var(--color-text-muted)}
+.contact-portrait{overflow:hidden;margin-top:.5rem;box-shadow:none}
+.contact-portrait img{width:100%;aspect-ratio:1.6/1;object-fit:cover;object-position:center 25%}
+.contact-note{display:grid;gap:.35rem;padding:1rem 1.1rem;box-shadow:none}
+.contact-note p{color:#526174;font-size:var(--fs-body-sm);line-height:1.55}
+.contact-note strong{font-size:var(--fs-meta)}
+.contact-note span{font-size:var(--fs-caption);color:var(--color-text-muted)}
+.form-card{padding:1.35rem 1.4rem;box-shadow:none;scroll-margin-top:5.5rem}
+.form-card__intro{font-size:var(--fs-body-sm);margin:.3rem 0 1rem}
+.form-card form{display:grid;gap:1rem}
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.field,.choice-field{display:grid;gap:.38rem;border:0;padding:0;margin:0;min-width:0}
+.field-label,.service-desktop legend{font-size:var(--fs-meta);font-weight:650;line-height:var(--lh-ui)}
+.field-label small{font-size:var(--fs-caption);font-weight:500;color:var(--color-text-muted)}
+.required-marker{color:var(--color-brand)}
+.field input,.field textarea,.field select,.choice-mobile{width:100%;min-height:2.8rem;border:1px solid #cbd5e1;border-radius:var(--radius-md);background:#fff;padding:.72rem .75rem;color:var(--color-text);font-size:var(--fs-body)}
+.field textarea{resize:vertical;min-height:8.25rem;line-height:1.5}
+.field input:focus,.field textarea:focus,.field select:focus,.choice-mobile:focus{border-color:var(--color-focus);box-shadow:var(--focus);outline:0}
+.field [aria-invalid="true"]{border-color:var(--color-error)}
+.field-error{min-height:.85rem;color:#c62828;font-size:var(--fs-caption);font-style:normal;line-height:1.35}
+.field__meta{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem}
+.field__meta>div{display:grid;gap:.1rem}
+.field__meta small{font-size:var(--fs-caption);color:var(--color-text-muted)}
+.service-desktop{border:0;padding:0;margin:0;min-width:0;display:grid;gap:.45rem}
+.service-mobile{display:none}
+.option-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.55rem}
+.option-grid label,.choice-desktop label{position:relative;min-width:0}
+.option-grid input,.choice-desktop input{position:absolute;opacity:0;width:1px;height:1px}
+.option-grid span,.choice-desktop span{display:flex;align-items:center;justify-content:center;min-height:2.8rem;border:1px solid var(--color-border);border-radius:var(--radius-md);padding:.55rem .6rem;text-align:center;font-size:var(--fs-meta);line-height:1.25;cursor:pointer;transition:border-color var(--transition),background var(--transition),color var(--transition)}
+.option-grid input:checked+span,.choice-desktop input:checked+span{border-color:var(--color-brand);background:#fff7f7;color:#b42318}
+.option-grid input:focus-visible+span,.choice-desktop input:focus-visible+span{box-shadow:var(--focus)}
+.option-grid input[aria-invalid="true"]+span{border-color:var(--color-error)}
+.optional-group{display:grid;gap:1rem}
+.choice-desktop{display:flex;flex-wrap:wrap;gap:.45rem}
+.choice-desktop span{min-height:2.65rem;padding-inline:.8rem;background:#fff}
+.choice-mobile{display:none}
+.qualifier-note{margin-top:-.3rem;color:var(--color-text-muted);font-size:var(--fs-caption);line-height:1.45}
+.submit{display:flex;align-items:center;justify-content:center;min-height:2.95rem;border:1px solid var(--color-brand);border-radius:var(--radius-md);background:var(--color-brand);color:#fff;font-size:var(--fs-button);font-weight:750;cursor:pointer;transition:background var(--transition),border-color var(--transition)}
+.submit:hover{background:var(--color-brand-hover);border-color:var(--color-brand-hover)}
+.submit:focus-visible{box-shadow:var(--focus)}
+.submit:disabled{background:#cbd5e1;border-color:#cbd5e1;cursor:wait}
+.privacy-note,.direct-email{text-align:center;color:var(--color-text-muted);font-size:var(--fs-caption);line-height:1.45}
+.privacy-note a,.direct-email a,.fiverr-email a,.success-note a{text-decoration:underline;text-underline-offset:2px}
+.honeypot{position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;pointer-events:none}
+.alert{display:grid;gap:.2rem;padding:.85rem 1rem;border-radius:var(--radius-md);font-size:var(--fs-meta);margin-bottom:1rem}
+.alert--error,.alert--validation{background:#fff1f2;color:#9f1239;border:1px solid #fecdd3}
+.alert__actions{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:.35rem}
+.alert__actions a{text-decoration:underline;font-weight:700;text-underline-offset:2px}
+.no-js-fallback{padding:1rem;display:grid;gap:.65rem;box-shadow:none;background:var(--color-bg-soft)}
+.no-js-fallback p{font-size:var(--fs-meta);color:var(--color-text-muted)}
+html.js .no-js-fallback{display:none}
+html:not(.js) .form-card form{display:none}
+.submission-success{display:grid;justify-items:center;text-align:center;gap:1rem;padding:2rem .8rem 1rem}
+.submission-success h2{font-size:clamp(2rem,3vw,2.8rem)}
+.submission-success>p{max-width:38rem;color:var(--color-text-muted)}
+.success-mark{display:grid;place-items:center;width:5.5rem;height:5.5rem;border-radius:999px;background:#e8fbf4;color:var(--color-success)}
+.success-actions{justify-content:center}
+.success-note{width:min(100%,34rem);display:grid;gap:.2rem;padding:.9rem 1rem;border:1px solid var(--color-border);border-radius:var(--radius-md);background:var(--color-bg-soft);font-size:var(--fs-meta);text-align:left}
+.success-note span{color:var(--color-text-muted)}
+.next-section{border-top:1px solid var(--color-border);border-bottom:1px solid var(--color-border)}
+.next-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(16rem,.8fr);gap:1.2rem;align-items:start}
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.7rem;margin-top:.85rem}
+.steps article{position:relative;border:1px solid var(--color-border);border-radius:var(--radius-md);padding:1rem;background:#fff;min-width:0}
+.steps strong{display:inline-grid;place-items:center;min-width:2rem;height:2rem;padding-inline:.35rem;border-radius:999px;background:#fff1ed;color:var(--color-brand);font-size:1rem}
+.steps h3{font-size:var(--fs-card-title);margin:.4rem 0 .25rem}
+.steps p,.fiverr p{font-size:var(--fs-meta);color:var(--color-text-muted);line-height:1.5}
+.fiverr{padding:1.1rem;display:grid;align-content:start;gap:.7rem;box-shadow:none}
+.fiverr .button{justify-self:start}
+.fiverr-email{font-size:var(--fs-caption)!important}
+.context-grid{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(17rem,.75fr);gap:1.2rem;align-items:start}
+.contact-context h2{margin:.2rem 0 .8rem}
+.project-types{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.55rem}
+.project-type{padding:.8rem;display:grid;gap:.35rem;box-shadow:none;min-width:0}
+.project-type__icon{display:grid;place-items:center;width:2rem;height:2rem;border-radius:999px;background:#fff1ed;color:var(--color-brand)}
+.project-type strong{font-size:var(--fs-meta);line-height:1.25}
+.project-type small{font-size:var(--fs-caption);color:var(--color-text-muted);line-height:1.35}
+.trust-panel{padding:1rem 1.05rem;display:grid;gap:.75rem;box-shadow:none}
+.trust-panel h2{font-size:var(--fs-h3);margin:0}
+.trust-items{display:grid;grid-template-columns:1fr 1fr;gap:.55rem}
+.trust-items>div{display:flex;align-items:center;gap:.5rem;padding:.65rem;border:1px solid var(--color-border);border-radius:var(--radius-md)}
+.trust-items svg{color:#102a56;flex:0 0 auto}
+.trust-items span{display:grid;line-height:1.2}
+.trust-items strong{font-size:var(--fs-card-title)}
+.trust-items small{font-size:var(--fs-caption);color:var(--color-text-muted)}
+.trust-panel>p:last-child{font-size:var(--fs-caption);color:var(--color-text-muted);line-height:1.45}
+.contact-final{background:var(--color-dark);color:#fff}
+.contact-final__inner{min-height:6.7rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;padding-block:1rem}
+.contact-final h2{font-size:clamp(1.45rem,2vw,1.85rem)}
+.contact-final p{margin-top:.2rem;color:#dbe5ea;font-size:var(--fs-meta)}
+
+@media(max-width:63.99rem){
+  .contact-grid{grid-template-columns:minmax(0,.85fr) minmax(28rem,1.15fr);gap:1.2rem}
+  .option-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .project-types{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .context-grid{grid-template-columns:1fr}
+}
+
+@media(max-width:47.99rem){
+  .contact-hero{padding-top:var(--space-5)}
+  .contact-grid,.next-grid,.context-grid{grid-template-columns:1fr}
+  .contact-intro{padding-top:0;gap:.85rem}
+  .contact-intro h1{font-size:var(--fs-h1);max-width:10ch}
+  .contact-intro .lede{font-size:var(--fs-body)}
+  .contact-benefits{grid-template-columns:repeat(3,minmax(0,1fr));gap:.35rem}
+  .contact-benefits>div{display:grid;justify-items:center;text-align:center;gap:.3rem}
+  .contact-benefits strong{font-size:var(--fs-caption)}
+  .contact-benefits small{font-size:var(--fs-caption)}
+  .contact-portrait{margin-top:.15rem}
+  .contact-portrait img{aspect-ratio:1.75/1;object-position:center 22%}
+  .contact-note{display:none}
+  .form-card{padding:1rem;scroll-margin-top:4.5rem}
+  .field-grid{grid-template-columns:1fr}
+  .service-desktop,.choice-desktop{display:none}
+  .service-mobile,.choice-mobile{display:grid}
+  .field input,.field textarea,.field select,.choice-mobile{font-size:1rem;min-height:2.85rem}
+  .optional-group{grid-template-columns:1fr 1fr;gap:.65rem}
+  .qualifier-note{margin-top:-.15rem}
+  .steps{grid-template-columns:1fr;gap:.5rem}
+  .steps article{display:grid;grid-template-columns:auto 1fr;column-gap:.65rem;align-items:start}
+  .steps article strong{grid-row:1/3}
+  .steps h3{margin:.05rem 0 .15rem}
+  .fiverr .button{width:100%}
+  .project-types{grid-template-columns:1fr}
+  .project-type{grid-template-columns:auto 1fr;column-gap:.65rem;align-items:center}
+  .project-type__icon{grid-row:1/3}
+  .trust-items{grid-template-columns:1fr 1fr}
+  .contact-final__inner{display:grid;text-align:center;padding-block:1rem}
+  .contact-final__inner .cluster{justify-content:center;width:100%}
+  .contact-final__inner .button{flex:1}
+  .submission-success{padding-inline:0}
+}
+
+@media(max-width:24rem){
+  .contact-benefits{grid-template-columns:1fr}
+  .optional-group{grid-template-columns:1fr}
+  .trust-items{grid-template-columns:1fr}
+}
 </style>
