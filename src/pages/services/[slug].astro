@@ -7,6 +7,7 @@ import EmptyState from '@/components/EmptyState.astro';
 import FAQ from '@/components/FAQ.astro';
 import CTA from '@/components/CTA.astro';
 import AIUGCServicePage from '@/components/AIUGCServicePage.astro';
+import AIVideoServicePage from '@/components/AIVideoServicePage.astro';
 import { services, type ServiceDefinition } from '@/data/services';
 
 export function getStaticPaths() {
@@ -15,9 +16,11 @@ export function getStaticPaths() {
 
 const { service } = Astro.props as { service: ServiceDefinition };
 const isAiUgcDetail = service.slug === 'ai-ugc-video-ads' && service.detail?.kind === 'ai-ugc';
-const pageTitle = isAiUgcDetail ? service.detail!.seoTitle : `${service.title} — Raju Das Rudro`;
-const pageDescription = isAiUgcDetail ? service.detail!.metaDescription : service.short;
-const pageImage = isAiUgcDetail ? service.media.src : undefined;
+const isAiVideoDetail = service.slug === 'ai-video-production' && service.detail?.kind === 'ai-video';
+const hasCustomDetail = isAiUgcDetail || isAiVideoDetail;
+const pageTitle = hasCustomDetail ? service.detail!.seoTitle : `${service.title} — Raju Das Rudro`;
+const pageDescription = hasCustomDetail ? service.detail!.metaDescription : service.short;
+const pageImage = hasCustomDetail ? service.media.src : undefined;
 const serviceFaq = [
   { question: `What is included in ${service.title}?`, answer: `The exact scope is agreed before production. Deliverables are defined around the project goal, format, timeline and review requirements.` },
   { question: 'Can you adapt the service for a custom project?', answer: 'Yes, when the request fits the core AI creative, video or web service scope.' },
@@ -34,6 +37,8 @@ const serviceFaq = [
 >
   {isAiUgcDetail ? (
     <AIUGCServicePage service={service} />
+  ) : isAiVideoDetail ? (
+    <AIVideoServicePage service={service} />
   ) : (
     <>
       <section class="section service-hero"><div class="container stack"><Breadcrumbs items={[{label:'Services',href:'/services/'},{label:service.title,href:service.href}]} /><div class="service-hero__grid"><div class="stack"><p class="eyebrow">Professional Service</p><h1>{service.title} Built for Modern Brands.</h1><p class="lede">{service.short}</p><div class="cluster"><Button href="/contact/">Start a Project →</Button><Button href="/work/" variant="secondary">View Related Work</Button></div></div><div class="service-hero__visual surface"><span>{service.title}</span></div></div></div></section>
