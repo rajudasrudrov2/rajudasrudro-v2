@@ -1,0 +1,74 @@
+---
+import type { ArticleSection } from '@/types/content';
+
+const { sections, headingIds } = Astro.props as {
+  sections: ArticleSection[];
+  headingIds: Record<string, string>;
+};
+---
+<div class="article-body">
+  {sections.map((section, sectionIndex) => {
+    const sectionKey = `section-${sectionIndex}`;
+    const sectionId = headingIds[sectionKey];
+    return (
+      <section class="article-body__section" aria-labelledby={sectionId}>
+        <h2 id={sectionId}>{section.title}</h2>
+        <div class="article-body__blocks">
+          {section.blocks.map((block, blockIndex) => {
+            if (block.type === 'paragraph') {
+              return <p>{block.text}</p>;
+            }
+            if (block.type === 'subheading') {
+              const key = `section-${sectionIndex}-block-${blockIndex}`;
+              return <h3 id={headingIds[key]}>{block.title}</h3>;
+            }
+            if (block.type === 'unordered-list') {
+              return <ul>{block.items.map((item) => <li>{item}</li>)}</ul>;
+            }
+            if (block.type === 'ordered-list') {
+              return <ol>{block.items.map((item) => <li>{item}</li>)}</ol>;
+            }
+            if (block.type === 'callout') {
+              return (
+                <aside class="article-callout" aria-label={block.title || 'Article note'}>
+                  {block.title && <strong>{block.title}</strong>}
+                  <p>{block.text}</p>
+                </aside>
+              );
+            }
+            if (block.type === 'steps') {
+              return (
+                <ol class="article-steps" aria-label="Article process steps">
+                  {block.items.map((item, index) => (
+                    <li>
+                      <span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+                      <div><strong>{item.title}</strong><p>{item.description}</p></div>
+                    </li>
+                  ))}
+                </ol>
+              );
+            }
+            if (block.type === 'comparison') {
+              return (
+                <div class="article-comparison">
+                  {block.items.map((item) => (
+                    <section class="surface">
+                      <h3>{item.title}</h3>
+                      <ul>{item.points.map((point) => <li>{point}</li>)}</ul>
+                    </section>
+                  ))}
+                </div>
+              );
+            }
+            return null;
+          })}
+        </div>
+      </section>
+    );
+  })}
+</div>
+
+<style>
+.article-body{display:grid;gap:2rem;min-width:0}.article-body__section{scroll-margin-top:6rem}.article-body__section h2{font-size:clamp(1.65rem,2.2vw,2.15rem);margin-bottom:.55rem}.article-body__blocks{display:grid;gap:.9rem}.article-body__blocks>p{color:#334155;font-size:var(--fs-body);line-height:1.72}.article-body__blocks h3{scroll-margin-top:6rem;margin-top:.45rem;font-size:var(--fs-h3);color:#172033}.article-body__blocks ul,.article-body__blocks ol{display:grid;gap:.48rem;padding-left:1.3rem;color:#334155;font-size:var(--fs-body);line-height:1.62}.article-body__blocks li::marker{color:var(--color-brand-strong);font-weight:800}.article-callout{display:grid;gap:.4rem;padding:1rem 1.05rem;border:1px solid var(--color-border);border-left:3px solid var(--color-brand);border-radius:var(--radius-md);background:var(--color-bg-soft)}.article-callout strong{font-size:var(--fs-body);color:var(--color-text)}.article-callout p{font-size:var(--fs-body);line-height:1.62;color:#475569;font-style:italic}.article-steps{list-style:none!important;padding:0!important;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem!important}.article-steps li{display:grid;grid-template-columns:auto 1fr;gap:.7rem;padding:.8rem;border:1px solid var(--color-border);border-radius:var(--radius-md);background:#fff}.article-steps li>span{display:grid;place-items:center;width:2.4rem;height:2.4rem;border-radius:50%;background:#fff1f2;color:var(--color-brand-strong);font-size:1rem;font-weight:800}.article-steps strong{display:block;color:var(--color-text);font-size:var(--fs-meta)}.article-steps p{margin-top:.18rem;color:var(--color-text-muted);font-size:var(--fs-caption);line-height:1.45}.article-comparison{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem}.article-comparison section{padding:.9rem;box-shadow:none}.article-comparison section:last-child{border-color:#fca5a5}.article-comparison h3{margin:0 0 .55rem;font-size:1.05rem}.article-comparison ul{font-size:var(--fs-body-sm);line-height:1.5}
+@media(max-width:47.99rem){.article-body{gap:1.55rem}.article-body__section h2{font-size:var(--fs-h2)}.article-body__blocks{gap:.75rem}.article-body__blocks>p,.article-body__blocks ul,.article-body__blocks ol,.article-callout p{font-size:var(--fs-body);line-height:1.66}.article-steps{grid-template-columns:1fr}.article-comparison{grid-template-columns:1fr}.article-callout{padding:.85rem}.article-body__section,.article-body__blocks h3{scroll-margin-top:5rem}}
+</style>
