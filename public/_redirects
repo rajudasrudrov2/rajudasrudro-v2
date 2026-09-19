@@ -1,4 +1,0 @@
-# Production redirects will be finalized only after the full legacy URL audit.
-/portfolio/ /work/ 301
-/portfolio-page/ /work/ 301
-/blog/ /insights/ 301
