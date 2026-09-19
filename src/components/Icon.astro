@@ -11,7 +11,7 @@ const common = {
   'stroke-linecap': 'round',
   'stroke-linejoin': 'round',
   'aria-hidden': title ? undefined : 'true',
-  role: title ? 'img' : undefined,
+  role: title ? ('img' as const) : undefined,
 };
 ---
 <svg {...common}>
