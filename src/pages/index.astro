@@ -1,0 +1,174 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Button from '@/components/Button.astro';
+import SectionHeader from '@/components/SectionHeader.astro';
+import TrustMetric from '@/components/TrustMetric.astro';
+import CTA from '@/components/CTA.astro';
+import Icon from '@/components/Icon.astro';
+import HomeHeroMedia from '@/components/HomeHeroMedia.astro';
+import HomeWorkCard from '@/components/HomeWorkCard.astro';
+import HomeServiceGroupCard from '@/components/HomeServiceGroupCard.astro';
+import HomeReviewPlaceholder from '@/components/HomeReviewPlaceholder.astro';
+import ReviewCard from '@/components/ReviewCard.astro';
+import {
+  homeTrustMetrics,
+  homeWorkPreviews,
+  homeServiceGroups,
+  productionSteps,
+  reviewMigrationPlaceholder,
+} from '@/data/home';
+import { publicReviewSummaries } from '@/data/reviews';
+---
+<BaseLayout meta={{ title: 'Raju Das Rudro — AI UGC, AI Video & Web', description: 'AI UGC, AI video production, AI spokesperson videos and web design for modern brands.', pathname: '/' }}>
+  <section class="home-hero" aria-labelledby="home-title">
+    <div class="container home-hero__grid">
+      <div class="home-hero__copy">
+        <p class="eyebrow">AI creative for real business impact</p>
+        <h1 id="home-title">AI Creative, UGC &amp; Web Experiences Built for Modern Brands.</h1>
+        <p class="lede">I help global brands create high-converting AI UGC video, AI-powered creative content, and modern websites that look great and drive real results.</p>
+        <div class="home-hero__actions">
+          <Button href="/work/">View My Work</Button>
+          <Button href="/contact/" variant="secondary">Start a Project</Button>
+        </div>
+        <div class="home-hero__proof" aria-label="Verified Fiverr profile summary">
+          <span class="home-hero__proof-mark" aria-hidden="true">✓</span>
+          <span><strong>4.9 Fiverr rating · 470 reviews</strong><small>Verified trust data from the accepted Foundation source</small></span>
+        </div>
+      </div>
+      <HomeHeroMedia />
+    </div>
+  </section>
+
+  <section class="home-metrics" aria-label="Trust and service highlights">
+    <div class="container home-metrics__grid">
+      {homeTrustMetrics.map((metric) => <TrustMetric value={metric.value} label={metric.label} icon={metric.icon} />)}
+    </div>
+  </section>
+
+  <section class="home-section" aria-labelledby="selected-work-title">
+    <div class="container">
+      <SectionHeader id="selected-work-title" title="Selected Work" description="A preview of the portfolio structure while verified project media is prepared." linkHref="/work/" linkLabel="View All Work" />
+      <div class="home-work-grid" aria-label="Development portfolio previews">
+        {homeWorkPreviews.map((item) => <HomeWorkCard item={item} />)}
+      </div>
+      <div class="home-scroll-dots" aria-hidden="true"><span class="active"></span><span></span><span></span><span></span></div>
+    </div>
+  </section>
+
+  <section class="home-section home-section--soft" aria-labelledby="help-title">
+    <div class="container">
+      <SectionHeader id="help-title" title="How I Can Help" description="Three focused service areas covering the four approved commercial pillars." />
+      <div class="home-services-grid">
+        {homeServiceGroups.map((service, index) => <HomeServiceGroupCard service={service} featured={index === 0} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="home-section home-case" aria-labelledby="case-study-title">
+    <div class="container home-case__grid">
+      <div class="home-case__media surface" data-development-placeholder>
+        <img src="/images/home/case-study-preview.svg" width="1000" height="600" alt="Abstract development placeholder for the featured case study media" loading="lazy" decoding="async" />
+      </div>
+      <div class="home-case__copy">
+        <p class="eyebrow">Featured case study</p>
+        <h2 id="case-study-title">Verified Case Study Content Pending Migration</h2>
+        <div class="home-case__tags"><span>Development preview</span><span>No unverified results</span></div>
+        <div class="home-case__detail">
+          <strong>The current state</strong>
+          <p>The approved Homepage composition is implemented without presenting placeholder performance claims as real client outcomes.</p>
+        </div>
+        <div class="home-case__detail">
+          <strong>The content dependency</strong>
+          <p>Final project overview, creative assets and verified results will be populated from approved project data in a later content milestone.</p>
+        </div>
+        <Button href="/work/" size="sm">View Work</Button>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-section home-process" aria-labelledby="process-title">
+    <div class="container">
+      <SectionHeader id="process-title" title="A Simple Production Process" description="From idea to ready-to-use assets in just three steps." />
+      <div class="home-process__grid">
+        {productionSteps.map((step, index) => (
+          <>
+            <article class="home-process__step surface">
+              <strong>{step.number}</strong>
+              <div><h3>{step.title}</h3><p>{step.description}</p></div>
+            </article>
+            {index < productionSteps.length - 1 && <span class="home-process__arrow" aria-hidden="true"><Icon name="arrow" size={24} /></span>}
+          </>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="home-section home-section--soft" aria-labelledby="reviews-title">
+    <div class="container">
+      <SectionHeader id="reviews-title" title="Client Reviews" description="Real review cards will be populated only after source verification." linkHref="/reviews/" linkLabel="Read More Reviews" />
+      <div class="home-reviews-grid">
+        {publicReviewSummaries.map((review) => <ReviewCard review={review} />)}
+        <HomeReviewPlaceholder item={reviewMigrationPlaceholder} />
+      </div>
+    </div>
+  </section>
+
+  <section class="home-about" aria-labelledby="about-preview-title">
+    <div class="container home-about__grid">
+      <div class="home-about__portrait surface"><img src="/images/raju-das-rudro.webp" width="635" height="640" alt="Raju Das Rudro" loading="lazy" decoding="async" /></div>
+      <div class="home-about__copy">
+        <h2 id="about-preview-title">Raju Das Rudro</h2>
+        <p>I’m Raju Das Rudro, an AI creative specialist and web developer focused on AI UGC, AI-powered creative content, and modern websites for international brands and teams.</p>
+        <a href="/about/">More About Me <Icon name="arrow" size={15} /></a>
+      </div>
+      <div class="home-about__note" aria-hidden="true">Ideas<br/>Creative<br/>Better Brands</div>
+    </div>
+  </section>
+
+  <div class="container home-cta-wrap"><CTA /></div>
+</BaseLayout>
+
+<style>
+.home-hero{padding-block:1.45rem 1.25rem;background:linear-gradient(110deg,#fff 0%,#fff 58%,#fbfaf8 100%)}
+.home-hero__grid{display:grid;grid-template-columns:minmax(0,1.03fr) minmax(25rem,.97fr);align-items:center;gap:2.2rem}
+.home-hero__copy{display:grid;gap:.78rem;min-width:0}
+.home-hero__copy h1{font-size:var(--fs-hero);max-width:12.2ch;font-weight:800;letter-spacing:-.048em;line-height:.98}
+.home-hero__copy .lede{max-width:35rem;font-size:.92rem;line-height:1.45}
+.home-hero__actions{display:flex;align-items:center;gap:.72rem;margin-top:.2rem}
+.home-hero__actions .button{min-width:9.2rem}
+.home-hero__proof{display:flex;align-items:center;gap:.55rem;margin-top:.25rem;color:var(--color-text-muted)}
+.home-hero__proof-mark{width:1.8rem;height:1.8rem;display:grid;place-items:center;border-radius:50%;background:#fef2f2;color:var(--color-brand-strong);font-size:.78rem;font-weight:800}
+.home-hero__proof>span:last-child{display:grid;line-height:1.18}.home-hero__proof strong{font-size:.64rem;color:#475569}.home-hero__proof small{font-size:.57rem;margin-top:.12rem}
+
+.home-metrics{border-block:1px solid var(--color-border);background:#fff}.home-metrics__grid{display:grid;grid-template-columns:repeat(4,1fr)}.home-metrics__grid>*+*{border-left:1px solid var(--color-border)}
+.home-section{padding-block:1.8rem}.home-section--soft{background:#fbfcfd;border-block:1px solid #f1f3f5}
+.home-work-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.72rem}.home-scroll-dots{display:none}
+.home-services-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.82rem}
+
+.home-case{padding-top:1.1rem}.home-case__grid{display:grid;grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr);gap:1.55rem;align-items:center}.home-case__media{overflow:hidden;box-shadow:none}.home-case__media img{width:100%;height:auto}.home-case__copy{display:grid;gap:.58rem;align-content:center}.home-case__copy h2{font-size:1.35rem;line-height:1.08;letter-spacing:-.032em}.home-case__tags{display:flex;flex-wrap:wrap;gap:.4rem}.home-case__tags span{padding:.2rem .44rem;border-radius:.28rem;background:#f1f5f9;color:#475569;font-size:.59rem;font-weight:650}.home-case__detail{display:grid;gap:.12rem}.home-case__detail strong{font-size:.67rem}.home-case__detail p{font-size:.67rem;color:var(--color-text-muted);line-height:1.42}.home-case__copy .button{justify-self:start;margin-top:.12rem}
+
+.home-process{padding-top:1.15rem}.home-process__grid{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:.75rem}.home-process__step{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:.75rem;padding:.8rem .9rem;box-shadow:none}.home-process__step>strong{font-size:1.4rem;line-height:1;color:var(--color-brand-strong);font-weight:800}.home-process__step div{display:grid;gap:.12rem}.home-process__step h3{font-size:.78rem;letter-spacing:-.02em}.home-process__step p{font-size:.61rem;line-height:1.35;color:var(--color-text-muted)}.home-process__arrow{color:#94a3b8}
+
+.home-reviews-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.82rem}
+.home-about{padding-block:.2rem 1rem;background:#fff}.home-about__grid{display:grid;grid-template-columns:9.5rem 1fr 11rem;gap:1.4rem;align-items:center;border-top:1px solid var(--color-border);padding-top:1rem}.home-about__portrait{overflow:hidden;aspect-ratio:4/3;box-shadow:none}.home-about__portrait img{width:100%;height:100%;object-fit:cover;object-position:center 24%}.home-about__copy{display:grid;gap:.38rem}.home-about__copy h2{font-size:1.12rem}.home-about__copy p{font-size:.67rem;color:var(--color-text-muted);line-height:1.45;max-width:37rem}.home-about__copy a{display:inline-flex;align-items:center;gap:.25rem;color:var(--color-brand-strong);font-size:.69rem;font-weight:700;justify-self:start}.home-about__note{font-size:.88rem;line-height:1.15;color:#64748b;transform:rotate(-4deg);font-style:italic;text-align:center}
+.home-cta-wrap{padding-block:.25rem 1rem}
+
+@media(max-width:63.99rem){
+  .home-hero__grid{grid-template-columns:minmax(0,.96fr) minmax(21rem,1.04fr);gap:1.4rem}.home-hero__copy h1{font-size:clamp(2.35rem,5.5vw,3.4rem)}
+  .home-work-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.home-services-grid{grid-template-columns:1fr 1fr}.home-services-grid>*:last-child{grid-column:1/-1}
+  .home-about__grid{grid-template-columns:8rem 1fr}.home-about__note{display:none}
+}
+
+@media(max-width:47.99rem){
+  .home-hero{padding-block:.75rem .75rem;background:#fff}.home-hero__grid{grid-template-columns:1fr;gap:.8rem}.home-hero__copy{gap:.55rem}.home-hero__copy h1{font-size:2.22rem;max-width:none;line-height:.99;letter-spacing:-.045em}.home-hero__copy .lede{font-size:.76rem;line-height:1.42}.home-hero__actions{display:grid;grid-template-columns:1fr 1fr;gap:.55rem;margin-top:.05rem}.home-hero__actions .button{min-width:0;width:100%}.home-hero__proof{display:none}
+  .home-metrics__grid{grid-template-columns:repeat(2,1fr)}.home-metrics__grid>*{border-bottom:1px solid var(--color-border)}.home-metrics__grid>*:nth-child(3){border-left:0}.home-metrics__grid>*:nth-last-child(-n+2){border-bottom:0}
+  .home-section{padding-block:1.15rem}.home-work-grid{display:flex;gap:.55rem;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding-right:1rem}.home-work-grid::-webkit-scrollbar{display:none}.home-scroll-dots{display:flex;justify-content:center;gap:.28rem;margin-top:.55rem}.home-scroll-dots span{width:.32rem;height:.32rem;border-radius:50%;background:#d1d5db}.home-scroll-dots span.active{background:var(--color-brand)}
+  .home-services-grid{grid-template-columns:1fr;gap:.5rem}.home-services-grid>*:last-child{grid-column:auto}
+  .home-case{padding-top:.7rem}.home-case__grid{grid-template-columns:1fr;gap:.6rem}.home-case__copy{gap:.42rem}.home-case__copy h2{font-size:1rem}.home-case__detail{display:none}.home-case__copy .button{display:none}.home-case__tags span{font-size:.54rem}.home-case__media{border-radius:.5rem}
+  .home-process{padding-top:.7rem}.home-process__grid{grid-template-columns:1fr;gap:.42rem}.home-process__arrow{display:none}.home-process__step{padding:.56rem .62rem;gap:.62rem}.home-process__step>strong{font-size:1.05rem}.home-process__step h3{font-size:.7rem}.home-process__step p{font-size:.57rem}
+  .home-reviews-grid{grid-template-columns:1fr}.home-reviews-grid>*:not(:first-child){display:none}
+  .home-about{padding-block:.2rem .75rem}.home-about__grid{grid-template-columns:5.4rem 1fr;gap:.7rem;padding-top:.75rem}.home-about__portrait{aspect-ratio:1/1}.home-about__copy{gap:.26rem}.home-about__copy h2{font-size:.92rem}.home-about__copy p{font-size:.6rem;line-height:1.36;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}.home-about__copy a{font-size:.62rem}.home-cta-wrap{padding-block:.1rem .75rem}
+}
+
+@media(max-width:23rem){.home-hero__copy h1{font-size:2rem}.home-hero__actions{grid-template-columns:1fr}.home-about__grid{grid-template-columns:4.8rem 1fr}}
+</style>

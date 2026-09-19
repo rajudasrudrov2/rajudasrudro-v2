@@ -2,54 +2,87 @@
 
 ## Current milestone
 
-**PHASE 1 — Architecture + Global Reusable System Foundation**
+**RDR-V2-WORK-01 — Work / Portfolio Page Implementation**
 
-This package is intentionally **not a live-deploy candidate** yet.
+**Source/package implementation: `PASS`**
 
-## Completed in this milestone
+**Updated online Vercel certification: `PENDING`**
 
-- Fresh Astro + TypeScript project structure.
-- Centralized Global UI Kit design tokens.
-- Responsive container, typography, spacing, radius, border, focus and motion rules.
-- Reusable Header + accessible mobile menu.
-- Reusable Footer.
-- Button, Section Header, Breadcrumb, Chip, Trust Metric, Video Preview, Service Card, Project Card, Review Card, Article Card, FAQ, CTA and Empty State components.
-- Public route scaffolding for Home, Work, Single Work, Services, four service routes, About, Reviews, Insights, Single Article, Contact, Privacy, Terms and 404.
-- Structured content TypeScript models for Project, Review, Article, Media and Video.
-- Clean CMS boundary (`src/content-or-cms/client.ts`) so page templates never depend on WordPress rendering.
-- SEO layout foundation: unique page titles/descriptions, canonicals, Open Graph, Twitter metadata, Person JSON-LD.
-- Static robots.txt and sitemap.xml endpoints.
-- Initial legacy redirect file containing only the three directions explicitly approved in the master brief.
-- Contact page UI, client-side validation, honeypot field and Default / Validation / Submitting / Success / Submission Error logic.
-- Responsive source portrait asset in WebP.
-- Design-reference manifest covering all 14 approved design surfaces recovered from current attachments and the user's file library.
+Overall task status remains **`PARTIAL`** until the updated GitHub commit is built and reviewed on the existing Vercel staging project.
 
-## Deliberately not faked
+## Authoritative baseline
 
-- No demo portfolio items are exposed as production projects.
-- No fabricated project results are stored.
-- No fake testimonials are stored.
-- No unverified result metrics are represented as project outcomes.
+This milestone uses only:
 
-## Still required before production candidate
+`RAJU_DAS_RUDRO_V2_RDR-V2-HOME-01_READY.zip`
 
-1. Exact page-by-page visual implementation pass against every approved reference.
-2. Fresh Headless WordPress setup and content model implementation.
-3. Real portfolio/project migration and media mapping.
-4. Review migration with source URLs/dates and verified buyer metadata.
-5. Article migration and old-URL preservation/redirect classification.
-6. Contact serverless endpoint + server-side validation, rate limiting and email delivery provider.
-7. Final self-hosted approved font files and font subsetting/preload decisions.
-8. Real video provider integration behind the VideoPreview abstraction.
-9. Complete legacy URL crawl and KEEP / REWRITE / 301 / 410 map.
-10. Accessibility, responsive, browser and performance QA.
-11. Production build + dependency lockfile.
-12. Staging review and explicit approval before deployment.
+That baseline preserves:
 
-## Environment limitation during this milestone
+`RDR-V2-FOUNDATION-02A → RDR-V2-STAGING-01 → RDR-V2-HOME-01`
 
-The execution environment could not reach the npm registry, so `npm install`, `astro check` and `astro build` could not be executed here. The source is structured for those checks as soon as dependencies are available.
+Current staging review URL:
 
-## Deployment lock
+`https://staging-dun.vercel.app/`
 
-**DO NOT DEPLOY LIVE.** The current WordPress website must remain untouched until the remaining implementation, content migration, SEO migration and QA gates are complete and approved.
+## Implemented in this milestone
+
+- Approved `/work/` composition
+- Reused accepted Header, Mobile Navigation, Inter-first typography and Footer
+- Work introduction and service/category filters
+- Structured featured-project treatment
+- Typed local Work-project data architecture ready for later CMS replacement
+- Responsive project-card grid
+- Controlled development-preview project/media state
+- Functional accessible filters
+- Functional responsive Load More (`4 / 8 / 12` initial limits, `+4` reveal)
+- Zero-results state architecture
+- Honest no-case-study/no-video states
+- Work trust strip and approved closing CTA pattern
+- Unique Work SEO metadata/canonical foundation
+
+## Data safety
+
+No real client identity, project result, performance metric, testimonial, case-study route or video source was fabricated. Work-project entries are explicitly marked `development-preview` in `src/data/work.ts` and must be replaced with verified project data before production.
+
+## Regression preservation
+
+- Homepage source was not redesigned.
+- Header/Footer/navigation files were not modified.
+- Global Inter typography remains intact.
+- Existing staging indexing architecture remains intact.
+- `package-lock.json` remains byte-identical to the accepted HOME-01 baseline.
+
+## Staging workflow
+
+Authoritative review path remains:
+
+`GitHub source → Vercel staging project → Vercel install/build logs → rendered staging verification`
+
+Vercel contract remains:
+
+- Install: `npm ci`
+- Build: `npm run build`
+- Output: `dist`
+- Staging environment: `PUBLIC_SITE_ENV=staging`
+
+## Production safety
+
+**DO NOT DEPLOY LIVE.**
+
+`https://rajudasrudro.com/`, production WordPress, DNS, database, redirects and production Vercel domain mapping remain untouched.
+
+## Next certification gate
+
+After uploading this milestone to the existing GitHub staging repository, review:
+
+- Vercel deployment reaches `Ready`
+- `/work/` loads at `https://staging-dun.vercel.app/work/`
+- filters and Load More function correctly
+- no application-level console/missing-asset errors
+- Homepage smoke check remains healthy
+- rendered staging `noindex, nofollow`
+- restrictive staging `/robots.txt`
+- safe staging sitemap behavior
+- production domain remains unattached
+
+Do not proceed automatically to the Case Study milestone before Planning review.

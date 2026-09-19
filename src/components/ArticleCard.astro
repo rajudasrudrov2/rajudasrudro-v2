@@ -1,0 +1,6 @@
+---
+import Chip from './Chip.astro';
+const { article } = Astro.props;
+---
+<article class="article-card surface"><div class="article-card__media" aria-hidden="true"></div><div class="article-card__body"><Chip tone="blue">{article.category}</Chip><h3><a href={article.href}>{article.title}</a></h3><p>{article.excerpt}</p><small>{article.date} · {article.readingTime}</small></div></article>
+<style>.article-card{overflow:hidden}.article-card__media{aspect-ratio:16/9;background:linear-gradient(135deg,#eef2f7,#dbe5ee)}.article-card__body{display:grid;gap:.55rem;padding:1rem}.article-card h3{font-size:1.06rem}.article-card p{font-size:.76rem;color:var(--color-text-muted)}.article-card small{font-size:.68rem;color:var(--color-text-muted)}</style>

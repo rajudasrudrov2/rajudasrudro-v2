@@ -1,0 +1,7 @@
+---
+const { review } = Astro.props;
+---
+<article class="review-card surface"><div class="review-card__rating" aria-label={`${review.rating} out of 5 stars`}>{'★'.repeat(Math.round(review.rating))}</div><blockquote>“{review.text}”</blockquote><footer><span class="review-card__avatar" aria-hidden="true">✓</span><span><strong>{review.name}</strong>{review.context && <small>{review.context}</small>}</span></footer></article>
+<style>
+.review-card{display:grid;gap:.48rem;padding:.9rem}.review-card__rating{color:#f59e0b;letter-spacing:.08em;font-size:.72rem}.review-card blockquote{margin:0;color:#334155;font-size:.72rem;line-height:1.42}.review-card footer{display:flex;align-items:center;gap:.5rem}.review-card__avatar{width:1.65rem;height:1.65rem;display:grid;place-items:center;border-radius:50%;background:#ecfdf5;color:#059669;font-size:.8rem;font-weight:800}.review-card footer>span:last-child{display:grid;line-height:1.2}.review-card footer strong{font-size:.65rem}.review-card footer small{font-size:.58rem;color:var(--color-text-muted)}
+</style>
