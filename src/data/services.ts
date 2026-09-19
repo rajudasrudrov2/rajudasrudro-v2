@@ -104,7 +104,44 @@ export type AIVideoServiceDetail = {
   customRequirement: ServiceCustomRequirement;
 };
 
-export type ServiceDetail = AIUGCServiceDetail | AIVideoServiceDetail;
+export type AISpokespersonProductionPhase = {
+  title: string;
+  description: string;
+  icon: ServiceIconName;
+  items: string[];
+};
+
+export type AISpokespersonServiceDetail = {
+  kind: 'ai-spokesperson';
+  eyebrow: string;
+  heroTitle: string;
+  heroDescription: string;
+  seoTitle: string;
+  metaDescription: string;
+  heroMedia: ServiceMedia[];
+  explanation: {
+    title: string;
+    description: string;
+  };
+  useCases: ServiceValuePoint[];
+  presenterOptions: ServiceFormat[];
+  productionPhases: AISpokespersonProductionPhase[];
+  multilingual: {
+    title: string;
+    description: string;
+    capabilities: string[];
+  };
+  comparison: {
+    spokesperson: string[];
+    traditional: string[];
+  };
+  process: ServiceProcessStep[];
+  whyRaju: ServiceValuePoint[];
+  faqs: ServiceFaqItem[];
+  customRequirement: ServiceCustomRequirement;
+};
+
+export type ServiceDetail = AIUGCServiceDetail | AIVideoServiceDetail | AISpokespersonServiceDetail;
 
 export type ServiceDefinition = {
   slug: string;
@@ -456,6 +493,155 @@ export const services: ServiceDefinition[] = [
       height: 450,
     },
     chooser: 'Need a presenter-style video?',
+    detail: {
+      kind: 'ai-spokesperson',
+      eyebrow: 'AI Spokesperson Videos',
+      heroTitle: 'Professional AI Spokesperson Videos Without Traditional Filming.',
+      heroDescription: 'Done-for-you presenter-led videos that turn an approved script or message into polished business, marketing, educational and social content with professional editing and brand-aligned delivery.',
+      seoTitle: 'AI Spokesperson Videos for Brands — Raju Das Rudro',
+      metaDescription: 'Professional AI spokesperson video production for explainers, business presentations, social content and multilingual versions, delivered as a done-for-you service.',
+      heroMedia: [
+        {
+          src: '/images/work/spokesperson-preview.svg',
+          alt: 'Development preview artwork representing a professional AI spokesperson video',
+          width: 800,
+          height: 450,
+        },
+        {
+          src: '/images/work/spokesperson-ad-preview.svg',
+          alt: 'Development preview artwork representing presenter-led business communication',
+          width: 800,
+          height: 450,
+        },
+        {
+          src: '/images/work/spokesperson-education-preview.svg',
+          alt: 'Development preview artwork representing an educational AI spokesperson video',
+          width: 800,
+          height: 450,
+        },
+      ],
+      explanation: {
+        title: 'What Is an AI Spokesperson Video?',
+        description: 'An AI spokesperson video uses a realistic virtual presenter to communicate an approved script or message directly to the audience. The service combines presenter direction, voice or audio workflow, visual production and professional editing into a finished video deliverable rather than software access.',
+      },
+      useCases: [
+        { title: 'Product Explainers', description: 'Presenter-led explanations that introduce a product, feature or offer clearly.', icon: 'briefcase' },
+        { title: 'SaaS Onboarding', description: 'Structured presenter content for product walkthroughs, onboarding and support communication.', icon: 'spark' },
+        { title: 'Social Media Ads', description: 'Short presenter-led marketing creative shaped for social campaigns.', icon: 'video' },
+        { title: 'Educational Videos', description: 'Scripted instructional or informational content with a consistent on-screen presenter.', icon: 'monitor' },
+        { title: 'Landing Page Content', description: 'Direct presenter messaging that can support a product, service or campaign page.', icon: 'arrow' },
+        { title: 'Business Promotion', description: 'Professional presenter-led communication for brand, service or company messaging.', icon: 'users' },
+      ],
+      presenterOptions: [
+        {
+          title: 'Professional Business',
+          description: 'Formal presenter direction for corporate and professional messaging.',
+          media: { src: '/images/work/spokesperson-preview.svg', alt: 'Development preview artwork for a professional business presenter direction', width: 800, height: 450 },
+        },
+        {
+          title: 'Casual & Friendly',
+          description: 'Approachable presenter styling for modern brand communication.',
+          media: { src: '/images/work/lifestyle-ugc-preview.svg', alt: 'Development preview artwork for a casual presenter direction', width: 800, height: 450 },
+        },
+        {
+          title: 'Industry Specific',
+          description: 'Presenter and visual direction shaped around the subject and audience.',
+          media: { src: '/images/work/spokesperson-education-preview.svg', alt: 'Development preview artwork for an industry-focused presenter direction', width: 800, height: 450 },
+        },
+        {
+          title: 'Different Presenter Styles',
+          description: 'Presenter direction can vary by tone, role and visual context when the selected workflow supports it.',
+          media: { src: '/images/work/spokesperson-ad-preview.svg', alt: 'Development preview artwork representing an alternate presenter style', width: 800, height: 450 },
+        },
+        {
+          title: 'Multilingual Versions',
+          description: 'Additional language versions can be planned when the selected production workflow supports the requested language.',
+          media: { src: '/images/work/spokesperson-preview.svg', alt: 'Development preview artwork representing multilingual presenter versions', width: 800, height: 450 },
+        },
+        {
+          title: 'Custom Look',
+          description: 'Wardrobe, scene and background direction can be discussed for the approved project scope.',
+          media: { src: '/images/work/ugc-social-preview.svg', alt: 'Development preview artwork representing a custom presenter look and setting', width: 800, height: 450 },
+        },
+      ],
+      productionPhases: [
+        {
+          title: 'Script & Message',
+          description: 'Clarify what the presenter needs to communicate.',
+          icon: 'video',
+          items: ['Message refinement', 'Script writing or adaptation when scoped', 'Hook and key-point planning', 'Brand-aligned tone'],
+        },
+        {
+          title: 'Presenter',
+          description: 'Choose a suitable presenter direction for the brief.',
+          icon: 'users',
+          items: ['Presenter selection', 'Look and scene direction', 'Voice or audio direction', 'Language-version planning when required'],
+        },
+        {
+          title: 'Production',
+          description: 'Build the approved presenter-led video.',
+          icon: 'spark',
+          items: ['Presenter video generation', 'Voice and lip-sync workflow where supported', 'Brand asset integration', 'Multiple versions when included in scope'],
+        },
+        {
+          title: 'Post-Production',
+          description: 'Finish the video for the agreed channels.',
+          icon: 'monitor',
+          items: ['Professional editing', 'Captions and on-screen text', 'Background audio when included', 'Final delivery in agreed formats'],
+        },
+      ],
+      multilingual: {
+        title: 'Multilingual / Localized Versions',
+        description: 'A presenter-led message can be adapted into additional language versions when the selected production method supports the requested language and audio workflow.',
+        capabilities: [
+          'Language adaptation is confirmed per project rather than assumed universally',
+          'Voice and lip-sync workflows can be considered where the selected tools support them',
+          'The approved core message can be adapted across agreed language versions',
+          'Accent, dialect and pronunciation requirements are reviewed before production',
+        ],
+      },
+      comparison: {
+        spokesperson: [
+          'No physical studio filming is required for the presenter-led version',
+          'Script and message can stay controlled across approved variations',
+          'Presenter and visual direction can be planned before production',
+          'Language and localization options can be reviewed per project',
+        ],
+        traditional: [
+          'Requires presenter, crew or recording logistics',
+          'Script changes may require additional recording',
+          'Scheduling and location can affect iteration speed',
+          'Additional language versions may require separate recording workflows',
+        ],
+      },
+      process: [
+        { number: '01', title: 'Brief & Script', description: 'Confirm the audience, message, script direction, presenter tone and intended use.' },
+        { number: '02', title: 'Presenter Direction', description: 'Select the presenter style, look, scene and approved voice or language direction.' },
+        { number: '03', title: 'Production', description: 'Create the presenter-led video and integrate approved brand or visual elements.' },
+        { number: '04', title: 'Review & Delivery', description: 'Refine the edit within the agreed scope and deliver the approved final files.' },
+      ],
+      whyRaju: [
+        { title: 'Script-to-video workflow', description: 'Message, presenter direction, production and editing can stay within one coordinated workflow.', icon: 'briefcase' },
+        { title: 'Presenter-led communication focus', description: 'The production is shaped around clear delivery of the approved message to the intended audience.', icon: 'users' },
+        { title: 'Brand-aligned finishing', description: 'Editing, captions and visual treatment can follow the approved brand direction.', icon: 'video' },
+        { title: 'Localization planning', description: 'Language-version requirements can be reviewed early so the production method fits the brief.', icon: 'globe' },
+        { title: 'International client workflow', description: 'Briefing, feedback and delivery are structured for remote brand and marketing teams.', icon: 'check' },
+      ],
+      faqs: [
+        { question: 'What is an AI spokesperson video?', answer: 'It is a presenter-led finished video where a realistic virtual presenter communicates an approved script or message. The service is production and delivery of the video, not access to avatar software.' },
+        { question: 'How is this different from AI UGC?', answer: 'AI UGC is creator-native and social-first. AI Spokesperson Videos focus on direct presenter-led communication, explanation and scripted message delivery.' },
+        { question: 'Can I provide my own script?', answer: 'Yes. You can provide an approved script, or script writing and adaptation can be included when it is part of the agreed project scope.' },
+        { question: 'Can you create multilingual versions?', answer: 'Multilingual versions can be considered when the requested language and selected production workflow support them. Language, pronunciation and delivery requirements are confirmed before production.' },
+        { question: 'How does lip-sync work?', answer: 'Lip-sync may be part of the production workflow when the selected tools and source material support it. Exact output depends on the presenter method, language and audio used, so perfect lip-sync is not guaranteed.' },
+        { question: 'Can the presenter exactly match a real person?', answer: 'An exact likeness or voice match is not promised. Presenter direction depends on the available production method, permitted source material and the approved project scope.' },
+        { question: 'How do revisions work?', answer: 'Revision expectations are agreed before production. The specific revision scope depends on the presenter setup, script, deliverables and approved brief.' },
+        { question: 'Can I request a custom presenter style or use case?', answer: 'Yes. Share the audience, script, visual direction, language requirements and intended use through the project inquiry form so the production approach can be reviewed.' },
+      ],
+      customRequirement: {
+        title: 'Need a custom presenter or language setup?',
+        description: 'Share the script, audience, presenter direction and any language or localization requirements so I can review a suitable production approach.',
+      },
+    },
   },
   {
     slug: 'web-design-development',
