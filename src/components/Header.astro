@@ -1,0 +1,101 @@
+---
+import Brand from './Brand.astro';
+import Button from './Button.astro';
+import { headerNavigation } from '@/data/site';
+
+const pathname = Astro.url.pathname;
+const desktopNav = headerNavigation.desktopPrimary;
+const mobileNav = headerNavigation.mobile;
+
+const isActive = (href: string) => {
+  if (href === '/') return pathname === '/';
+  return pathname === href || pathname.startsWith(href);
+};
+---
+<header class="site-header" data-header>
+  <div class="container site-header__inner">
+    <Brand />
+    <nav class="desktop-nav" aria-label="Primary navigation">
+      {desktopNav.map((item) => (
+        <a
+          class:list={{ active: isActive(item.href) }}
+          href={item.href}
+          aria-current={isActive(item.href) ? 'page' : undefined}
+        >
+          {item.label}
+        </a>
+      ))}
+    </nav>
+    <div class="site-header__cta">
+      <Button href={headerNavigation.contactCta.href} size="sm">{headerNavigation.contactCta.label}</Button>
+    </div>
+    <button
+      class="menu-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      aria-label="Open menu"
+      data-menu-toggle
+    >
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <div class="mobile-menu" id="mobile-menu" data-mobile-menu>
+    <nav class="container" aria-label="Mobile navigation">
+      {mobileNav.map((item) => (
+        <a
+          class:list={{ active: isActive(item.href) }}
+          href={item.href}
+          aria-current={isActive(item.href) ? 'page' : undefined}
+        >
+          {item.label}
+        </a>
+      ))}
+      <Button href={headerNavigation.contactCta.href}>{headerNavigation.contactCta.label}</Button>
+    </nav>
+  </div>
+</header>
+
+<script is:inline>
+  (() => {
+    const toggle = document.querySelector('[data-menu-toggle]');
+    const menu = document.querySelector('[data-mobile-menu]');
+    if (!(toggle instanceof HTMLButtonElement) || !(menu instanceof HTMLElement)) return;
+
+    const setOpen = (open) => {
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+      menu.toggleAttribute('data-open', open);
+      document.documentElement.classList.toggle('menu-open', open);
+    };
+
+    const close = ({ restoreFocus = false } = {}) => {
+      setOpen(false);
+      if (restoreFocus) toggle.focus();
+    };
+
+    toggle.addEventListener('click', () => {
+      setOpen(toggle.getAttribute('aria-expanded') !== 'true');
+    });
+
+    menu.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => close()));
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+        close({ restoreFocus: true });
+      }
+    });
+
+    const desktopQuery = window.matchMedia('(min-width: 48rem)');
+    const resetForDesktop = (event) => {
+      if (event.matches) close();
+    };
+    desktopQuery.addEventListener?.('change', resetForDesktop);
+  })();
+</script>
+
+<style>
+.site-header{position:sticky;top:0;z-index:var(--z-header);background:rgba(255,255,255,.965);border-bottom:1px solid var(--color-border);backdrop-filter:saturate(160%) blur(10px)}.site-header__inner{height:4rem;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:1.5rem}.desktop-nav{display:flex;align-items:center;gap:1.9rem}.desktop-nav a{position:relative;padding:.4rem 0;font-size:.72rem;font-weight:600;color:#27364e}.desktop-nav a::after{content:"";position:absolute;left:0;right:0;bottom:-.85rem;height:2px;background:var(--color-brand);transform:scaleX(0);transition:transform var(--transition);transform-origin:center}.desktop-nav a.active::after,.desktop-nav a:hover::after{transform:scaleX(1)}.site-header__cta{justify-self:end}.menu-toggle{display:none;width:2.75rem;height:2.75rem;border:0;background:transparent;align-items:center;justify-content:center;flex-direction:column;gap:4px;cursor:pointer}.menu-toggle span{width:19px;height:2px;background:var(--color-text);border-radius:3px}.mobile-menu{display:none;border-top:1px solid var(--color-border);background:white;box-shadow:0 12px 30px rgba(15,23,42,.08)}.mobile-menu nav{display:grid;padding-block:.8rem 1rem;gap:.18rem}.mobile-menu nav>a:not(.button){min-height:2.75rem;display:flex;align-items:center;padding:.66rem .75rem;border-radius:var(--radius-md);font-size:.82rem;font-weight:650}.mobile-menu nav>a.active:not(.button){background:var(--color-bg-soft);color:var(--color-brand)}
+@media(max-width:47.99rem){.site-header__inner{height:3.75rem;grid-template-columns:1fr auto}.desktop-nav,.site-header__cta{display:none}html.js .menu-toggle{display:flex;justify-self:end}html.js .mobile-menu[data-open]{display:block}html:not(.js) .menu-toggle{display:none}html:not(.js) .mobile-menu{display:block}}
+</style>

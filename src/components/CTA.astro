@@ -1,0 +1,9 @@
+---
+import Button from './Button.astro';
+const { title = 'Have a project in mind?', description = 'Let’s create something strong together. Share your goals and I’ll review the best next step.', primaryHref = '/contact/', primaryLabel = 'Start a Project', secondaryHref = '/work/', secondaryLabel = 'View My Work' } = Astro.props;
+---
+<section class="cta"><div class="cta__copy"><p class="eyebrow">Ready to create something amazing?</p><h2>{title}</h2><p>{description}</p></div><div class="cluster"><Button href={primaryHref}>{primaryLabel}</Button><Button href={secondaryHref} variant="dark">{secondaryLabel}</Button></div></section>
+<style>
+.cta{display:flex;align-items:center;justify-content:space-between;gap:1.5rem;background:#0b1f2a;color:white;padding:1rem 1.35rem;border-radius:var(--radius-md)}.cta__copy{display:grid;gap:.16rem}.cta h2{font-size:1.35rem;letter-spacing:-.03em}.cta p:not(.eyebrow){color:#cbd5e1;font-size:.69rem}.cta .eyebrow{color:#cbd5e1;font-size:.55rem}.cta .cluster{flex-wrap:nowrap}.cta .button{min-width:8.8rem}
+@media(max-width:47.99rem){.cta{align-items:stretch;flex-direction:column;gap:.85rem;padding:1rem}.cta .cluster{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:.55rem}.cta .button{width:100%;min-width:0}.cta h2{font-size:1.12rem}.cta p:not(.eyebrow){font-size:.64rem}}
+</style>
