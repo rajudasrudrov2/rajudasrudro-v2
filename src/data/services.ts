@@ -141,7 +141,47 @@ export type AISpokespersonServiceDetail = {
   customRequirement: ServiceCustomRequirement;
 };
 
-export type ServiceDetail = AIUGCServiceDetail | AIVideoServiceDetail | AISpokespersonServiceDetail;
+
+export type WebDesignServiceDetail = {
+  kind: 'web-design-development';
+  eyebrow: string;
+  heroTitle: string;
+  heroDescription: string;
+  seoTitle: string;
+  metaDescription: string;
+  heroMedia: ServiceMedia[];
+  projectTypes: ServiceValuePoint[];
+  foundations: ServiceValuePoint[];
+  designDevelopment: {
+    design: {
+      title: string;
+      description: string;
+      items: string[];
+      media: ServiceMedia;
+    };
+    development: {
+      title: string;
+      description: string;
+      items: string[];
+      media: ServiceMedia;
+    };
+  };
+  responsiveExperience: {
+    title: string;
+    description: string;
+    media: ServiceMedia;
+    points: ServiceValuePoint[];
+  };
+  performance: ServiceValuePoint[];
+  seoFoundations: ServiceValuePoint[];
+  process: ServiceProcessStep[];
+  clientReceives: string[];
+  whyRaju: ServiceValuePoint[];
+  faqs: ServiceFaqItem[];
+  customRequirement: ServiceCustomRequirement;
+};
+
+export type ServiceDetail = AIUGCServiceDetail | AIVideoServiceDetail | AISpokespersonServiceDetail | WebDesignServiceDetail;
 
 export type ServiceDefinition = {
   slug: string;
@@ -658,6 +698,120 @@ export const services: ServiceDefinition[] = [
       height: 450,
     },
     chooser: 'Need a modern website or redesign?',
+    detail: {
+      kind: 'web-design-development',
+      eyebrow: 'Web Design & Development',
+      heroTitle: 'Fast, Modern Websites Built Around Real Business Goals.',
+      heroDescription: 'I design and develop custom websites that are modern, responsive, conversion-conscious and built for usability, performance and long-term growth.',
+      seoTitle: 'Web Design & Development for Modern Brands — Raju Das Rudro',
+      metaDescription: 'Custom responsive web design and frontend development for businesses, personal brands and service teams, with performance, accessibility and technical SEO foundations.',
+      heroMedia: [
+        {
+          src: '/images/work/web-ecommerce-preview.svg',
+          alt: 'Development preview artwork showing a responsive ecommerce website concept',
+          width: 800,
+          height: 450,
+        },
+        {
+          src: '/images/work/web-business-preview.svg',
+          alt: 'Development preview artwork showing a professional business website concept',
+          width: 800,
+          height: 450,
+        },
+      ],
+      projectTypes: [
+        { title: 'Business Websites', description: 'Professional websites for established businesses, local services and growing teams.', icon: 'briefcase' },
+        { title: 'Personal Brand Sites', description: 'Clear, credible personal websites built around expertise, services and proof.', icon: 'users' },
+        { title: 'Service Websites', description: 'Conversion-conscious sites that explain an offer and guide visitors toward the next step.', icon: 'arrow' },
+        { title: 'Landing Pages', description: 'Focused pages for campaigns, launches, offers and lead-generation goals.', icon: 'monitor' },
+        { title: 'Portfolio Websites', description: 'Work-led websites for creators, consultants and professionals who need a strong presentation.', icon: 'spark' },
+        { title: 'Custom WordPress Builds', description: 'Project-specific WordPress implementation where that platform fits the content and workflow requirements.', icon: 'globe' },
+      ],
+      foundations: [
+        { title: 'Fast Performance', description: 'Performance-conscious implementation with responsive assets and minimal unnecessary frontend overhead.', icon: 'spark' },
+        { title: 'Clear UX', description: 'Structured navigation and page hierarchy designed to make important information easier to understand.', icon: 'check' },
+        { title: 'Responsive Design', description: 'Layouts planned for mobile, tablet and desktop rather than scaled from one screen size.', icon: 'monitor' },
+        { title: 'SEO Foundation', description: 'Semantic structure, metadata foundations and crawl-friendly technical setup where the project scope supports it.', icon: 'globe' },
+        { title: 'Easy Content Management', description: 'Content editing workflows can be planned around the selected platform and project requirements.', icon: 'briefcase' },
+        { title: 'Scalable Structure', description: 'Reusable page patterns and components help future additions stay consistent and maintainable.', icon: 'users' },
+      ],
+      designDevelopment: {
+        design: {
+          title: 'Design',
+          description: 'A clear interface and content system shaped around the project goal before implementation begins.',
+          items: ['Page structure and information architecture', 'Responsive UI/UX design', 'Reusable visual system and components', 'Content hierarchy and interaction planning'],
+          media: { src: '/images/work/web-service-preview.svg', alt: 'Development preview artwork representing responsive website design', width: 800, height: 450 },
+        },
+        development: {
+          title: 'Development',
+          description: 'A maintainable frontend implementation selected around the approved project scope rather than one mandatory technology for every client.',
+          items: ['Responsive frontend build', 'CMS or integration work where scoped', 'Performance-conscious implementation', 'Technical and on-page SEO foundations'],
+          media: { src: '/images/work/web-business-preview.svg', alt: 'Development preview artwork representing a professional website implementation', width: 800, height: 450 },
+        },
+      },
+      responsiveExperience: {
+        title: 'Responsive Experience',
+        description: 'The same content system is deliberately adapted across screen sizes so navigation, reading and conversion paths remain usable from mobile to desktop.',
+        media: { src: '/images/work/web-ecommerce-preview.svg', alt: 'Development preview artwork representing a responsive website across devices', width: 800, height: 450 },
+        points: [
+          { title: 'Optimized for every screen', description: 'Layouts respond deliberately rather than relying on a desktop-only composition.', icon: 'monitor' },
+          { title: 'Touch-friendly interface', description: 'Controls and spacing are planned for practical mobile interaction.', icon: 'check' },
+          { title: 'Same great experience', description: 'Content priorities and key actions remain coherent across device sizes.', icon: 'users' },
+        ],
+      },
+      performance: [
+        { title: 'Optimized Media', description: 'Responsive images and sensible loading strategies help control page weight.', icon: 'spark' },
+        { title: 'Minimal Scripts', description: 'Unnecessary JavaScript and third-party overhead are avoided where the experience does not need them.', icon: 'video' },
+        { title: 'Clean Frontend', description: 'Semantic, maintainable frontend structure supports usability and long-term changes.', icon: 'monitor' },
+        { title: 'Core Web Vitals Aware', description: 'Layout stability, interaction cost and loading behavior are considered during implementation.', icon: 'check' },
+        { title: 'Lightweight Interactions', description: 'Native behavior and focused JavaScript are preferred over heavy decorative dependencies.', icon: 'arrow' },
+      ],
+      seoFoundations: [
+        { title: 'Semantic Structure', description: 'Logical headings and semantic HTML provide a clear content hierarchy.', icon: 'briefcase' },
+        { title: 'Metadata Support', description: 'Page titles, descriptions and social metadata foundations can be configured per page.', icon: 'spark' },
+        { title: 'Clean URLs', description: 'Readable route structures support navigation, sharing and crawlability.', icon: 'arrow' },
+        { title: 'Sitemap / Robots', description: 'Technical crawl-control foundations can be included where appropriate to the project.', icon: 'globe' },
+        { title: 'Structured Data Support', description: 'Relevant schema can be added when the page content provides accurate information to support it.', icon: 'check' },
+        { title: 'Internal Linking', description: 'Important related pages can be connected through a deliberate internal-linking structure.', icon: 'users' },
+        { title: 'Responsive Performance', description: 'Mobile usability and performance-conscious implementation support a stronger technical base.', icon: 'monitor' },
+      ],
+      process: [
+        { number: '01', title: 'Goals & Content', description: 'Clarify the business goal, audience, required pages, content and references.' },
+        { number: '02', title: 'Structure & Design', description: 'Plan the page hierarchy, responsive layout and interface direction.' },
+        { number: '03', title: 'Development', description: 'Build the approved interface and implement the agreed functionality.' },
+        { number: '04', title: 'QA & Launch', description: 'Review responsiveness, content, accessibility and launch-readiness within the agreed scope.' },
+      ],
+      clientReceives: [
+        'Custom, project-specific design direction',
+        'Responsive implementation across agreed device ranges',
+        'Reusable production components where the project benefits from them',
+        'Performance-conscious media and frontend handling',
+        'Technical and on-page SEO foundations within scope',
+        'QA and launch-preparation support for the agreed delivery',
+      ],
+      whyRaju: [
+        { title: 'Design + Development Together', description: 'The visual system and frontend implementation can be handled as one coordinated project.', icon: 'briefcase' },
+        { title: 'Modern & Clean Design', description: 'Interfaces stay focused on clarity, responsive usability and the content that matters.', icon: 'spark' },
+        { title: 'Technical Expertise', description: 'Implementation decisions are shaped around maintainability, accessibility and performance needs.', icon: 'monitor' },
+        { title: 'Clear Communication', description: 'Scope, decisions and feedback points are kept visible throughout the project.', icon: 'users' },
+        { title: 'Long-Term Structure', description: 'Reusable patterns help future page and content additions remain consistent after launch.', icon: 'check' },
+      ],
+      faqs: [
+        { question: 'Do you handle both design and development?', answer: 'Yes, when both are included in the agreed scope. A project can cover page structure, responsive UI design and frontend implementation in one coordinated workflow.' },
+        { question: 'Can you redesign an existing website?', answer: 'Yes. A redesign can start from the existing content and business goals, then improve structure, interface quality and responsive behavior within the approved project scope.' },
+        { question: 'Will the website be mobile responsive?', answer: 'Responsive behavior is part of the service direction. The exact supported layouts and testing scope are confirmed for each project.' },
+        { question: 'Can I update the website content myself?', answer: 'That depends on the chosen platform and project requirements. If content management is needed, an appropriate CMS or editing workflow can be scoped before development.' },
+        { question: 'Do you optimize websites for performance?', answer: 'I use performance-conscious frontend practices such as responsive media, controlled JavaScript and layout-stability considerations. Specific performance scores are not guaranteed.' },
+        { question: 'Is SEO included?', answer: 'Technical and on-page SEO foundations can be included, such as semantic structure, metadata, crawl controls and internal linking. Search-engine rankings or traffic outcomes are not guaranteed.' },
+        { question: 'How much does a website cost?', answer: 'Pricing depends on the project scope, page count, content, design complexity, functionality and integration requirements. Send the brief for a project-specific review.' },
+        { question: 'How long does a website take?', answer: 'Timeline depends on scope, content readiness, feedback cycles and functionality. A project schedule is confirmed after the requirements are reviewed.' },
+        { question: 'What do you need from me to start?', answer: 'A useful starting brief includes your business goal, target audience, required pages, content/assets, examples you like, required functionality and any existing website that should be considered.' },
+      ],
+      customRequirement: {
+        title: 'Have a custom website or redesign in mind?',
+        description: 'Share the goals, content, functionality and references you already have so I can review the right design and development scope for the project.',
+      },
+    },
   },
 ];
 
