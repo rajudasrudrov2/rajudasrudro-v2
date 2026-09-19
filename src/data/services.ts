@@ -22,7 +22,29 @@ export type ServiceFormat = {
   media: ServiceMedia;
 };
 
-export type ServiceDetail = {
+export type ServiceProcessStep = {
+  number: string;
+  title: string;
+  description: string;
+};
+
+export type ServiceValuePoint = {
+  title: string;
+  description: string;
+  icon: ServiceIconName;
+};
+
+export type ServiceFaqItem = {
+  question: string;
+  answer: string;
+};
+
+export type ServiceCustomRequirement = {
+  title: string;
+  description: string;
+};
+
+export type AIUGCServiceDetail = {
   kind: 'ai-ugc';
   eyebrow: string;
   heroTitle: string;
@@ -39,11 +61,7 @@ export type ServiceDetail = {
       media: ServiceMedia;
     }>;
   };
-  buyerNeeds: Array<{
-    title: string;
-    description: string;
-    icon: ServiceIconName;
-  }>;
+  buyerNeeds: ServiceValuePoint[];
   deliverables: string[];
   formats: ServiceFormat[];
   variations: Array<{
@@ -51,25 +69,42 @@ export type ServiceDetail = {
     description: string;
     media: ServiceMedia;
   }>;
-  process: Array<{
-    number: string;
-    title: string;
-    description: string;
-  }>;
-  whyRaju: Array<{
-    title: string;
-    description: string;
-    icon: ServiceIconName;
-  }>;
-  faqs: Array<{
-    question: string;
-    answer: string;
-  }>;
-  customRequirement: {
-    title: string;
-    description: string;
-  };
+  process: ServiceProcessStep[];
+  whyRaju: ServiceValuePoint[];
+  faqs: ServiceFaqItem[];
+  customRequirement: ServiceCustomRequirement;
 };
+
+export type AIVideoProductionPhase = {
+  title: string;
+  description: string;
+  icon: ServiceIconName;
+  items: string[];
+};
+
+export type AIVideoServiceDetail = {
+  kind: 'ai-video';
+  eyebrow: string;
+  heroTitle: string;
+  heroDescription: string;
+  seoTitle: string;
+  metaDescription: string;
+  heroMedia: ServiceMedia[];
+  explanation: {
+    title: string;
+    description: string;
+    capabilities: ServiceValuePoint[];
+  };
+  creationTypes: ServiceFormat[];
+  buyerNeeds: ServiceValuePoint[];
+  productionPhases: AIVideoProductionPhase[];
+  process: ServiceProcessStep[];
+  whyRaju: ServiceValuePoint[];
+  faqs: ServiceFaqItem[];
+  customRequirement: ServiceCustomRequirement;
+};
+
+export type ServiceDetail = AIUGCServiceDetail | AIVideoServiceDetail;
 
 export type ServiceDefinition = {
   slug: string;
@@ -269,12 +304,142 @@ export const services: ServiceDefinition[] = [
     ctaLabel: 'Explore AI Video Production',
     flagship: false,
     media: {
-      src: '/images/work/food-ugc-preview.svg',
-      alt: 'Development preview artwork representing AI video production',
+      src: '/images/work/product-showcase-preview.svg',
+      alt: 'Development preview artwork representing professional AI video production',
       width: 800,
       height: 450,
     },
     chooser: 'Need broader marketing video?',
+    detail: {
+      kind: 'ai-video',
+      eyebrow: 'AI Video Production',
+      heroTitle: 'AI Video Production for Brands That Inspire and Convert.',
+      heroDescription: 'From product videos to branded visual stories, I create professional AI-assisted videos with clear creative direction, multi-scene production and polished post-production.',
+      seoTitle: 'AI Video Production for Brands — Raju Das Rudro',
+      metaDescription: 'Professional AI-assisted video production for product videos, branded stories, marketing campaigns, explainers and multi-scene creative from Raju Das Rudro.',
+      heroMedia: [
+        {
+          src: '/images/work/product-showcase-preview.svg',
+          alt: 'Development preview artwork representing a polished AI product video',
+          width: 800,
+          height: 450,
+        },
+        {
+          src: '/images/work/travel-ugc-preview.svg',
+          alt: 'Development preview artwork representing cinematic brand storytelling',
+          width: 800,
+          height: 450,
+        },
+        {
+          src: '/images/work/spokesperson-preview.svg',
+          alt: 'Development preview artwork representing an AI presenter-led production',
+          width: 800,
+          height: 450,
+        },
+      ],
+      explanation: {
+        title: 'What is AI Video Production?',
+        description: 'AI video production combines AI-assisted visuals, presenters or scene generation with professional creative direction and editing. It is designed for broader product, brand and marketing stories rather than only creator-style UGC.',
+        capabilities: [
+          { title: 'AI Visuals', description: 'Realistic scenes, product-focused imagery and concept-driven visual directions.', icon: 'spark' },
+          { title: 'AI Presenters', description: 'Presenter-led options when a clear on-screen voice fits the brief.', icon: 'users' },
+          { title: 'Professional Editing', description: 'Polished sequencing, captions, motion and brand-ready finishing.', icon: 'video' },
+        ],
+      },
+      creationTypes: [
+        {
+          title: 'Commercial Videos',
+          description: 'Polished brand and product advertising creative.',
+          media: { src: '/images/work/food-ugc-preview.svg', alt: 'Development preview artwork for a commercial-style AI video', width: 800, height: 450 },
+        },
+        {
+          title: 'Product Videos',
+          description: 'Product-focused showcases, demos and visual stories.',
+          media: { src: '/images/work/product-showcase-preview.svg', alt: 'Development preview artwork for an AI product video', width: 800, height: 450 },
+        },
+        {
+          title: 'Social Media Ads',
+          description: 'Short marketing videos shaped for social campaigns.',
+          media: { src: '/images/work/ugc-social-preview.svg', alt: 'Development preview artwork for a social media AI video ad', width: 800, height: 450 },
+        },
+        {
+          title: 'Explainer Videos',
+          description: 'Structured videos that clarify a product, service or idea.',
+          media: { src: '/images/work/saas-video-preview.svg', alt: 'Development preview artwork for an AI explainer video', width: 800, height: 450 },
+        },
+        {
+          title: 'Brand Videos',
+          description: 'Story-led visuals that communicate a brand direction or campaign idea.',
+          media: { src: '/images/work/travel-ugc-preview.svg', alt: 'Development preview artwork for cinematic brand storytelling', width: 800, height: 450 },
+        },
+        {
+          title: 'AI Presenter Videos',
+          description: 'Professional presenter-led content for marketing or education.',
+          media: { src: '/images/work/spokesperson-preview.svg', alt: 'Development preview artwork for an AI presenter video', width: 800, height: 450 },
+        },
+      ],
+      buyerNeeds: [
+        { title: 'Product launches', description: 'Create polished launch or promotional assets around a product story.', icon: 'spark' },
+        { title: 'More creative for testing', description: 'Develop alternate concepts or visual directions from one brief.', icon: 'video' },
+        { title: 'Professional branded videos', description: 'Move beyond creator-native UGC into broader brand presentation.', icon: 'briefcase' },
+        { title: 'Social media campaigns', description: 'Build adaptable assets for campaign and channel-specific use.', icon: 'users' },
+        { title: 'Explainers and demos', description: 'Show a product, service or idea with structured visual storytelling.', icon: 'monitor' },
+        { title: 'Flexible production', description: 'Create scenes and variations without relying on a full traditional shoot for every asset.', icon: 'globe' },
+      ],
+      productionPhases: [
+        {
+          title: 'Creative',
+          description: 'Concept and story development.',
+          icon: 'spark',
+          items: ['Concept & strategy', 'Script writing / adaptation', 'Storyboard direction when needed'],
+        },
+        {
+          title: 'Production',
+          description: 'AI-assisted visual production.',
+          icon: 'video',
+          items: ['AI visuals & scenes', 'AI presenters / voice when applicable', 'Custom branded elements'],
+        },
+        {
+          title: 'Post-Production',
+          description: 'Professional finishing.',
+          icon: 'monitor',
+          items: ['Professional editing', 'Captions & motion', 'Music & sound design when included'],
+        },
+        {
+          title: 'Final Delivery',
+          description: 'Approved export package.',
+          icon: 'briefcase',
+          items: ['Multiple variations where scoped', 'Social-ready formats', 'Platform-optimized files'],
+        },
+      ],
+      process: [
+        { number: '01', title: 'Share the Brief', description: 'Send your goal, audience, product or brand context and useful references.' },
+        { number: '02', title: 'Creative Direction', description: 'Define the story, visual approach, script direction and scene plan.' },
+        { number: '03', title: 'AI Production', description: 'Create the approved visuals, presenter elements and multi-scene edit.' },
+        { number: '04', title: 'Review & Deliver', description: 'Review the production and receive the agreed final formats and revisions.' },
+      ],
+      whyRaju: [
+        { title: 'End-to-end production', description: 'Creative direction, generation and editing can stay within one coordinated workflow.', icon: 'briefcase' },
+        { title: 'Marketing-focused approach', description: 'Production choices are shaped around the communication goal and intended audience.', icon: 'spark' },
+        { title: 'Multiple creative directions', description: 'A project can support alternate visual concepts or variations when the scope calls for them.', icon: 'video' },
+        { title: 'International client experience', description: 'The service is positioned for brands, founders and teams working internationally.', icon: 'globe' },
+        { title: 'Clear delivery workflow', description: 'Scope, formats and review expectations are confirmed before final production.', icon: 'check' },
+      ],
+      faqs: [
+        { question: 'What types of AI videos can you create?', answer: 'The service can cover product videos, commercial-style creative, brand stories, explainers, social marketing assets and presenter-led videos when those formats fit the approved brief.' },
+        { question: 'How is this different from AI UGC?', answer: 'AI UGC is creator-native and social-first. AI Video Production is broader and can use multi-scene, cinematic, product-led, presenter-led or concept-driven visual storytelling.' },
+        { question: 'Do you help with the concept and script?', answer: 'Yes. Concept development and script writing or adaptation can be included when they are part of the agreed scope.' },
+        { question: 'Can the visuals match my brand?', answer: 'Brand references, products, tone and visual guidelines can be used to shape the approved creative direction.' },
+        { question: 'Can you create multiple versions?', answer: 'Yes, when multiple formats, scenes or creative variations are included in the approved project scope.' },
+        { question: 'How do revisions work?', answer: 'Revision expectations are agreed before production. The specific revision scope depends on the project brief and deliverables.' },
+        { question: 'Do you provide different aspect ratios?', answer: 'Required aspect ratios and delivery formats are agreed per project so the final files match the intended channels.' },
+        { question: 'Can I request a custom AI video concept?', answer: 'Yes. Share the idea through the project inquiry form and I can review whether it fits the AI video production scope.' },
+      ],
+      customRequirement: {
+        title: 'Not sure if this is the right video approach?',
+        description: 'Share the product, campaign or story you want to communicate and I can review whether AI Video Production is the right fit.',
+      },
+    },
   },
   {
     slug: 'ai-spokesperson-videos',
