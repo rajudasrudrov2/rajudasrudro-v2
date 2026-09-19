@@ -126,6 +126,8 @@ export type Review = {
   featured?: boolean;
 };
 
+export type ArticlePublicationStatus = 'published' | 'draft' | 'development-preview';
+
 export type Article = {
   id: string;
   title: string;
@@ -141,4 +143,7 @@ export type Article = {
   seoTitle?: string;
   metaDescription?: string;
   featureImage?: MediaAsset;
+  featured?: boolean;
+  publicationStatus?: ArticlePublicationStatus;
+  developmentPreview?: boolean;
 };
