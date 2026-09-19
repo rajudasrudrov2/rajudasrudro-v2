@@ -128,12 +128,51 @@ export type Review = {
 
 export type ArticlePublicationStatus = 'published' | 'draft' | 'development-preview';
 
+export type ArticleBodyBlock =
+  | {
+      type: 'paragraph';
+      text: string;
+    }
+  | {
+      type: 'subheading';
+      title: string;
+    }
+  | {
+      type: 'unordered-list' | 'ordered-list';
+      items: string[];
+    }
+  | {
+      type: 'callout';
+      title?: string;
+      text: string;
+    }
+  | {
+      type: 'steps';
+      items: Array<{
+        title: string;
+        description: string;
+      }>;
+    }
+  | {
+      type: 'comparison';
+      items: Array<{
+        title: string;
+        points: string[];
+      }>;
+    };
+
+export type ArticleSection = {
+  title: string;
+  blocks: ArticleBodyBlock[];
+};
+
 export type Article = {
   id: string;
   title: string;
   slug: string;
   excerpt: string;
   bodyHtml?: string;
+  body?: ArticleSection[];
   category?: string;
   publishedDate?: string;
   updatedDate?: string;
@@ -143,7 +182,11 @@ export type Article = {
   seoTitle?: string;
   metaDescription?: string;
   featureImage?: MediaAsset;
+  ogImage?: MediaAsset;
   featured?: boolean;
   publicationStatus?: ArticlePublicationStatus;
   developmentPreview?: boolean;
+  previewDetailEnabled?: boolean;
+  relatedServiceSlugs?: string[];
+  relatedWorkIds?: string[];
 };
