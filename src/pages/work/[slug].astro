@@ -1,0 +1,262 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Breadcrumbs from '@/components/Breadcrumbs.astro';
+import Chip from '@/components/Chip.astro';
+import Icon from '@/components/Icon.astro';
+import CTA from '@/components/CTA.astro';
+import ProjectCard from '@/components/ProjectCard.astro';
+import CaseStudyMedia from '@/components/CaseStudyMedia.astro';
+import CaseStudyDeliverables from '@/components/CaseStudyDeliverables.astro';
+import CaseStudyGallery from '@/components/CaseStudyGallery.astro';
+import CaseStudyOutcome from '@/components/CaseStudyOutcome.astro';
+import CaseStudyReviewState from '@/components/CaseStudyReviewState.astro';
+import { services } from '@/data/services';
+import { isProductionEnvironment } from '@/config/environment';
+import { getCaseStudyProjects, getRelatedWorkProjects } from '@/lib/work-projects';
+import type { WorkProject } from '@/types/content';
+
+export function getStaticPaths() {
+  return getCaseStudyProjects(isProductionEnvironment).map((project) => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props as { project: WorkProject };
+const caseStudy = project.caseStudy;
+
+if (!caseStudy) {
+  throw new Error(`Case-study data missing for generated project route: ${project.slug}`);
+}
+
+const relatedService = services.find((service) => service.slug === project.serviceSlug);
+const relatedProjects = getRelatedWorkProjects(project);
+const projectReview = undefined;
+const heroPoster = caseStudy.heroVideo?.poster || caseStudy.heroMedia || project.poster;
+const deliverableSummary = caseStudy.deliverables?.length
+  ? `${caseStudy.deliverables.length} structured items`
+  : undefined;
+const categoryLabel = project.categories[0];
+---
+<BaseLayout
+  meta={{
+    title: project.seoTitle || `${project.title} — Case Study | Raju Das Rudro`,
+    description: project.metaDescription || project.shortSummary,
+    pathname: `/work/${project.slug}/`,
+    image: project.ogImage?.src || heroPoster?.src,
+    noindex: project.developmentPreview === true,
+  }}
+>
+  <article class="case-study" data-case-study data-project-status={project.projectStatus}>
+    <section class="case-hero" aria-labelledby="case-title">
+      <div class="container">
+        <Breadcrumbs items={[{ label: 'Work', href: '/work/' }, { label: project.title, href: `/work/${project.slug}/` }]} />
+
+        <div class="case-hero__grid">
+          <div class="case-hero__copy">
+            {project.developmentPreview && (
+              <p class="case-preview-notice">Development preview — not a verified client case study</p>
+            )}
+            <div class="case-hero__tags" aria-label="Project categories">
+              {project.tags?.slice(0, 2).map((tag) => <Chip tone={tag.tone || 'neutral'}>{tag.label}</Chip>)}
+            </div>
+            <h1 id="case-title">{project.title}</h1>
+            <p class="case-hero__summary">{project.shortSummary}</p>
+          </div>
+
+          <CaseStudyMedia
+            poster={heroPoster}
+            video={caseStudy.heroVideo}
+            priority
+            developmentPreview={project.developmentPreview}
+            ariaLabel={`${project.title} primary project media`}
+          />
+        </div>
+
+        <dl class="case-meta" aria-label="Project metadata">
+          {relatedService && (
+            <div class="case-meta__item">
+              <span class="case-meta__icon" aria-hidden="true"><Icon name="briefcase" size={20} /></span>
+              <span><dt>Service</dt><dd>{relatedService.title}</dd></span>
+            </div>
+          )}
+          {project.industry && (
+            <div class="case-meta__item">
+              <span class="case-meta__icon" aria-hidden="true"><Icon name="users" size={20} /></span>
+              <span><dt>Industry</dt><dd>{project.industry}{project.developmentPreview ? ' (preview)' : ''}</dd></span>
+            </div>
+          )}
+          {deliverableSummary && (
+            <div class="case-meta__item">
+              <span class="case-meta__icon" aria-hidden="true"><Icon name="briefcase" size={20} /></span>
+              <span><dt>Deliverables</dt><dd>{deliverableSummary}</dd></span>
+            </div>
+          )}
+          {caseStudy.formatLabel && (
+            <div class="case-meta__item">
+              <span class="case-meta__icon" aria-hidden="true"><Icon name="video" size={20} /></span>
+              <span><dt>Format</dt><dd>{caseStudy.formatLabel}</dd></span>
+            </div>
+          )}
+        </dl>
+      </div>
+    </section>
+
+    <section class="case-story" aria-label="Project context">
+      <div class="container case-story__grid">
+        <article class="case-story__overview">
+          <h2>Project Overview</h2>
+          <p>{caseStudy.overview}</p>
+        </article>
+
+        {caseStudy.challenge && (caseStudy.challenge.intro || caseStudy.challenge.points?.length) && (
+          <article>
+            <h2>The Challenge</h2>
+            {caseStudy.challenge.intro && <p>{caseStudy.challenge.intro}</p>}
+            {caseStudy.challenge.points?.length ? (
+              <ul class="case-check-list">
+                {caseStudy.challenge.points.map((point) => <li><Icon name="check" size={12} /><span>{point}</span></li>)}
+              </ul>
+            ) : null}
+          </article>
+        )}
+
+        {caseStudy.approach && (caseStudy.approach.intro || caseStudy.approach.points?.length) && (
+          <article>
+            <h2>The Approach</h2>
+            {caseStudy.approach.intro && <p>{caseStudy.approach.intro}</p>}
+            {caseStudy.approach.points?.length ? (
+              <ul class="case-check-list">
+                {caseStudy.approach.points.map((point) => <li><Icon name="check" size={12} /><span>{point}</span></li>)}
+              </ul>
+            ) : null}
+          </article>
+        )}
+      </div>
+    </section>
+
+    <CaseStudyDeliverables items={caseStudy.deliverables} />
+    <CaseStudyGallery items={caseStudy.creativeVariations} highlights={caseStudy.highlights} developmentPreview={project.developmentPreview} />
+    <CaseStudyOutcome items={caseStudy.outcomes} developmentPreview={project.developmentPreview} />
+
+    <section class="case-related" aria-label="Project feedback and related work">
+      <div class="container case-related__grid">
+        <CaseStudyReviewState review={projectReview} developmentPreview={project.developmentPreview} />
+
+        <section class="case-more-work" aria-labelledby="case-more-work-title">
+          <div class="case-more-work__heading">
+            <div>
+              <h2 id="case-more-work-title">More Work</h2>
+              <p>Explore other project previews from the structured Work dataset.</p>
+            </div>
+            <a href="/work/">View All Work <Icon name="arrow" size={13} /></a>
+          </div>
+          {relatedProjects.length > 0 ? (
+            <div class="case-more-work__grid">
+              {relatedProjects.map((related) => <ProjectCard project={related} />)}
+            </div>
+          ) : (
+            <p class="case-more-work__empty">No related project records are available yet.</p>
+          )}
+        </section>
+      </div>
+    </section>
+
+    <div class="container case-cta-wrap">
+      <CTA
+        title={relatedService ? `Need ${relatedService.title} for your brand?` : 'Want something similar for your brand?'}
+        description="Share your goals and I’ll review the strongest practical next step for your project."
+        primaryHref="/contact/"
+        primaryLabel="Start a Project"
+        secondaryHref={relatedService?.href || '/work/'}
+        secondaryLabel={relatedService ? `Explore ${relatedService.title}` : 'View All Work'}
+      />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+.case-study{background:#fff}
+.case-hero{padding-block:.8rem 0;border-bottom:1px solid var(--color-border)}
+.case-hero :global(.breadcrumbs){margin-bottom:.72rem}
+.case-hero :global(.breadcrumbs ol){font-size:.58rem;gap:.32rem}.case-hero :global(.breadcrumbs li){gap:.32rem}
+.case-hero__grid{display:grid;grid-template-columns:minmax(0,.86fr) minmax(27rem,1.18fr);gap:2.2rem;align-items:center}
+.case-hero__copy{display:grid;align-content:center;gap:.5rem;padding-bottom:.25rem}
+.case-preview-notice{justify-self:start;padding:.28rem .45rem;border:1px solid #fed7aa;border-radius:.35rem;background:#fff7ed;color:#9a3412;font-size:.52rem;font-weight:750;line-height:1.2}
+.case-hero__tags{display:flex;flex-wrap:wrap;gap:.35rem}.case-hero__tags :global(.chip){min-height:1.5rem;padding:.2rem .48rem;font-size:.55rem}
+.case-hero h1{font-size:clamp(2.2rem,4vw,3.55rem);line-height:.96;letter-spacing:-.055em;max-width:25rem}
+.case-hero__summary{max-width:26rem;color:var(--color-text-muted);font-size:.82rem;line-height:1.42}
+.case-hero__grid>:global(.case-media){border-radius:.55rem}
+.case-meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-top:.82rem;border-top:1px solid var(--color-border)}
+.case-meta__item{display:flex;align-items:center;gap:.65rem;min-width:0;padding:.72rem .8rem;border-right:1px solid var(--color-border)}.case-meta__item:last-child{border-right:0}.case-meta__icon{flex:0 0 auto;color:#243b5a}.case-meta__item>span:last-child{display:grid;gap:.05rem;min-width:0}.case-meta dt{font-size:.57rem;font-weight:800;color:var(--color-text)}.case-meta dd{margin:0;font-size:.58rem;color:var(--color-text-muted);line-height:1.25}
+
+.case-story{padding-block:.85rem;border-bottom:1px solid var(--color-border)}
+.case-story__grid{display:grid;grid-template-columns:1.08fr .92fr 1.05fr;gap:0}
+.case-story article{display:grid;align-content:start;gap:.42rem;padding:0 1.05rem;border-right:1px solid var(--color-border)}.case-story article:first-child{padding-left:0}.case-story article:last-child{border-right:0;padding-right:0}
+.case-story h2{font-size:1.18rem}.case-story p{font-size:.62rem;line-height:1.52;color:var(--color-text-muted)}
+.case-check-list{list-style:none;display:grid;gap:.28rem}.case-check-list li{display:flex;align-items:flex-start;gap:.38rem;color:#536174;font-size:.58rem;line-height:1.35}.case-check-list li :global(svg){flex:0 0 auto;margin-top:.08rem;padding:.1rem;border-radius:50%;background:var(--color-brand-strong);color:#fff}
+
+.case-related{padding-block:.95rem;border-top:1px solid var(--color-border)}
+.case-related__grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.92fr);gap:1.4rem;align-items:start}
+.case-more-work{display:grid;gap:.45rem}.case-more-work__heading{display:flex;align-items:end;justify-content:space-between;gap:1rem}.case-more-work__heading h2{font-size:1.12rem}.case-more-work__heading p{font-size:.56rem;color:var(--color-text-muted);margin-top:.08rem}.case-more-work__heading>a{display:inline-flex;align-items:center;gap:.22rem;color:#2563eb;font-size:.57rem;font-weight:700;white-space:nowrap}.case-more-work__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem}.case-more-work__grid :global(.project-card h3){font-size:.72rem}.case-more-work__grid :global(.project-card__body){padding:.48rem .52rem .58rem}.case-more-work__grid :global(.project-card__action){font-size:.55rem}.case-more-work__empty{padding:.9rem;border:1px dashed var(--color-border);border-radius:var(--radius-md);font-size:.62rem;color:var(--color-text-muted)}
+.case-cta-wrap{padding-block:.7rem 1rem}
+
+@media(max-width:63.99rem){
+  .case-hero__grid{grid-template-columns:minmax(0,.85fr) minmax(22rem,1.15fr);gap:1.25rem}
+  .case-story__grid{grid-template-columns:1fr 1fr}.case-story__overview{grid-column:1/-1;border-right:0!important;border-bottom:1px solid var(--color-border);padding:0 0 .7rem!important;margin-bottom:.7rem}.case-story article:nth-child(2){padding-left:0}
+  .case-related__grid{grid-template-columns:1fr}.case-more-work__grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+@media(max-width:47.99rem){
+  .case-hero{padding-block:.48rem 0}.case-hero :global(.breadcrumbs){margin-bottom:.5rem}.case-hero :global(.breadcrumbs ol){font-size:.52rem}
+  .case-hero__grid{grid-template-columns:1fr;gap:.62rem}.case-hero__copy{gap:.34rem}.case-preview-notice{font-size:.46rem;padding:.22rem .34rem}
+  .case-hero__tags{gap:.25rem}.case-hero__tags :global(.chip){min-height:1.28rem;padding:.14rem .34rem;font-size:.48rem}
+  .case-hero h1{font-size:2rem;line-height:.95;max-width:19rem}.case-hero__summary{font-size:.66rem;line-height:1.4;max-width:21rem}
+  .case-meta{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:.55rem}.case-meta__item{min-height:3.65rem;padding:.55rem .45rem;border-bottom:1px solid var(--color-border);gap:.45rem}.case-meta__item:nth-child(2n){border-right:0}.case-meta__item:nth-last-child(-n+2){border-bottom:0}.case-meta dt{font-size:.52rem}.case-meta dd{font-size:.5rem}.case-meta__icon :global(svg){width:17px;height:17px}
+  .case-story{padding-block:.7rem}.case-story__grid{grid-template-columns:1fr}.case-story article,.case-story article:nth-child(2){padding:.7rem 0!important;border-right:0;border-bottom:1px solid var(--color-border);margin:0}.case-story article:first-child{padding-top:0!important}.case-story article:last-child{border-bottom:0;padding-bottom:0!important}.case-story__overview{grid-column:auto!important}.case-story h2{font-size:1.05rem}.case-story p{font-size:.58rem}.case-check-list li{font-size:.55rem}
+  .case-related{padding-block:.78rem}.case-related__grid{gap:.9rem}.case-more-work__heading h2{font-size:1rem}.case-more-work__heading p{font-size:.52rem}.case-more-work__heading>a{font-size:.54rem}.case-more-work__grid{grid-template-columns:1fr;gap:.45rem}
+  .case-cta-wrap{padding-block:.55rem .75rem}
+}
+</style>
+
+<script is:inline>
+  (() => {
+    document.querySelectorAll('[data-case-media]').forEach((root) => {
+      if (!(root instanceof HTMLElement)) return;
+      const trigger = root.querySelector('[data-case-video-trigger]');
+      const player = root.querySelector('[data-case-video-player]');
+      const video = player?.querySelector('video');
+      const close = player?.querySelector('[data-case-video-close]');
+      if (!(trigger instanceof HTMLButtonElement) || !(player instanceof HTMLElement) || !(video instanceof HTMLVideoElement)) return;
+
+      trigger.addEventListener('click', async () => {
+        const src = trigger.dataset.videoSrc;
+        if (!src) return;
+        if (!video.src) {
+          video.src = src;
+          const captions = trigger.dataset.captionsSrc;
+          if (captions) {
+            const track = document.createElement('track');
+            track.kind = 'captions';
+            track.label = 'English';
+            track.srclang = 'en';
+            track.src = captions;
+            track.default = true;
+            video.append(track);
+          }
+        }
+        player.hidden = false;
+        try { await video.play(); } catch {}
+        video.focus();
+      });
+
+      if (close instanceof HTMLButtonElement) {
+        close.addEventListener('click', () => {
+          video.pause();
+          player.hidden = true;
+          trigger.focus();
+        });
+      }
+    });
+  })();
+</script>
