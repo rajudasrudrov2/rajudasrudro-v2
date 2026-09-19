@@ -1,0 +1,168 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Button from '@/components/Button.astro';
+import CTA from '@/components/CTA.astro';
+import Icon from '@/components/Icon.astro';
+import ProjectCard from '@/components/ProjectCard.astro';
+import ReviewCard from '@/components/ReviewCard.astro';
+import SectionHeader from '@/components/SectionHeader.astro';
+import ServiceCard from '@/components/ServiceCard.astro';
+import ServicesHeroMedia from '@/components/ServicesHeroMedia.astro';
+import TrustMetric from '@/components/TrustMetric.astro';
+import { productionSteps, homeTrustMetrics } from '@/data/home';
+import { publicReviewSummaries } from '@/data/reviews';
+import { services } from '@/data/services';
+import { featuredWorkProject, workProjects } from '@/data/work';
+
+const audiences = [
+  { label: 'Ecommerce Brands', icon: 'briefcase' },
+  { label: 'SaaS Companies', icon: 'spark' },
+  { label: 'Agencies', icon: 'users' },
+  { label: 'Founders', icon: 'star' },
+  { label: 'Marketing Teams', icon: 'video' },
+  { label: 'Coaches / Experts', icon: 'globe' },
+] as const;
+
+const recentWork = [featuredWorkProject, ...workProjects].slice(0, 4);
+const servicesProof = [homeTrustMetrics[0], homeTrustMetrics[1], homeTrustMetrics[3]];
+---
+<BaseLayout
+  meta={{
+    title: 'AI Creative, UGC & Web Services — Raju Das Rudro',
+    description: 'Explore AI UGC video ads, AI video production, AI spokesperson videos and web design and development services from Raju Das Rudro.',
+    pathname: '/services/',
+  }}
+>
+  <div class="services-page">
+    <section class="services-hero" aria-labelledby="services-title">
+      <div class="container services-hero__grid">
+        <div class="services-hero__copy">
+          <p class="eyebrow">Services</p>
+          <h1 id="services-title">Creative AI &amp; Web Services for Modern Brands.</h1>
+          <p class="lede">AI-powered video creative, UGC, spokesperson content and high-performance websites built around clear brand and business goals.</p>
+          <div class="services-hero__actions">
+            <Button href="/contact/">Start a Project <Icon name="arrow" size={16} /></Button>
+            <Button href="/work/" variant="secondary">View My Work</Button>
+          </div>
+        </div>
+        <ServicesHeroMedia />
+      </div>
+    </section>
+
+    <section class="services-section services-section--soft" aria-labelledby="core-services-title">
+      <div class="container">
+        <SectionHeader id="core-services-title" title="Our Core Services" description="Four focused service areas to help modern brands create, communicate and convert more clearly." />
+        <div class="services-grid">
+          {services.map((service) => <ServiceCard service={service} />)}
+        </div>
+      </div>
+    </section>
+
+    <section class="services-section services-fit" aria-label="Custom projects and client fit">
+      <div class="container services-fit__grid">
+        <article class="services-custom surface">
+          <div class="services-custom__icon" aria-hidden="true"><Icon name="spark" size={26} /></div>
+          <div>
+            <h2>Have a different AI project in mind?</h2>
+            <p>Custom AI-based creative work is available when it fits the broader creative, video and brand scope.</p>
+            <Button href="/contact/" variant="secondary" size="sm">Tell Me About Your Project <Icon name="arrow" size={14} /></Button>
+          </div>
+        </article>
+
+        <section class="services-audience surface" aria-labelledby="audience-title">
+          <div class="services-audience__heading">
+            <h2 id="audience-title">Who These Services Are For</h2>
+            <p>Built for ambitious brands and teams working across international markets.</p>
+          </div>
+          <div class="services-audience__grid">
+            {audiences.map((audience) => (
+              <div class="services-audience__item">
+                <Icon name={audience.icon} size={22} />
+                <span>{audience.label}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="services-section services-section--soft services-work" aria-labelledby="services-work-title">
+      <div class="container">
+        <SectionHeader id="services-work-title" title="Recent Work" description="Development-preview project records using the accepted Work architecture." linkHref="/work/" linkLabel="View All Work" />
+        <div class="services-work__grid">
+          {recentWork.map((project) => <ProjectCard project={project} />)}
+        </div>
+      </div>
+    </section>
+
+    <section class="services-section services-process" aria-labelledby="services-process-title">
+      <div class="container">
+        <SectionHeader id="services-process-title" title="A Simple Process" description="From your idea to final delivery in three clear steps." />
+        <div class="services-process__grid">
+          {productionSteps.map((step, index) => (
+            <>
+              <article class="services-process__step surface">
+                <strong>{step.number}</strong>
+                <div><h3>{step.title}</h3><p>{step.description}</p></div>
+              </article>
+              {index < productionSteps.length - 1 && <span class="services-process__arrow" aria-hidden="true"><Icon name="arrow" size={22} /></span>}
+            </>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="services-section services-section--soft services-reviews" aria-labelledby="services-reviews-title">
+      <div class="container">
+        <SectionHeader id="services-reviews-title" title="Client Reviews" description="Accepted public-review summaries from the existing Foundation data." linkHref="/reviews/" linkLabel="Read Client Reviews" />
+        <div class="services-reviews__grid">
+          {publicReviewSummaries.map((review) => <ReviewCard review={review} />)}
+          <aside class="services-proof surface" aria-label="Verified trust indicators">
+            {servicesProof.map((metric) => <TrustMetric {...metric} />)}
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="services-section services-chooser" aria-labelledby="services-chooser-title">
+      <div class="container">
+        <SectionHeader id="services-chooser-title" title="Not sure which service fits?" description="Use this quick guide to choose the most relevant starting point." />
+        <div class="services-chooser__grid">
+          {services.map((service, index) => (
+            <a class="services-choice surface" href={service.href}>
+              <span class="services-choice__icon" aria-hidden="true"><Icon name={index === 3 ? 'monitor' : index === 2 ? 'users' : index === 1 ? 'spark' : 'video'} size={22} /></span>
+              <span><small>{service.chooser}</small><strong>{service.title}</strong></span>
+              <Icon name="arrow" size={17} />
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <div class="container services-cta-wrap">
+      <CTA
+        title="Let’s build something that fits your project."
+        description="Share your goals and I’ll help identify the clearest service path for the work."
+        primaryHref="/contact/"
+        primaryLabel="Start a Project"
+        secondaryHref="/work/"
+        secondaryLabel="View My Work"
+      />
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+.services-page{background:#fff}.services-hero{padding-block:1.55rem 1.3rem;background:linear-gradient(110deg,#fff 0%,#fff 63%,#fbfaf8 100%)}.services-hero__grid{display:grid;grid-template-columns:minmax(0,.95fr) minmax(28rem,1.05fr);align-items:center;gap:2.4rem}.services-hero__copy{display:grid;gap:.82rem;align-content:center}.services-hero h1{font-size:var(--fs-hero);max-width:13ch;line-height:1.02;letter-spacing:-.045em}.services-hero .lede{max-width:38rem}.services-hero__actions{display:flex;align-items:center;gap:.7rem;margin-top:.15rem}.services-hero__actions .button{min-width:9.5rem}
+.services-section{padding-block:1.7rem}.services-section--soft{background:#fbfcfd;border-block:1px solid #f0f2f4}.services-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.8rem}
+.services-fit{padding-block:1rem}.services-fit__grid{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.15fr);gap:.9rem}.services-custom{display:grid;grid-template-columns:auto 1fr;gap:1rem;padding:1.15rem 1.2rem;box-shadow:none}.services-custom__icon{width:3rem;height:3rem;display:grid;place-items:center;border-radius:50%;background:#fff1f2;color:var(--color-brand-strong)}.services-custom>div:last-child{display:grid;gap:.45rem}.services-custom h2,.services-audience h2{font-size:1.45rem;line-height:1.12}.services-custom p,.services-audience__heading p{font-size:var(--fs-body-sm);line-height:var(--lh-body-tight);color:var(--color-text-muted)}.services-custom .button{justify-self:start;margin-top:.15rem}
+.services-audience{display:grid;grid-template-columns:minmax(12rem,.75fr) minmax(0,1.25fr);align-items:center;gap:1rem;padding:1.15rem 1.2rem;box-shadow:none}.services-audience__heading{display:grid;gap:.32rem}.services-audience__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.45rem}.services-audience__item{display:grid;justify-items:center;align-content:center;gap:.3rem;min-height:4.8rem;padding:.5rem;border:1px solid var(--color-border);border-radius:var(--radius-md);color:#334155;text-align:center}.services-audience__item :global(svg){color:#193554}.services-audience__item span{font-size:var(--fs-caption);font-weight:650;line-height:1.25}
+.services-work{border-top:0}.services-work__grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.72rem}
+.services-process{padding-top:1.15rem}.services-process__grid{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:.7rem}.services-process__step{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:.75rem;padding:.85rem .9rem;box-shadow:none}.services-process__step>strong{font-size:1.5rem;line-height:1;color:var(--color-brand-strong);font-weight:800}.services-process__step div{display:grid;gap:.12rem}.services-process__step h3{font-size:1rem}.services-process__step p{font-size:var(--fs-meta);line-height:1.4;color:var(--color-text-muted)}.services-process__arrow{color:#94a3b8}
+.services-reviews__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr)) minmax(15rem,.72fr);gap:.8rem}.services-proof{display:grid;grid-template-columns:1fr;box-shadow:none}.services-proof :global(.trust){justify-content:flex-start;border-bottom:1px solid var(--color-border)}.services-proof :global(.trust:last-child){border-bottom:0}
+.services-chooser{padding-top:1.15rem}.services-chooser__grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.65rem}.services-choice{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:.65rem;padding:.85rem .9rem;box-shadow:none;transition:border-color var(--transition),transform var(--transition)}.services-choice:hover{border-color:#cbd5e1;transform:translateY(-1px)}.services-choice__icon{width:2.3rem;height:2.3rem;display:grid;place-items:center;border-radius:.5rem;background:#f8fafc;color:#1d4ed8}.services-choice>span:nth-child(2){display:grid;gap:.08rem;min-width:0}.services-choice small{font-size:var(--fs-caption);color:var(--color-text-muted);line-height:1.25}.services-choice strong{font-size:var(--fs-meta);line-height:1.28}.services-choice> :global(svg){color:var(--color-brand-strong)}
+.services-cta-wrap{padding-block:.35rem 1rem}
+@media(max-width:63.99rem){.services-hero__grid{grid-template-columns:minmax(0,.9fr) minmax(22rem,1.1fr);gap:1.4rem}.services-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.services-fit__grid{grid-template-columns:1fr}.services-audience{grid-template-columns:1fr}.services-work__grid{grid-template-columns:repeat(2,minmax(0,1fr))}.services-reviews__grid{grid-template-columns:repeat(2,minmax(0,1fr))}.services-proof{grid-column:1/-1;grid-template-columns:repeat(3,1fr)}.services-proof :global(.trust){border-bottom:0;border-right:1px solid var(--color-border)}.services-proof :global(.trust:last-child){border-right:0}.services-chooser__grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:47.99rem){.services-hero{padding-block:.85rem .75rem;background:#fff}.services-hero__grid{grid-template-columns:1fr;gap:.8rem}.services-hero__copy{gap:.55rem}.services-hero h1{font-size:var(--fs-hero);max-width:none}.services-hero__actions{display:grid;grid-template-columns:1fr 1fr;gap:.55rem}.services-hero__actions .button{min-width:0;width:100%}.services-section{padding-block:1.15rem}.services-grid{grid-template-columns:1fr;gap:.5rem}.services-fit{padding-block:.65rem}.services-fit__grid{gap:.55rem}.services-custom{grid-template-columns:auto 1fr;padding:.85rem;gap:.7rem}.services-custom__icon{width:2.4rem;height:2.4rem}.services-custom h2,.services-audience h2{font-size:1.25rem}.services-custom p{font-size:var(--fs-meta)}.services-audience{padding:.85rem;gap:.7rem}.services-audience__heading p{font-size:var(--fs-meta)}.services-audience__grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:.35rem}.services-audience__item{min-height:4.2rem;padding:.35rem}.services-work__grid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:.55rem;scrollbar-width:none;padding-right:1rem}.services-work__grid::-webkit-scrollbar{display:none}.services-work__grid> :global(.project-card){flex:0 0 88%;scroll-snap-align:start}.services-process{padding-top:.75rem}.services-process__grid{grid-template-columns:1fr;gap:.42rem}.services-process__arrow{display:none}.services-process__step{padding:.65rem .7rem}.services-reviews__grid{grid-template-columns:1fr}.services-reviews__grid> :global(.review-card:nth-child(2)){display:none}.services-proof{grid-column:auto;grid-template-columns:repeat(3,1fr)}.services-proof :global(.trust){padding:.55rem .25rem;justify-content:center;gap:.35rem}.services-chooser__grid{grid-template-columns:1fr;gap:.45rem}.services-choice{padding:.72rem .78rem}.services-cta-wrap{padding-block:.1rem .75rem}}
+@media(max-width:23rem){.services-hero__actions{grid-template-columns:1fr}.services-audience__grid{grid-template-columns:repeat(2,minmax(0,1fr))}.services-proof{grid-template-columns:1fr}.services-proof :global(.trust){justify-content:flex-start;border-right:0;border-bottom:1px solid var(--color-border)}}
+</style>
