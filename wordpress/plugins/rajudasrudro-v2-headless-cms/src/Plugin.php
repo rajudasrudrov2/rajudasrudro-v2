@@ -25,6 +25,8 @@ final class Plugin {
     private $rest_api;
     /** @var Headless */
     private $headless;
+    /** @var \RDR\V2\HeadlessCMS\Portal\Portal */
+    private $portal;
 
     public static function boot() {
         if ( null === self::$instance ) {
@@ -42,6 +44,7 @@ final class Plugin {
         $post_types->register();
         $taxonomies->register();
         $meta->register();
+        \RDR\V2\HeadlessCMS\Portal\Portal::register_rewrites();
         self::seed_primary_services();
         flush_rewrite_rules( false );
     }
@@ -57,6 +60,7 @@ final class Plugin {
         $this->admin = new Admin( $this->meta, $this->settings );
         $this->rest_api = new RestApi( $this->media, $this->settings );
         $this->headless = new Headless();
+        $this->portal = new \RDR\V2\HeadlessCMS\Portal\Portal( $this->settings );
 
         add_action( 'init', array( $this->post_types, 'register' ), 5 );
         add_action( 'init', array( $this->taxonomies, 'register' ), 6 );
@@ -66,6 +70,7 @@ final class Plugin {
         $this->admin->hooks();
         $this->rest_api->hooks();
         $this->headless->hooks();
+        $this->portal->hooks();
     }
 
     private static function load_files() {
@@ -77,6 +82,19 @@ final class Plugin {
         require_once RDR_V2_CMS_DIR . 'src/Admin.php';
         require_once RDR_V2_CMS_DIR . 'src/RestApi.php';
         require_once RDR_V2_CMS_DIR . 'src/Headless.php';
+        require_once RDR_V2_CMS_DIR . 'src/Portal/Support.php';
+        require_once RDR_V2_CMS_DIR . 'src/Portal/Assets.php';
+        require_once RDR_V2_CMS_DIR . 'src/Portal/Shell.php';
+        require_once RDR_V2_CMS_DIR . 'src/Portal/ContentModule.php';
+        require_once RDR_V2_CMS_DIR . 'src/Portal/Dashboard.php';
+        require_once RDR_V2_CMS_DIR . 'src/Portal/Projects.php';
+        require_once RDR_V2_CMS_DIR . 'src/Portal/Services.php';
+        require_once RDR_V2_CMS_DIR . 'src/Portal/Reviews.php';
+        require_once RDR_V2_CMS_DIR . 'src/Portal/Articles.php';
+        require_once RDR_V2_CMS_DIR . 'src/Portal/About.php';
+        require_once RDR_V2_CMS_DIR . 'src/Portal/SiteSettings.php';
+        require_once RDR_V2_CMS_DIR . 'src/Portal/Router.php';
+        require_once RDR_V2_CMS_DIR . 'src/Portal/Portal.php';
     }
 
     public static function primary_services() {
