@@ -1,5 +1,112 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import { site } from '@/data/site';
+
+const emailHref = `mailto:${site.email}?subject=${encodeURIComponent('Privacy question')}`;
 ---
-<BaseLayout meta={{ title: 'Privacy Policy — Raju Das Rudro', description: 'Privacy information for rajudasrudro.com.', pathname: '/privacy-policy/' }}><article class="section"><div class="container reading legal"><h1>Privacy Policy</h1><p class="lede">This page is reserved for the final reviewed privacy policy before launch.</p><h2>Information submitted through the contact form</h2><p>Project inquiry information should be used only to respond to the inquiry, evaluate project fit and continue requested business communication.</p><h2>Analytics</h2><p>Analytics configuration will be documented before launch, with unnecessary third-party scripts avoided.</p><h2>Contact</h2><p>Questions about privacy can be sent through the project contact page.</p></div></article></BaseLayout>
-<style>.legal{display:grid;gap:1rem}.legal h2{margin-top:1rem}.legal p{color:var(--color-text-muted)}</style>
+<BaseLayout
+  meta={{
+    title: 'Privacy Policy — Raju Das Rudro',
+    description: 'How Raju Das Rudro handles information submitted through this website, direct email and external contact links.',
+    pathname: '/privacy-policy/',
+  }}
+>
+  <article class="section legal-page">
+    <div class="container reading legal-content">
+      <header class="legal-header">
+        <p class="eyebrow">Website Information</p>
+        <h1>Privacy Policy</h1>
+        <p class="lede">This policy explains how information is handled when you browse this personal-brand website, send a project inquiry, or use an external contact link.</p>
+      </header>
+
+      <section aria-labelledby="privacy-information-provided">
+        <h2 id="privacy-information-provided">Information You Provide</h2>
+        <p>When you use the project inquiry form, you may provide the following information:</p>
+        <ul>
+          <li>Name</li>
+          <li>Work email</li>
+          <li>Company or brand, if you choose to provide it</li>
+          <li>Selected service</li>
+          <li>Project details</li>
+          <li>Budget range, if you choose to provide it</li>
+          <li>Timeline, if you choose to provide it</li>
+        </ul>
+        <p>The current project inquiry form does not ask for a phone number, physical address, government ID or payment-card number.</p>
+      </section>
+
+      <section aria-labelledby="privacy-project-inquiry">
+        <h2 id="privacy-project-inquiry">Project Inquiry Information</h2>
+        <p>Project inquiry information is used to understand your request, evaluate the possible project scope, communicate with you about the inquiry and decide appropriate next steps.</p>
+      </section>
+
+      <section aria-labelledby="privacy-use">
+        <h2 id="privacy-use">How Information Is Used</h2>
+        <p>Information you submit is used for narrow, practical purposes connected to your request, including responding to inquiries, understanding project requirements, discussing potential services, preventing obvious spam or abuse, and operating and protecting the Contact mechanism.</p>
+        <p>The current website does not use the Contact form for automated profiling or an automated marketing workflow.</p>
+      </section>
+
+      <section aria-labelledby="privacy-processing">
+        <h2 id="privacy-processing">How Contact Submissions Are Processed</h2>
+        <p>Contact form submissions are sent to the website’s same-origin <code>/api/contact</code> endpoint. The endpoint validates the submission on the server and, when delivery is configured and available, may relay a validated submission to a server-configured external delivery destination.</p>
+        <p>The delivery configuration is kept server-side and is not intentionally exposed through the public form.</p>
+      </section>
+
+      <section aria-labelledby="privacy-email">
+        <h2 id="privacy-email">Direct Email</h2>
+        <p>You may choose to contact Raju Das Rudro directly at <a href={emailHref}>{site.email}</a>. Email messages are processed through the sender’s and recipient’s email services, which may handle or retain messages under their own practices.</p>
+      </section>
+
+      <section aria-labelledby="privacy-tracking">
+        <h2 id="privacy-tracking">Analytics and Cookies</h2>
+        <p>The current website source does not intentionally implement Google Analytics, Google Tag Manager, Meta Pixel, advertising trackers, behavioral analytics, session replay or a cookie-consent system.</p>
+        <p>If analytics, advertising technology, a CMS integration or another tracking-related feature is added later, this policy should be reviewed and updated to reflect the actual implementation.</p>
+      </section>
+
+      <section aria-labelledby="privacy-third-party">
+        <h2 id="privacy-third-party">Third-Party Services and Links</h2>
+        <p>This website includes links to external services, including Fiverr. When you follow an external link, that destination operates under its own terms and privacy practices. This website does not control third-party policies or data handling.</p>
+      </section>
+
+      <section aria-labelledby="privacy-security">
+        <h2 id="privacy-security">Data Security</h2>
+        <p>Reasonable technical and organizational measures are used where appropriate to protect the website and Contact mechanism. No internet transmission or online system can be guaranteed to be completely secure.</p>
+      </section>
+
+      <section aria-labelledby="privacy-retention">
+        <h2 id="privacy-retention">Data Retention</h2>
+        <p>The current website implementation does not intentionally store Contact form submissions in WordPress, a site database, browser <code>localStorage</code>, or the GitHub repository.</p>
+        <p>Messages delivered through an external delivery destination or email service may be retained as needed for communication, project evaluation, reasonable record-keeping or applicable obligations, subject to the actual service used. This policy does not claim a fixed deletion period.</p>
+      </section>
+
+      <section aria-labelledby="privacy-children">
+        <h2 id="privacy-children">Children’s Privacy</h2>
+        <p>This professional services website is not directed at children. If information is knowingly submitted in a context that raises a concern involving a child, it may be handled appropriately based on the circumstances.</p>
+      </section>
+
+      <section aria-labelledby="privacy-changes">
+        <h2 id="privacy-changes">Changes to This Privacy Policy</h2>
+        <p>This policy may be updated when website functionality, Contact processing, analytics, CMS integrations, other service integrations, or relevant business and legal requirements change. The current page should be read as the policy describing the website’s then-current implementation.</p>
+      </section>
+
+      <section aria-labelledby="privacy-contact">
+        <h2 id="privacy-contact">Contact</h2>
+        <p>For a question about this Privacy Policy or information you have submitted through the website, email <a href={emailHref}>{site.email}</a>.</p>
+      </section>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+.legal-page{padding-top:var(--space-10)}
+.legal-content{display:grid;gap:var(--space-8);margin-inline:auto}
+.legal-header{display:grid;gap:var(--space-4);padding-bottom:var(--space-6);border-bottom:1px solid var(--color-border)}
+.legal-header h1{max-width:14ch}
+.legal-header .lede{max-width:42rem}
+.legal-content section{display:grid;gap:var(--space-3)}
+.legal-content h2{font-size:clamp(1.35rem,2vw,1.75rem)}
+.legal-content p,.legal-content li{color:#475569;font-size:var(--fs-body);line-height:var(--lh-body)}
+.legal-content ul{display:grid;gap:.45rem;padding-left:1.25rem}
+.legal-content a{color:#174ea6;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;overflow-wrap:anywhere}
+.legal-content code{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace;font-size:.92em;overflow-wrap:anywhere}
+@media(max-width:47.99rem){.legal-page{padding-top:var(--space-8)}.legal-content{gap:var(--space-6)}.legal-header{padding-bottom:var(--space-5)}.legal-content ul{padding-left:1.1rem}}
+</style>
