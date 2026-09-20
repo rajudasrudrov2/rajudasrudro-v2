@@ -1,4 +1,5 @@
 const MAX_BODY_BYTES = 20_000;
+const WEBHOOK_TIMEOUT_MS = 9_000;
 
 const SERVICE_VALUES = new Set([
   'ai-ugc-video-ads',
@@ -128,7 +129,7 @@ function getWebhookUrl() {
   if (!raw) return null;
   try {
     const url = new URL(raw);
-    if (url.protocol !== 'https:' && url.protocol !== 'http:') return null;
+    if (url.protocol !== 'https:') return null;
     return url.toString();
   } catch {
     return null;
@@ -178,6 +179,9 @@ export default async function handler(req, res) {
     return sendJson(res, 503, { ok: false, code: 'DELIVERY_UNAVAILABLE' });
   }
 
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), WEBHOOK_TIMEOUT_MS);
+
   try {
     const upstream = await fetch(webhookUrl, {
       method: 'POST',
@@ -187,6 +191,7 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify(validation.payload),
       redirect: 'error',
+      signal: controller.signal,
     });
 
     if (!upstream.ok) {
@@ -196,5 +201,7 @@ export default async function handler(req, res) {
     return sendJson(res, 200, { ok: true });
   } catch {
     return sendJson(res, 502, { ok: false, code: 'DELIVERY_FAILED' });
+  } finally {
+    clearTimeout(timeoutId);
   }
 }
