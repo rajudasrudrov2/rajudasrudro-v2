@@ -1,6 +1,52 @@
 ---
-import BaseLayout from '@/layouts/BaseLayout.astro';
+import '@/styles/global.css';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
 import Button from '@/components/Button.astro';
 ---
-<BaseLayout meta={{ title: 'Page Not Found — Raju Das Rudro', description: 'The page you requested does not exist.', pathname: '/404/', noindex: true }}><section class="section not-found"><div class="container"><div class="surface not-found__card"><p class="eyebrow">Error 404</p><strong>404</strong><h1>Page Not Found</h1><p>The page you’re looking for doesn’t exist or may have moved.</p><div class="cluster"><Button href="/">Go Home</Button><Button href="/work/" variant="secondary">View My Work</Button></div></div></div></section></BaseLayout>
-<style>.not-found{min-height:65vh;display:grid;place-items:center}.not-found__card{display:grid;place-items:center;text-align:center;gap:.6rem;padding:3rem 1.5rem}.not-found__card>strong{font-family:var(--font-display);font-size:5rem;line-height:1;color:var(--color-text)}.not-found__card p:not(.eyebrow){color:var(--color-text-muted)}</style>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#ffffff" />
+    <script is:inline>document.documentElement.classList.add('js');</script>
+    <title>Page Not Found — Raju Das Rudro</title>
+    <meta name="description" content="The page you requested could not be found. Use the available links to continue browsing Raju Das Rudro’s website." />
+    <meta name="robots" content="noindex, nofollow" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Header />
+    <main id="main">
+      <section class="section not-found" aria-labelledby="not-found-title">
+        <div class="container not-found__inner">
+          <div class="surface not-found__card">
+            <p class="eyebrow">Error 404</p>
+            <div class="not-found__code" aria-hidden="true">404</div>
+            <h1 id="not-found-title">Page not found</h1>
+            <p class="not-found__copy">The page may have moved, the address may be incomplete, or the content may no longer be available. Choose a useful destination below.</p>
+            <div class="not-found__actions" aria-label="Helpful destinations">
+              <Button href="/">Go Home</Button>
+              <Button href="/work/" variant="secondary">View My Work</Button>
+              <Button href="/services/" variant="secondary">Explore Services</Button>
+              <Button href="/contact/" variant="secondary">Start a Project</Button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <Footer />
+  </body>
+</html>
+
+<style>
+.not-found{min-height:clamp(30rem,68vh,46rem);display:grid;align-items:center}
+.not-found__inner{display:grid;place-items:center}
+.not-found__card{width:min(100%,46rem);display:grid;justify-items:center;text-align:center;gap:var(--space-4);padding:clamp(2rem,5vw,4rem) clamp(1.25rem,5vw,3rem);box-shadow:none}
+.not-found__code{font-family:var(--font-display);font-size:clamp(4.75rem,13vw,8.5rem);font-weight:var(--weight-bold);line-height:.82;letter-spacing:-.065em;color:var(--color-text)}
+.not-found__card h1{font-size:clamp(2rem,4vw,3rem)}
+.not-found__copy{max-width:38rem;color:var(--color-text-muted);font-size:var(--fs-body-lg);line-height:var(--lh-body-tight)}
+.not-found__actions{display:flex;flex-wrap:wrap;justify-content:center;gap:var(--space-3);margin-top:var(--space-2)}
+@media(max-width:47.99rem){.not-found{min-height:auto}.not-found__card{padding:2rem 1rem}.not-found__actions{width:100%;display:grid}.not-found__actions :global(.button){width:100%}}
+</style>
