@@ -13,8 +13,24 @@ const contactIconForService = (slug: string): ContactProjectIcon => {
   return 'video';
 };
 
+const contactServiceSlugs = [
+  'ai-ugc-video-ads',
+  'ai-video-production',
+  'ai-spokesperson-videos',
+  'web-design-development',
+] as const;
+
+const primaryServiceOptions = contactServiceSlugs
+  .map((slug) => services.find((service) => service.slug === slug))
+  .filter((service): service is NonNullable<typeof service> => Boolean(service))
+  .map((service) => ({
+    value: service.slug,
+    label: service.title,
+    icon: contactIconForService(service.slug),
+  }));
+
 const serviceOptions: Array<{ value: string; label: string; icon: ContactProjectIcon }> = [
-  ...services.map((service) => ({ value: service.slug, label: service.title, icon: contactIconForService(service.slug) })),
+  ...primaryServiceOptions,
   { value: 'other', label: 'Other / Custom Requirement', icon: 'spark' },
 ];
 
@@ -78,8 +94,8 @@ const emailHref = `mailto:${site.email}?subject=${encodeURIComponent('Project in
         </div>
 
         <div class="alert alert--error" hidden data-submit-error role="alert" tabindex="-1">
-          <strong>Something went wrong while sending your inquiry.</strong>
-          <span>Your details are still here. Please try again or use a direct contact option below.</span>
+          <strong data-submit-error-title>Something went wrong while sending your inquiry.</strong>
+          <span data-submit-error-copy>Your details are still here. Please try again or use a direct contact option below.</span>
           <div class="alert__actions">
             <a href={emailHref}>Email me directly</a>
             <a href={site.fiverr} rel="external">View Fiverr Profile</a>
@@ -170,9 +186,9 @@ const emailHref = `mailto:${site.email}?subject=${encodeURIComponent('Project in
           </div>
 
           <div class="optional-group">
-            <div class="choice-field">
-              <span class="field-label" id="budget-label">Budget Range <small>(Optional)</small></span>
-              <div class="choice-desktop" role="group" aria-labelledby="budget-label">
+            <fieldset class="choice-field">
+              <legend class="field-label" id="budget-label">Budget Range <small>(Optional)</small></legend>
+              <div class="choice-desktop">
                 {budgetOptions.map((option) => (
                   <label>
                     <input type="radio" name="budgetChoice" value={option.value} data-budget-radio />
@@ -185,11 +201,11 @@ const emailHref = `mailto:${site.email}?subject=${encodeURIComponent('Project in
                 {budgetOptions.map((option) => <option value={option.value}>{option.label}</option>)}
               </select>
               <input type="hidden" name="budget" value="" data-budget-value />
-            </div>
+            </fieldset>
 
-            <div class="choice-field">
-              <span class="field-label" id="timeline-label">Timeline <small>(Optional)</small></span>
-              <div class="choice-desktop" role="group" aria-labelledby="timeline-label">
+            <fieldset class="choice-field">
+              <legend class="field-label" id="timeline-label">Timeline <small>(Optional)</small></legend>
+              <div class="choice-desktop">
                 {timelineOptions.map((option) => (
                   <label>
                     <input type="radio" name="timelineChoice" value={option.value} data-timeline-radio />
@@ -202,7 +218,7 @@ const emailHref = `mailto:${site.email}?subject=${encodeURIComponent('Project in
                 {timelineOptions.map((option) => <option value={option.value}>{option.label}</option>)}
               </select>
               <input type="hidden" name="timeline" value="" data-timeline-value />
-            </div>
+            </fieldset>
           </div>
           <p class="qualifier-note">Budget and timeline are optional planning context only. Final scope, pricing and delivery timing are confirmed separately.</p>
 
@@ -303,6 +319,8 @@ const emailHref = `mailto:${site.email}?subject=${encodeURIComponent('Project in
   const formIntro = document.querySelector('[data-form-intro]');
   const successState = document.querySelector('[data-success-state]');
   const submitError = document.querySelector('[data-submit-error]');
+  const submitErrorTitle = document.querySelector('[data-submit-error-title]');
+  const submitErrorCopy = document.querySelector('[data-submit-error-copy]');
   const deliveryUnavailable = document.querySelector('[data-delivery-unavailable]');
   const validationSummary = document.querySelector('[data-validation-summary]');
   const status = document.querySelector('[data-form-status]');
@@ -315,7 +333,18 @@ const emailHref = `mailto:${site.email}?subject=${encodeURIComponent('Project in
   const timelineValue = form.querySelector('[data-timeline-value]');
   const timelineSelect = form.querySelector('[data-timeline-select]');
 
+  const statusMessages = {
+    idle: '',
+    'validation-error': 'Please correct the highlighted fields.',
+    submitting: 'Sending your project inquiry.',
+    success: 'Project inquiry sent successfully.',
+    'server-error': 'Your inquiry could not be sent.',
+    'delivery-unavailable': 'Automated delivery is currently unavailable.',
+    'network-error': 'A network error prevented submission. Your form values have been preserved.',
+  };
+
   let isSubmitting = false;
+  let currentState = 'idle';
 
   const setStatus = (message = '') => {
     if (status) status.textContent = message;
@@ -325,6 +354,7 @@ const emailHref = `mailto:${site.email}?subject=${encodeURIComponent('Project in
     const hidden = type === 'service' ? serviceValue : type === 'budget' ? budgetValue : timelineValue;
     const select = type === 'service' ? serviceSelect : type === 'budget' ? budgetSelect : timelineSelect;
     const radios = form.querySelectorAll(`[data-${type}-radio]`);
+
     if (hidden instanceof HTMLInputElement) hidden.value = value;
     if (select instanceof HTMLSelectElement) select.value = value;
     radios.forEach((radio) => {
@@ -332,12 +362,70 @@ const emailHref = `mailto:${site.email}?subject=${encodeURIComponent('Project in
     });
   };
 
+  const setFormState = (nextState, { focus = false } = {}) => {
+    currentState = nextState;
+
+    const showValidation = nextState === 'validation-error';
+    const showSuccess = nextState === 'success';
+    const showSubmitError = nextState === 'server-error' || nextState === 'network-error';
+    const showDeliveryUnavailable = nextState === 'delivery-unavailable';
+    const submitting = nextState === 'submitting';
+
+    if (validationSummary instanceof HTMLElement) validationSummary.hidden = !showValidation;
+    if (successState instanceof HTMLElement) successState.hidden = !showSuccess;
+    if (submitError instanceof HTMLElement) submitError.hidden = !showSubmitError;
+    if (deliveryUnavailable instanceof HTMLElement) deliveryUnavailable.hidden = !showDeliveryUnavailable;
+
+    if (submitErrorTitle && submitErrorCopy && showSubmitError) {
+      if (nextState === 'network-error') {
+        submitErrorTitle.textContent = 'A network error prevented submission.';
+        submitErrorCopy.textContent = 'Your details are still here. Check your connection and try again, or use a direct contact option below.';
+      } else {
+        submitErrorTitle.textContent = 'Something went wrong while sending your inquiry.';
+        submitErrorCopy.textContent = 'Your details are still here. Please try again or use a direct contact option below.';
+      }
+    }
+
+    form.hidden = showSuccess;
+    if (formIntro instanceof HTMLElement) formIntro.hidden = showSuccess;
+
+    if (submitting) form.setAttribute('aria-busy', 'true');
+    else form.removeAttribute('aria-busy');
+
+    if (submit instanceof HTMLButtonElement) {
+      submit.disabled = submitting;
+      submit.toggleAttribute('aria-disabled', submitting);
+      submit.innerHTML = submitting
+        ? 'Sending…'
+        : 'Send Project Inquiry <span aria-hidden="true">→</span>';
+    }
+
+    setStatus(statusMessages[nextState] || '');
+
+    if (!focus) return;
+
+    const target =
+      showValidation ? validationSummary
+      : showSuccess ? successState
+      : showDeliveryUnavailable ? deliveryUnavailable
+      : showSubmitError ? submitError
+      : null;
+
+    if (target instanceof HTMLElement) {
+      target.focus({ preventScroll: true });
+      target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  };
+
   ['service', 'budget', 'timeline'].forEach((type) => {
     form.querySelectorAll(`[data-${type}-radio]`).forEach((radio) => {
       radio.addEventListener('change', () => {
-        if (radio instanceof HTMLInputElement && radio.checked) setHiddenChoice(type, radio.value);
+        if (radio instanceof HTMLInputElement && radio.checked) {
+          setHiddenChoice(type, radio.value);
+        }
       });
     });
+
     const select = form.querySelector(`[data-${type}-select]`);
     if (select instanceof HTMLSelectElement) {
       select.addEventListener('change', () => setHiddenChoice(type, select.value));
@@ -356,12 +444,6 @@ const emailHref = `mailto:${site.email}?subject=${encodeURIComponent('Project in
       if (!(control instanceof HTMLElement)) return;
       if (message) control.setAttribute('aria-invalid', 'true');
       else control.removeAttribute('aria-invalid');
-    });
-  };
-
-  const hideAlerts = () => {
-    [submitError, deliveryUnavailable].forEach((alert) => {
-      if (alert instanceof HTMLElement) alert.hidden = true;
     });
   };
 
@@ -417,20 +499,17 @@ const emailHref = `mailto:${site.email}?subject=${encodeURIComponent('Project in
       if (detailsControl instanceof HTMLElement) errors.push(detailsControl);
     }
 
-    if (validationSummary instanceof HTMLElement) validationSummary.hidden = errors.length === 0;
-    if (errors.length > 0) {
-      if (validationSummary instanceof HTMLElement) validationSummary.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      errors[0].focus({ preventScroll: true });
-      return null;
-    }
-
-    return values;
+    return errors.length === 0 ? values : null;
   };
 
   if (details instanceof HTMLTextAreaElement) {
     details.addEventListener('input', () => {
       if (charCount) charCount.textContent = String(details.value.length);
-      if (details.getAttribute('aria-invalid') === 'true' && details.value.trim().length >= 20 && details.value.trim().length <= 1000) {
+      if (
+        details.getAttribute('aria-invalid') === 'true'
+        && details.value.trim().length >= 20
+        && details.value.trim().length <= 1000
+      ) {
         setFieldError('projectDetails');
       }
     });
@@ -439,14 +518,20 @@ const emailHref = `mailto:${site.email}?subject=${encodeURIComponent('Project in
   form.addEventListener('input', (event) => {
     const target = event.target;
     if (!(target instanceof HTMLInputElement)) return;
-    if (target.name === 'name' && target.value.trim().length >= 2 && target.value.trim().length <= 80) setFieldError('name');
+    if (target.name === 'name' && target.value.trim().length >= 2 && target.value.trim().length <= 80) {
+      setFieldError('name');
+    }
     if (target.name === 'email' && target.validity.valid) setFieldError('email');
   });
 
   form.addEventListener('change', (event) => {
     const target = event.target;
-    if ((target instanceof HTMLInputElement || target instanceof HTMLSelectElement) && (target.matches('[data-service-radio]') || target.matches('[data-service-select]'))) {
-      if (getValues().service) setFieldError('service');
+    if (
+      (target instanceof HTMLInputElement || target instanceof HTMLSelectElement)
+      && (target.matches('[data-service-radio]') || target.matches('[data-service-select]'))
+      && getValues().service
+    ) {
+      setFieldError('service');
     }
   });
 
@@ -454,25 +539,16 @@ const emailHref = `mailto:${site.email}?subject=${encodeURIComponent('Project in
     event.preventDefault();
     if (isSubmitting) return;
 
-    hideAlerts();
-    setStatus('');
-    if (successState instanceof HTMLElement) successState.hidden = true;
+    setFormState('idle');
 
     const values = validate();
     if (!values) {
-      setStatus('Please correct the highlighted fields.');
+      setFormState('validation-error', { focus: true });
       return;
     }
-    if (validationSummary instanceof HTMLElement) validationSummary.hidden = true;
 
     isSubmitting = true;
-    form.setAttribute('aria-busy', 'true');
-    if (submit instanceof HTMLButtonElement) {
-      submit.disabled = true;
-      submit.setAttribute('aria-disabled', 'true');
-      submit.textContent = 'Sending…';
-    }
-    setStatus('Sending your project inquiry.');
+    setFormState('submitting');
 
     try {
       const response = await fetch(endpoint, {
@@ -492,23 +568,13 @@ const emailHref = `mailto:${site.email}?subject=${encodeURIComponent('Project in
         Object.entries(result.fieldErrors).forEach(([field, message]) => {
           if (typeof message === 'string') setFieldError(field, message);
         });
-        if (validationSummary instanceof HTMLElement) {
-          validationSummary.hidden = false;
-          validationSummary.focus({ preventScroll: true });
-        }
-        setStatus('Please correct the highlighted fields.');
+        setFormState('validation-error', { focus: true });
         return;
       }
 
       if (!response.ok || !result?.ok) {
         const unavailable = response.status === 503 || result?.code === 'DELIVERY_UNAVAILABLE';
-        const target = unavailable ? deliveryUnavailable : submitError;
-        if (target instanceof HTMLElement) {
-          target.hidden = false;
-          target.focus({ preventScroll: true });
-          target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-        setStatus(unavailable ? 'Automated delivery is currently unavailable.' : 'Your inquiry could not be sent.');
+        setFormState(unavailable ? 'delivery-unavailable' : 'server-error', { focus: true });
         return;
       }
 
@@ -518,36 +584,21 @@ const emailHref = `mailto:${site.email}?subject=${encodeURIComponent('Project in
       setHiddenChoice('timeline', '');
       if (charCount) charCount.textContent = '0';
       ['name', 'email', 'service', 'projectDetails'].forEach((name) => setFieldError(name));
-      setStatus('Project inquiry sent successfully.');
-      form.hidden = true;
-      if (formIntro instanceof HTMLElement) formIntro.hidden = true;
-      hideAlerts();
-      if (successState instanceof HTMLElement) {
-        successState.hidden = false;
-        successState.focus({ preventScroll: true });
-        successState.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
+      setFormState('success', { focus: true });
     } catch {
-      if (submitError instanceof HTMLElement) {
-        submitError.hidden = false;
-        submitError.focus({ preventScroll: true });
-        submitError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-      setStatus('A network error prevented submission. Your form values have been preserved.');
+      setFormState('network-error', { focus: true });
     } finally {
       isSubmitting = false;
-      form.removeAttribute('aria-busy');
-      if (submit instanceof HTMLButtonElement) {
-        submit.disabled = false;
-        submit.removeAttribute('aria-disabled');
-        submit.innerHTML = 'Send Project Inquiry <span aria-hidden="true">→</span>';
-      }
+      if (currentState === 'submitting') setFormState('idle');
     }
   });
+
+  setFormState('idle');
 })();
 </script>
 
 <style>
+.form-card [hidden]{display:none!important}
 .contact-hero{padding-top:var(--space-8)}
 .contact-grid{display:grid;grid-template-columns:minmax(0,.82fr) minmax(34rem,1.18fr);gap:2rem;align-items:start}
 .contact-intro{padding-top:.9rem}
