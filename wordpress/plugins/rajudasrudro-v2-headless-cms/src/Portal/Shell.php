@@ -76,10 +76,27 @@ final class Shell {
         </main>
     </div>
 </div>
-<?php wp_print_footer_scripts(); ?>
+<?php self::print_footer_dependencies(); ?>
 </body>
 </html><?php
         exit;
+    }
+
+    private static function print_footer_dependencies() {
+        /*
+         * wp_enqueue_media() registers WordPress' native media templates on
+         * wp_footer. The custom Portal shell intentionally does not execute the
+         * public theme footer lifecycle, so print those templates explicitly
+         * when media was requested for this Portal response.
+         */
+        if ( did_action( 'wp_enqueue_media' ) && function_exists( 'wp_print_media_templates' ) && 0 === did_action( 'print_media_templates' ) ) {
+            wp_print_media_templates();
+
+            // Prevent duplicate media-template output if wp_footer is invoked later.
+            remove_action( 'wp_footer', 'wp_print_media_templates' );
+        }
+
+        wp_print_footer_scripts();
     }
 
     private static function nav_link( $key, $label, $url, $icon, $active ) {
