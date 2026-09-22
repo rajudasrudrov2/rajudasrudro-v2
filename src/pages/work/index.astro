@@ -1,0 +1,302 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ProjectCard from '@/components/ProjectCard.astro';
+import WorkFeaturedProject from '@/components/WorkFeaturedProject.astro';
+import TrustMetric from '@/components/TrustMetric.astro';
+import CTA from '@/components/CTA.astro';
+import Icon from '@/components/Icon.astro';
+import { featuredWorkProject, workFilterCategories, workProjects, workTrustMetrics, workUsesCms } from '@/data/work';
+---
+<BaseLayout
+  meta={{
+    title: 'AI UGC, AI Video & Web Portfolio — Raju Das Rudro',
+    description: workUsesCms ? 'Selected AI UGC, AI video, AI spokesperson and web design work from Raju Das Rudro.' : 'Selected AI UGC, AI video, AI spokesperson and web design work from Raju Das Rudro, with verified project records prepared for structured migration.',
+    pathname: '/work/',
+  }}
+>
+  <div class="work-page" data-work-page>
+    <section class="work-intro" aria-labelledby="work-title">
+      <div class="container work-intro__grid">
+        <div class="work-intro__copy">
+          <p class="eyebrow">Portfolio / Selected Work</p>
+          <h1 id="work-title">Selected Work</h1>
+          <p class="lede">{workUsesCms ? 'Selected AI UGC, AI video creative and web work from the current public portfolio.' : 'Selected AI UGC, AI video creative and web work. Verified project records are being migrated into this V2 portfolio.'}</p>
+        </div>
+        <div class="work-intro__note" aria-hidden="true">Ideas<br />Content<br />Better Brands</div>
+      </div>
+    </section>
+
+    <section class="work-filter-shell" aria-label="Portfolio filters">
+      <div class="container work-filters" data-work-controls>
+        <div class="work-filters__group" role="group" aria-label="Filter projects by service">
+          {workFilterCategories.map((filter, index) => (
+            <button
+              class:list={{ 'work-filter': true, 'is-active': index === 0 }}
+              type="button"
+              data-work-filter={filter.value}
+              aria-pressed={index === 0 ? 'true' : 'false'}
+            >
+              {filter.label}
+            </button>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="work-featured-section" aria-label="Featured work preview">
+      <div class="container">
+        <WorkFeaturedProject project={featuredWorkProject} />
+      </div>
+    </section>
+
+    <section class="work-projects" aria-labelledby="all-projects-title">
+      <div class="container">
+        <div class="work-projects__heading">
+          <div>
+            <p class="work-projects__eyebrow">All Projects</p>
+            <h2 id="all-projects-title">More Projects</h2>
+          </div>
+          <label class="work-sort">
+            <span class="visually-hidden">Sort projects</span>
+            <select data-work-sort>
+              <option value="design">Sort by: Curated</option>
+              <option value="title">Sort by: A–Z</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="work-grid" data-work-grid>
+          {workProjects.map((project) => <ProjectCard project={project} />)}
+        </div>
+
+        <div class="work-empty surface" data-work-empty hidden role="status">
+          <Icon name="briefcase" size={26} />
+          <strong>No projects in this category yet.</strong>
+          <span>{workUsesCms ? 'Choose another filter to view the current portfolio.' : 'Choose another filter to view the current development portfolio set.'}</span>
+        </div>
+
+        <p class="visually-hidden" aria-live="polite" aria-atomic="true" data-work-status></p>
+
+        <div class="work-load-more-wrap">
+          <button class="work-load-more" type="button" data-load-more>
+            Load More Projects <span aria-hidden="true">↓</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="work-proof" aria-label="Trust indicators">
+      <div class="container work-proof__grid">
+        <p>{workUsesCms ? 'Public trust indicators are presented separately from individual project claims.' : 'Verified trust data from the accepted Foundation remains separate from development project previews.'}</p>
+        {workTrustMetrics.map((metric) => <TrustMetric {...metric} />)}
+        <a href="/reviews/">Read Client Reviews <Icon name="arrow" size={14} /></a>
+      </div>
+    </section>
+
+    <div class="container work-cta-wrap">
+      <CTA
+        title="Have a project in mind?"
+        description="Let’s turn your idea into clear, high-converting creative or a modern web experience."
+        primaryHref="/contact/"
+        primaryLabel="Start a Project"
+        secondaryHref="/services/"
+        secondaryLabel="Explore Services"
+      />
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+.work-page{background:#fff}
+.work-intro{padding-block:1.45rem 1rem;background:linear-gradient(110deg,#fff 0%,#fff 74%,#fbfaf8 100%)}
+.work-intro__grid{display:grid;grid-template-columns:minmax(0,1fr) 13rem;gap:2rem;align-items:end}
+.work-intro__copy{display:grid;gap:.45rem}
+.work-intro h1{font-size:var(--fs-h1);font-weight:800;line-height:.98;letter-spacing:-.05em}
+.work-intro .lede{max-width:38rem;font-size:var(--fs-body);line-height:var(--lh-body-tight)}
+.work-intro__note{justify-self:end;align-self:center;font-size:var(--fs-body-sm);line-height:1.2;color:#475569;font-style:italic;transform:rotate(-4deg);text-align:center;padding-right:1rem}
+
+.work-filter-shell{border-bottom:1px solid var(--color-border)}
+.work-filters{padding-block:.72rem}
+.work-filters__group{display:flex;align-items:center;gap:.55rem;flex-wrap:wrap}
+.work-filter{min-height:2rem;padding:.4rem .78rem;border:1px solid var(--color-border);border-radius:.55rem;background:#fff;color:#526072;font:inherit;font-size:var(--fs-meta);font-weight:650;cursor:pointer;transition:background var(--transition),border-color var(--transition),color var(--transition),transform var(--transition)}
+.work-filter:hover{border-color:#cbd5e1;transform:translateY(-1px)}
+.work-filter.is-active,.work-filter[aria-pressed="true"]{background:#0f1f2b;border-color:#0f1f2b;color:#fff}
+
+.work-featured-section{padding-block:.9rem 1rem}
+.work-projects{padding-block:.4rem 1.05rem}
+.work-projects__heading{display:flex;align-items:end;justify-content:space-between;gap:1rem;margin-bottom:.55rem}
+.work-projects__eyebrow{color:var(--color-brand-strong);font-size:var(--fs-eyebrow);font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.14rem}
+.work-projects h2{font-size:var(--fs-h2);line-height:1.08;letter-spacing:-.04em}
+.work-sort select{min-height:2.25rem;border:1px solid var(--color-border);border-radius:.48rem;background:#fff;color:#475569;padding:.42rem 2rem .42rem .65rem;font-size:var(--fs-meta);font-weight:650;cursor:pointer}
+.work-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.7rem}
+.work-empty{display:grid;justify-items:center;gap:.35rem;text-align:center;padding:2.2rem;color:#64748b;box-shadow:none}
+.work-empty[hidden]{display:none}
+.work-empty strong{font-size:var(--fs-card-title);color:var(--color-text)}
+.work-empty span{font-size:var(--fs-body-sm);max-width:25rem}
+.work-load-more-wrap{display:flex;justify-content:center;padding-top:.8rem}
+.work-load-more{min-height:2.35rem;padding:.5rem 1rem;border:1px solid var(--color-brand);border-radius:.48rem;background:#fff;color:var(--color-brand-strong);font:inherit;font-size:var(--fs-meta);font-weight:750;cursor:pointer;transition:background var(--transition),color var(--transition),transform var(--transition)}
+.work-load-more:hover{background:#fff7f7;transform:translateY(-1px)}
+.work-load-more[hidden]{display:none}
+
+.work-proof{border-block:1px solid var(--color-border);background:#fbfcfd}
+.work-proof__grid{display:grid;grid-template-columns:minmax(13rem,1.2fr) repeat(3,minmax(0,.72fr)) minmax(8rem,.8fr);align-items:center}
+.work-proof__grid>p{padding:.75rem 1rem;font-size:var(--fs-meta);line-height:var(--lh-body-tight);color:var(--color-text-muted)}
+.work-proof__grid>:global(.trust){border-left:1px solid var(--color-border)}
+.work-proof__grid>a{display:inline-flex;align-items:center;justify-content:flex-end;gap:.25rem;padding:.75rem 1rem;color:#2563eb;font-size:var(--fs-meta);font-weight:700;white-space:nowrap}
+.work-cta-wrap{padding-block:.8rem 1rem}
+
+html:not(.js) .work-filter-shell,html:not(.js) .work-sort,html:not(.js) .work-load-more-wrap{display:none}
+
+@media(max-width:63.99rem){
+  .work-intro__grid{grid-template-columns:minmax(0,1fr) 10rem}
+  .work-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .work-proof__grid{grid-template-columns:1fr repeat(3,1fr)}
+  .work-proof__grid>p{grid-column:1/-1;border-bottom:1px solid var(--color-border)}
+  .work-proof__grid>a{grid-column:1/-1;justify-content:center;border-top:1px solid var(--color-border)}
+}
+
+@media(max-width:47.99rem){
+  .work-intro{padding-block:.85rem .55rem;background:#fff}
+  .work-intro__grid{grid-template-columns:1fr}
+  .work-intro__copy{gap:.28rem}
+  .work-intro__note{display:none}
+  .work-intro h1{font-size:var(--fs-h1);line-height:1.02}
+  .work-intro .lede{font-size:var(--fs-body);line-height:var(--lh-body-tight);max-width:21rem}
+  .work-filter-shell{border-bottom:0}
+  .work-filters{padding-block:.35rem .7rem}
+  .work-filters__group{gap:.35rem}
+  .work-filter{min-height:2.45rem;padding:.45rem .66rem;font-size:var(--fs-caption);border-radius:.65rem}
+  .work-featured-section{padding-block:.05rem .8rem}
+  .work-projects{padding-block:.2rem .75rem}
+  .work-projects__heading{align-items:center;margin-bottom:.48rem}
+  .work-projects__eyebrow{display:none}
+  .work-projects h2{font-size:var(--fs-h2)}
+  .work-sort select{min-height:2.45rem;font-size:var(--fs-caption);padding-left:.55rem;max-width:9.5rem}
+  .work-grid{grid-template-columns:1fr;gap:.48rem}
+  .work-load-more-wrap{padding-top:.62rem}
+  .work-load-more{width:min(100%,12rem);min-height:2.65rem;font-size:var(--fs-meta)}
+  .work-proof__grid{grid-template-columns:repeat(3,1fr)}
+  .work-proof__grid>p{display:none}
+  .work-proof__grid>:global(.trust){padding:.62rem .3rem;border-left:0;justify-content:center;gap:.35rem}.work-proof__grid>:global(.trust) span:last-child{justify-items:start}
+  .work-proof__grid>a{grid-column:1/-1;padding:.55rem;justify-content:center}
+  .work-cta-wrap{padding-block:.55rem .75rem}
+}
+
+@media(max-width:23rem){.work-filter{padding-inline:.55rem}.work-projects__heading{align-items:flex-start;flex-direction:column}.work-sort select{max-width:none}}
+</style>
+
+<script is:inline>
+  (() => {
+    const root = document.querySelector('[data-work-page]');
+    if (!(root instanceof HTMLElement)) return;
+
+    const grid = root.querySelector('[data-work-grid]');
+    const cards = Array.from(root.querySelectorAll('[data-project-card]')).filter((card) => card instanceof HTMLElement);
+    const filters = Array.from(root.querySelectorAll('[data-work-filter]')).filter((button) => button instanceof HTMLButtonElement);
+    const sort = root.querySelector('[data-work-sort]');
+    const loadMore = root.querySelector('[data-load-more]');
+    const empty = root.querySelector('[data-work-empty]');
+    const status = root.querySelector('[data-work-status]');
+
+    if (!(grid instanceof HTMLElement) || !(sort instanceof HTMLSelectElement) || !(loadMore instanceof HTMLButtonElement) || !(empty instanceof HTMLElement)) return;
+
+    let activeFilter = 'all';
+    const increment = 4;
+    const initialLimit = () => window.matchMedia('(max-width: 47.99rem)').matches ? 4 : window.matchMedia('(max-width: 63.99rem)').matches ? 8 : 12;
+    let visibleLimit = initialLimit();
+
+    const categoriesFor = (card) => (card.dataset.categories || '').split('|').filter(Boolean);
+    const matchesFilter = (card) => activeFilter === 'all' || categoriesFor(card).includes(activeFilter);
+
+    const sortedCards = () => cards.slice().sort((a, b) => {
+      if (sort.value === 'title') return (a.dataset.title || '').localeCompare(b.dataset.title || '');
+      return Number(b.dataset.order || 0) - Number(a.dataset.order || 0);
+    });
+
+    const apply = ({ focusFirstNew = false, previousVisible = 0 } = {}) => {
+      const ordered = sortedCards();
+      ordered.forEach((card) => grid.append(card));
+      const matching = ordered.filter(matchesFilter);
+      matching.forEach((card, index) => { card.hidden = index >= visibleLimit; });
+      ordered.filter((card) => !matchesFilter(card)).forEach((card) => { card.hidden = true; });
+
+      empty.hidden = matching.length !== 0;
+      loadMore.hidden = matching.length <= visibleLimit;
+      loadMore.disabled = matching.length <= visibleLimit;
+
+      if (status instanceof HTMLElement) {
+        const shown = Math.min(visibleLimit, matching.length);
+        status.textContent = matching.length ? `${shown} of ${matching.length} projects shown.` : `No projects match ${activeFilter}.`;
+      }
+
+      if (focusFirstNew && matching.length > previousVisible) {
+        const target = matching[previousVisible];
+        if (target instanceof HTMLElement && !target.hidden) target.focus({ preventScroll: true });
+      }
+    };
+
+    filters.forEach((button) => {
+      button.addEventListener('click', () => {
+        activeFilter = button.dataset.workFilter || 'all';
+        filters.forEach((item) => {
+          const active = item === button;
+          item.classList.toggle('is-active', active);
+          item.setAttribute('aria-pressed', String(active));
+        });
+        visibleLimit = initialLimit();
+        apply();
+      });
+    });
+
+    sort.addEventListener('change', () => {
+      visibleLimit = initialLimit();
+      apply();
+    });
+
+    loadMore.addEventListener('click', () => {
+      const previousVisible = Math.min(visibleLimit, sortedCards().filter(matchesFilter).length);
+      visibleLimit += increment;
+      apply({ focusFirstNew: true, previousVisible });
+    });
+
+    const desktopQuery = window.matchMedia('(min-width: 64rem)');
+    const tabletQuery = window.matchMedia('(min-width: 48rem)');
+    const handleViewportIncrease = () => {
+      const minimum = initialLimit();
+      if (visibleLimit < minimum) {
+        visibleLimit = minimum;
+        apply();
+      }
+    };
+    desktopQuery.addEventListener?.('change', handleViewportIncrease);
+    tabletQuery.addEventListener?.('change', handleViewportIncrease);
+
+    root.querySelectorAll('[data-video-trigger]').forEach((trigger) => {
+      if (!(trigger instanceof HTMLButtonElement)) return;
+      const card = trigger.closest('[data-project-card]');
+      const player = card?.querySelector('[data-video-player]');
+      const video = player?.querySelector('video');
+      const close = player?.querySelector('[data-video-close]');
+      if (!(player instanceof HTMLElement) || !(video instanceof HTMLVideoElement)) return;
+
+      trigger.addEventListener('click', async () => {
+        const src = trigger.dataset.videoSrc;
+        if (!src) return;
+        if (!video.src) video.src = src;
+        player.hidden = false;
+        try { await video.play(); } catch {}
+        video.focus();
+      });
+
+      if (close instanceof HTMLButtonElement) {
+        close.addEventListener('click', () => {
+          video.pause();
+          player.hidden = true;
+          trigger.focus();
+        });
+      }
+    });
+
+    apply();
+  })();
+</script>

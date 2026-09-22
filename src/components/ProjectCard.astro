@@ -1,0 +1,110 @@
+---
+import Chip from './Chip.astro';
+import Icon from './Icon.astro';
+import type { WorkProject } from '@/types/content';
+
+const { project } = Astro.props as { project: WorkProject };
+const isEmptyState = project.emptyState === true;
+const hasDetail = project.caseStudyStatus === 'available' && Boolean(project.detailHref);
+const hasPlayableVideo = project.mediaStatus === 'video' && Boolean(project.video?.url);
+const categories = project.categories.join('|');
+---
+{!isEmptyState && (
+<article
+  class="project-card surface"
+  data-project-card
+  data-categories={categories}
+  data-order={project.sortOrder}
+  data-title={project.title}
+  data-project-status={project.projectStatus}
+  tabindex="-1"
+>
+  <div class="project-card__media">
+    {project.poster ? (
+      <img
+        src={project.poster.src}
+        alt={project.poster.alt}
+        width={project.poster.width || 800}
+        height={project.poster.height || 450}
+        loading="lazy"
+        decoding="async"
+      />
+    ) : (
+      <div class="project-card__fallback" aria-hidden="true"><Icon name="monitor" size={28} /></div>
+    )}
+
+    {hasPlayableVideo ? (
+      <button
+        class="project-card__play"
+        type="button"
+        aria-label={`Play ${project.title}`}
+        data-video-trigger
+        data-video-src={project.video?.url}
+      >
+        <span aria-hidden="true">▶</span>
+      </button>
+    ) : (
+      <span class="project-card__media-state">Preview</span>
+    )}
+
+    {project.developmentPreview && <span class="project-card__dev">Development preview</span>}
+  </div>
+
+  <div class="project-card__body">
+    <h3>{project.title}</h3>
+    <div class="project-card__tags" aria-label="Project categories">
+      {project.tags?.map((tag) => <Chip tone={tag.tone || 'neutral'}>{tag.label}</Chip>)}
+    </div>
+    {hasDetail ? (
+      <a class="project-card__action" href={project.detailHref} aria-label={`View ${project.title} project`}>
+        View Project <Icon name="arrow" size={14} />
+      </a>
+    ) : (
+      <span class="project-card__action project-card__action--pending">{project.developmentPreview ? 'Case study pending' : 'Case study not available'}</span>
+    )}
+  </div>
+
+  {hasPlayableVideo && (
+    <div class="project-card__player" data-video-player hidden>
+      <video controls preload="none" playsinline aria-label={`${project.title} video preview`}></video>
+      <button type="button" class="project-card__close" data-video-close>Close video</button>
+    </div>
+  )}
+</article>
+)}
+
+<style>
+.project-card[hidden]{display:none!important}
+.project-card{position:relative;overflow:hidden;min-width:0;box-shadow:none;transition:border-color var(--transition),transform var(--transition)}
+.project-card:hover{border-color:#cbd5e1;transform:translateY(-1px)}
+.project-card__media{position:relative;aspect-ratio:16/9;overflow:hidden;background:#eef2f7}
+.project-card__media img{width:100%;height:100%;object-fit:cover}
+.project-card__fallback{width:100%;height:100%;display:grid;place-items:center;color:#64748b;background:#eef2f7}
+.project-card__play{position:absolute;left:50%;top:50%;width:2.5rem;height:2.5rem;transform:translate(-50%,-50%);display:grid;place-items:center;border-radius:50%;border:2px solid rgba(255,255,255,.94);background:rgba(15,23,42,.72);color:#fff;cursor:pointer;transition:transform var(--transition),background var(--transition)}
+.project-card__play:hover{transform:translate(-50%,-50%) scale(1.05);background:rgba(15,23,42,.88)}
+.project-card__media-state{position:absolute;right:.45rem;bottom:.45rem;padding:.19rem .36rem;border-radius:.24rem;background:rgba(15,23,42,.75);color:#fff;font-size:var(--fs-caption);font-weight:700;letter-spacing:.02em;text-transform:uppercase}
+.project-card__dev{position:absolute;left:.45rem;top:.45rem;padding:.2rem .36rem;border-radius:.25rem;background:rgba(255,255,255,.92);color:#475569;font-size:var(--fs-caption);font-weight:750;letter-spacing:.035em;text-transform:uppercase;border:1px solid rgba(226,232,240,.85)}
+.project-card__body{display:grid;gap:.38rem;padding:.68rem .72rem .78rem}
+.project-card h3{font-size:var(--fs-card-title);line-height:1.22;letter-spacing:-.025em}
+.project-card__tags{display:flex;align-items:center;flex-wrap:wrap;gap:.28rem;min-height:1.55rem}
+.project-card__tags :global(.chip){min-height:1.35rem;padding:.18rem .4rem;font-size:var(--fs-caption)}
+.project-card__action{display:inline-flex;align-items:center;gap:.22rem;justify-self:start;color:var(--color-brand-strong);font-size:var(--fs-meta);font-weight:750;margin-top:.05rem}
+.project-card__action--pending{color:#64748b;font-weight:650}
+.project-card__player{position:absolute;inset:0;z-index:4;background:#020617;display:grid;grid-template-rows:1fr auto;padding:.5rem;gap:.4rem}
+.project-card__player[hidden]{display:none}
+.project-card__player video{width:100%;height:100%;object-fit:contain;background:#020617;border-radius:.35rem}
+.project-card__close{justify-self:end;min-height:2.3rem;padding:.45rem .7rem;border:1px solid rgba(255,255,255,.5);border-radius:.35rem;background:#111827;color:#fff;font-size:var(--fs-meta);cursor:pointer}
+
+@media(max-width:47.99rem){
+  .project-card{display:grid;grid-template-columns:7rem minmax(0,1fr);min-height:6.5rem}
+  .project-card__media{aspect-ratio:auto;height:100%;min-height:6.5rem;border-radius:.45rem 0 0 .45rem}
+  .project-card__body{align-content:center;padding:.5rem .55rem;gap:.25rem}
+  .project-card h3{font-size:1rem;line-height:1.2}
+  .project-card__tags{gap:.2rem;min-height:0}
+  .project-card__tags :global(.chip){min-height:1.22rem;padding:.14rem .32rem;font-size:var(--fs-caption)}
+  .project-card__action{font-size:var(--fs-meta)}
+  .project-card__dev{display:none}
+  .project-card__media-state{font-size:var(--fs-caption);right:.28rem;bottom:.28rem;padding:.14rem .26rem}
+  .project-card__play{width:2rem;height:2rem}
+}
+</style>

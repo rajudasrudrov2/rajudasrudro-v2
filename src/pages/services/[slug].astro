@@ -1,0 +1,63 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Breadcrumbs from '@/components/Breadcrumbs.astro';
+import Button from '@/components/Button.astro';
+import SectionHeader from '@/components/SectionHeader.astro';
+import EmptyState from '@/components/EmptyState.astro';
+import FAQ from '@/components/FAQ.astro';
+import CTA from '@/components/CTA.astro';
+import AIUGCServicePage from '@/components/AIUGCServicePage.astro';
+import AIVideoServicePage from '@/components/AIVideoServicePage.astro';
+import AISpokespersonServicePage from '@/components/AISpokespersonServicePage.astro';
+import WebDesignServicePage from '@/components/WebDesignServicePage.astro';
+import { services, type ServiceDefinition } from '@/data/services';
+
+export function getStaticPaths() {
+  return services.map((service) => ({ params: { slug: service.slug }, props: { service } }));
+}
+
+const { service } = Astro.props as { service: ServiceDefinition };
+const isAiUgcDetail = service.slug === 'ai-ugc-video-ads' && service.detail?.kind === 'ai-ugc';
+const isAiVideoDetail = service.slug === 'ai-video-production' && service.detail?.kind === 'ai-video';
+const isAiSpokespersonDetail = service.slug === 'ai-spokesperson-videos' && service.detail?.kind === 'ai-spokesperson';
+const isWebDesignDetail = service.slug === 'web-design-development' && service.detail?.kind === 'web-design-development';
+const hasCustomDetail = isAiUgcDetail || isAiVideoDetail || isAiSpokespersonDetail || isWebDesignDetail;
+const pageTitle = hasCustomDetail ? service.detail!.seoTitle : `${service.title} — Raju Das Rudro`;
+const pageDescription = hasCustomDetail ? service.detail!.metaDescription : service.short;
+const pageImage = hasCustomDetail ? service.media.src : undefined;
+const serviceFaq = [
+  { question: `What is included in ${service.title}?`, answer: `The exact scope is agreed before production. Deliverables are defined around the project goal, format, timeline and review requirements.` },
+  { question: 'Can you adapt the service for a custom project?', answer: 'Yes, when the request fits the core AI creative, video or web service scope.' },
+  { question: 'How do we start?', answer: 'Send a project inquiry with your goals, references and preferred timeline. The next steps are then confirmed before work begins.' },
+];
+---
+<BaseLayout
+  meta={{
+    title: pageTitle,
+    description: pageDescription,
+    pathname: `/services/${service.slug}/`,
+    image: pageImage,
+  }}
+>
+  {isAiUgcDetail ? (
+    <AIUGCServicePage service={service} />
+  ) : isAiVideoDetail ? (
+    <AIVideoServicePage service={service} />
+  ) : isAiSpokespersonDetail ? (
+    <AISpokespersonServicePage service={service} />
+  ) : isWebDesignDetail ? (
+    <WebDesignServicePage service={service} />
+  ) : (
+    <>
+      <section class="section service-hero"><div class="container stack"><Breadcrumbs items={[{label:'Services',href:'/services/'},{label:service.title,href:service.href}]} /><div class="service-hero__grid"><div class="stack"><p class="eyebrow">Professional Service</p><h1>{service.title} Built for Modern Brands.</h1><p class="lede">{service.short}</p><div class="cluster"><Button href="/contact/">Start a Project →</Button><Button href="/work/" variant="secondary">View Related Work</Button></div></div><div class="service-hero__visual surface"><span>{service.title}</span></div></div></div></section>
+      <section class="section section--soft"><div class="container"><SectionHeader title="What You Get" description="A practical, production-focused scope that can be adapted to the project." /><div class="grid-4">{service.bullets.map((item, i) => <article class="deliverable surface"><strong>0{i+1}</strong><h3>{item}</h3><p>Defined clearly in the approved project brief before production.</p></article>)}</div></div></section>
+      <section class="section"><div class="container"><SectionHeader title="Selected Work" description="Related public work appears here when available." /><EmptyState title="No related work available" description="Explore the portfolio for currently available public projects." /></div></section>
+      <section class="section section--soft"><div class="container faq-wrap"><SectionHeader title="Frequently Asked Questions" /><FAQ items={serviceFaq} /></div></section>
+      <div class="container cta-wrap"><CTA title={`Ready to discuss ${service.title}?`} /></div>
+    </>
+  )}
+</BaseLayout>
+
+<style>
+.service-hero__grid{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:3rem}.service-hero h1{font-size:var(--fs-hero);max-width:14ch}.service-hero__visual{min-height:22rem;display:grid;place-items:center;background:linear-gradient(135deg,#e2e8f0,#f8fafc)}.service-hero__visual span{max-width:12ch;text-align:center;font-family:var(--font-display);font-size:2rem;color:#94a3b8}.deliverable{padding:1.1rem;display:grid;gap:.45rem}.deliverable strong{color:var(--color-brand);font-family:var(--font-display);font-size:1.3rem}.deliverable h3{font-size:1rem}.deliverable p{font-size:var(--fs-body-sm);color:var(--color-text-muted)}.faq-wrap{max-width:60rem}.cta-wrap{padding-block:1rem 2rem}@media(max-width:47.99rem){.service-hero__grid{grid-template-columns:1fr}.service-hero h1{font-size:var(--fs-hero)}.service-hero__visual{min-height:14rem}.service-hero .cluster{display:grid;grid-template-columns:1fr 1fr}}
+</style>

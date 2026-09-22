@@ -1,0 +1,405 @@
+---
+import Breadcrumbs from './Breadcrumbs.astro';
+import Button from './Button.astro';
+import CTA from './CTA.astro';
+import FAQ from './FAQ.astro';
+import Icon from './Icon.astro';
+import ProjectCard from './ProjectCard.astro';
+import type { ServiceDefinition, WebDesignServiceDetail } from '@/data/services';
+import { workProjects } from '@/data/work';
+
+const { service } = Astro.props as { service: ServiceDefinition };
+const detail = service.detail as WebDesignServiceDetail;
+const webProjects = workProjects
+  .filter((project) => project.categories.some((category) => category === 'Web Design' || category === 'Web Development'))
+  .sort((a, b) => b.sortOrder - a.sortOrder)
+  .slice(0, 5);
+const featuredWebProject = webProjects[0];
+const availableWebCaseStudy = workProjects.find(
+  (project) =>
+    project.caseStudyStatus === 'available' &&
+    Boolean(project.detailHref) &&
+    project.categories.some((category) => category === 'Web Design' || category === 'Web Development'),
+);
+---
+
+<section class="web-top section">
+  <div class="container">
+    <Breadcrumbs items={[{ label: 'Services', href: '/services/' }, { label: service.title, href: service.href }]} />
+
+    <div class="web-hero">
+      <div class="web-hero__copy">
+        <p class="eyebrow">{detail.eyebrow}</p>
+        <h1>{detail.heroTitle}</h1>
+        <p class="web-hero__lede">{detail.heroDescription}</p>
+        <div class="web-hero__actions">
+          <Button href="/contact/">Start a Project →</Button>
+          <Button href="/work/" variant="secondary">View Web Projects</Button>
+        </div>
+      </div>
+
+      <div class="web-device-scene" aria-label="Responsive website development preview">
+        <div class="web-laptop surface">
+          <div class="web-browser-bar" aria-hidden="true"><span></span><span></span><span></span></div>
+          <img
+            src={detail.heroMedia[0]?.src}
+            alt={detail.heroMedia[0]?.alt}
+            width={detail.heroMedia[0]?.width}
+            height={detail.heroMedia[0]?.height}
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+          />
+        </div>
+        <div class="web-phone surface" aria-hidden="true">
+          <span class="web-phone__speaker"></span>
+          <img
+            src={detail.heroMedia[1]?.src || detail.heroMedia[0]?.src}
+            alt=""
+            width={detail.heroMedia[1]?.width || detail.heroMedia[0]?.width}
+            height={detail.heroMedia[1]?.height || detail.heroMedia[0]?.height}
+            loading="eager"
+            decoding="async"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="web-section web-section--line">
+  <div class="container">
+    <div class="web-section-heading web-section-heading--with-link">
+      <div>
+        <h2>What I Build</h2>
+        <p>Different website types for different business goals.</p>
+      </div>
+      <a href="/services/">View All Services <Icon name="arrow" size={14} /></a>
+    </div>
+
+    <div class="web-type-grid">
+      {detail.projectTypes.map((item) => (
+        <article class="web-type-card surface">
+          <span class="web-icon web-icon--blue" aria-hidden="true"><Icon name={item.icon} size={20} /></span>
+          <h3>{item.title}</h3>
+          <p>{item.description}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<section class="web-section web-section--soft">
+  <div class="container">
+    <div class="web-section-heading">
+      <div>
+        <h2>Built Around What Matters</h2>
+        <p>Website foundations chosen to support clarity, usability and maintainability.</p>
+      </div>
+    </div>
+
+    <div class="web-foundation-grid">
+      {detail.foundations.map((item) => (
+        <article class="web-foundation-card surface">
+          <span class="web-icon" aria-hidden="true"><Icon name={item.icon} size={20} /></span>
+          <div>
+            <h3>{item.title}</h3>
+            <p>{item.description}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<section class="web-section web-design-development">
+  <div class="container">
+    <div class="web-section-heading">
+      <div>
+        <h2>Design + Development</h2>
+        <p>A coordinated workflow from page structure and interface design through frontend implementation.</p>
+      </div>
+    </div>
+
+    <div class="web-build-grid">
+      <article class="web-build-card surface">
+        <div class="web-build-card__media">
+          <img
+            src={detail.designDevelopment.design.media.src}
+            alt={detail.designDevelopment.design.media.alt}
+            width={detail.designDevelopment.design.media.width}
+            height={detail.designDevelopment.design.media.height}
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+        <div class="web-build-card__body">
+          <p class="eyebrow">Plan, Design, Engage</p>
+          <h3>{detail.designDevelopment.design.title}</h3>
+          <p>{detail.designDevelopment.design.description}</p>
+          <ul>
+            {detail.designDevelopment.design.items.map((item) => <li><Icon name="check" size={15} /><span>{item}</span></li>)}
+          </ul>
+        </div>
+      </article>
+
+      <article class="web-build-card surface">
+        <div class="web-build-card__media web-build-card__media--technical">
+          <img
+            src={detail.designDevelopment.development.media.src}
+            alt={detail.designDevelopment.development.media.alt}
+            width={detail.designDevelopment.development.media.width}
+            height={detail.designDevelopment.development.media.height}
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+        <div class="web-build-card__body">
+          <p class="eyebrow">Build, Optimize, Launch</p>
+          <h3>{detail.designDevelopment.development.title}</h3>
+          <p>{detail.designDevelopment.development.description}</p>
+          <ul>
+            {detail.designDevelopment.development.items.map((item) => <li><Icon name="check" size={15} /><span>{item}</span></li>)}
+          </ul>
+        </div>
+      </article>
+    </div>
+
+    <div class="web-inline-action"><Button href="/contact/" size="sm">Start a Project →</Button></div>
+  </div>
+</section>
+
+<section class="web-section web-section--line web-work-section">
+  <div class="container">
+    <div class="web-section-heading web-section-heading--with-link">
+      <div>
+        <h2>Selected Web Work</h2>
+        <p>Current structured development-preview projects selected from the shared Work registry.</p>
+      </div>
+      <a href="/work/">View All Work <Icon name="arrow" size={14} /></a>
+    </div>
+
+    {webProjects.length ? (
+      <div class="web-work-grid">
+        {webProjects.map((project) => <ProjectCard project={project} />)}
+      </div>
+    ) : (
+      <div class="web-honest-state surface">
+        <h3>Web work is being prepared</h3>
+        <p>No verified Web project is currently mapped to this section.</p>
+      </div>
+    )}
+  </div>
+</section>
+
+<section class="web-section web-section--soft">
+  <div class="container web-responsive-grid">
+    <div>
+      <div class="web-section-heading">
+        <div>
+          <h2>{detail.responsiveExperience.title}</h2>
+          <p>{detail.responsiveExperience.description}</p>
+        </div>
+      </div>
+      <div class="web-responsive-scene" aria-label="Responsive website preview across multiple device sizes">
+        <div class="web-responsive-device web-responsive-device--desktop surface">
+          <img
+            src={detail.responsiveExperience.media.src}
+            alt={detail.responsiveExperience.media.alt}
+            width={detail.responsiveExperience.media.width}
+            height={detail.responsiveExperience.media.height}
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+        <div class="web-responsive-device web-responsive-device--tablet surface" aria-hidden="true">
+          <img src={detail.responsiveExperience.media.src} alt="" width={detail.responsiveExperience.media.width} height={detail.responsiveExperience.media.height} loading="lazy" decoding="async" />
+        </div>
+        <div class="web-responsive-device web-responsive-device--mobile surface" aria-hidden="true">
+          <img src={detail.responsiveExperience.media.src} alt="" width={detail.responsiveExperience.media.width} height={detail.responsiveExperience.media.height} loading="lazy" decoding="async" />
+        </div>
+      </div>
+    </div>
+
+    <div class="web-responsive-points">
+      {detail.responsiveExperience.points.map((item) => (
+        <article>
+          <span class="web-icon web-icon--blue" aria-hidden="true"><Icon name={item.icon} size={19} /></span>
+          <div><h3>{item.title}</h3><p>{item.description}</p></div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<section class="web-section">
+  <div class="container">
+    <div class="web-section-heading">
+      <div>
+        <h2>Performance-First Websites</h2>
+        <p>Implementation choices are made with page weight, interaction cost and layout stability in mind.</p>
+      </div>
+    </div>
+    <div class="web-performance-grid">
+      {detail.performance.map((item) => (
+        <article class="web-technical-card surface">
+          <span class="web-icon web-icon--blue" aria-hidden="true"><Icon name={item.icon} size={19} /></span>
+          <h3>{item.title}</h3>
+          <p>{item.description}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<section class="web-section web-section--soft web-section--line">
+  <div class="container">
+    <div class="web-section-heading">
+      <div>
+        <h2>SEO-Ready Foundation</h2>
+        <p>Technical and on-page foundations that support discoverability without promising rankings.</p>
+      </div>
+    </div>
+    <div class="web-seo-grid">
+      {detail.seoFoundations.map((item) => (
+        <article class="web-seo-item surface">
+          <span class="web-icon" aria-hidden="true"><Icon name={item.icon} size={18} /></span>
+          <div><h3>{item.title}</h3><p>{item.description}</p></div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<section class="web-section web-process-section">
+  <div class="container">
+    <div class="web-section-heading">
+      <div>
+        <h2>Project Process</h2>
+        <p>A clear website-specific workflow from requirements to launch preparation.</p>
+      </div>
+    </div>
+
+    <div class="web-process-grid">
+      {detail.process.map((step, index) => (
+        <>
+          <article class="web-process-step surface">
+            <strong>{step.number}</strong>
+            <div><h3>{step.title}</h3><p>{step.description}</p></div>
+          </article>
+          {index < detail.process.length - 1 && <span class="web-process-arrow" aria-hidden="true"><Icon name="arrow" size={18} /></span>}
+        </>
+      ))}
+    </div>
+  </div>
+</section>
+
+<section class="web-section web-section--soft">
+  <div class="container web-receive-layout">
+    <div>
+      <div class="web-section-heading">
+        <div>
+          <h2>What Clients Receive</h2>
+          <p>Deliverables are confirmed per project; the service foundation supports the following types of output.</p>
+        </div>
+      </div>
+      <ul class="web-receive-list">
+        {detail.clientReceives.map((item) => <li><span aria-hidden="true"><Icon name="check" size={15} /></span>{item}</li>)}
+      </ul>
+    </div>
+
+    <article class="web-featured-project surface">
+      {featuredWebProject?.poster && (
+        <img
+          src={featuredWebProject.poster.src}
+          alt={featuredWebProject.poster.alt}
+          width={featuredWebProject.poster.width || 800}
+          height={featuredWebProject.poster.height || 450}
+          loading="lazy"
+          decoding="async"
+        />
+      )}
+      <div>
+        <p class="eyebrow">Featured Web Project</p>
+        <h3>{featuredWebProject?.title || 'Web project case study'}</h3>
+        <p>{featuredWebProject?.shortSummary || 'A verified Web project will be featured here after content migration.'}</p>
+        {availableWebCaseStudy ? (
+          <a class="web-text-action" href={availableWebCaseStudy.detailHref}>View Case Study <Icon name="arrow" size={14} /></a>
+        ) : (
+          <span class="web-pending-state">Case study pending</span>
+        )}
+      </div>
+    </article>
+  </div>
+</section>
+
+<section class="web-section web-proof-section">
+  <div class="container">
+    <div class="web-section-heading"><div><h2>Why Work With Raju</h2><p>Web-specific reasons focused on delivery, communication and production quality.</p></div></div>
+    <div class="web-why-grid">
+      {detail.whyRaju.map((item) => (
+        <article class="web-why-card surface">
+          <span class="web-icon web-icon--blue" aria-hidden="true"><Icon name={item.icon} size={19} /></span>
+          <h3>{item.title}</h3>
+          <p>{item.description}</p>
+        </article>
+      ))}
+    </div>
+
+    <div class="web-review-state surface">
+      <span class="web-review-state__icon" aria-hidden="true"><Icon name="star" size={22} /></span>
+      <div>
+        <h2>Client Reviews</h2>
+        <p>No Web-specific verified review is currently mapped to this service, so general AI/video reviews are not relabelled as Web testimonials.</p>
+        <a href="/reviews/">View verified reviews <Icon name="arrow" size={14} /></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="web-section web-section--soft web-faq-section">
+  <div class="container web-faq-layout">
+    <div>
+      <div class="web-section-heading"><div><h2>Frequently Asked Questions</h2><p>Practical questions about custom website design and development.</p></div></div>
+      <FAQ items={detail.faqs} />
+    </div>
+    <aside class="web-custom surface">
+      <span class="web-custom__icon" aria-hidden="true"><Icon name="spark" size={22} /></span>
+      <div>
+        <h2>{detail.customRequirement.title}</h2>
+        <p>{detail.customRequirement.description}</p>
+        <Button href="/contact/" variant="secondary" size="sm">Discuss Your Project →</Button>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<div class="container web-final-cta">
+  <CTA
+    title="Planning a new website or redesign?"
+    description="Share your goals, required pages and functionality and I’ll review the right next step for the project."
+    primaryLabel="Start a Project"
+    primaryHref="/contact/"
+    secondaryLabel="View Web Projects"
+    secondaryHref="/work/"
+  />
+</div>
+
+<style>
+.web-top{padding-block:.85rem 1.35rem}.web-top :global(.breadcrumbs){margin-bottom:.8rem}.web-hero{display:grid;grid-template-columns:minmax(0,.86fr) minmax(31rem,1.14fr);gap:2.5rem;align-items:center}.web-hero__copy{display:grid;gap:.75rem;align-content:center}.web-hero__copy h1{font-size:var(--fs-h1);max-width:15ch}.web-hero__lede{max-width:42rem;color:var(--color-text-muted);font-size:var(--fs-body-lg);line-height:1.48}.web-hero__actions{display:flex;flex-wrap:wrap;gap:.7rem}.web-device-scene{position:relative;min-height:19rem;display:flex;align-items:center;justify-content:center;padding:1rem 4rem 1.2rem .5rem}.web-laptop{position:relative;width:min(100%,34rem);padding:.38rem;border-radius:.62rem;box-shadow:0 12px 30px rgba(15,23,42,.08);overflow:hidden}.web-browser-bar{display:flex;gap:.22rem;padding:.22rem .28rem .38rem}.web-browser-bar span{width:.34rem;height:.34rem;border-radius:50%;background:#cbd5e1}.web-laptop img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:.38rem}.web-phone{position:absolute;right:.75rem;bottom:.2rem;width:8.25rem;padding:.32rem;border-radius:1rem;background:#fff;box-shadow:0 10px 28px rgba(15,23,42,.14);overflow:hidden}.web-phone__speaker{display:block;width:2.6rem;height:.25rem;border-radius:1rem;background:#cbd5e1;margin:.12rem auto .32rem}.web-phone img{width:100%;aspect-ratio:9/16;object-fit:cover;border-radius:.7rem}
+.web-section{padding-block:1.35rem}.web-section--soft{background:#fbfcfd}.web-section--line{border-top:1px solid #eef1f4}.web-section-heading{display:flex;align-items:end;justify-content:space-between;gap:1rem;margin-bottom:.8rem}.web-section-heading h2{font-size:clamp(1.45rem,2vw,1.8rem)}.web-section-heading p{margin-top:.12rem;color:var(--color-text-muted);font-size:var(--fs-body-sm);line-height:1.42}.web-section-heading--with-link>a{display:inline-flex;align-items:center;gap:.25rem;color:#2563eb;font-size:var(--fs-meta);font-weight:700;white-space:nowrap}
+.web-icon{display:grid;place-items:center;width:2.4rem;height:2.4rem;flex:0 0 2.4rem;border-radius:.65rem;background:#fff1f2;color:var(--color-brand-strong)}.web-icon--blue{background:#eff6ff;color:#2563eb}.web-type-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.55rem}.web-type-card{display:grid;gap:.4rem;align-content:start;padding:.75rem;box-shadow:none}.web-type-card h3{font-size:1rem;line-height:1.2}.web-type-card p{font-size:var(--fs-caption);line-height:1.4;color:var(--color-text-muted)}
+.web-foundation-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.55rem}.web-foundation-card{display:grid;grid-template-columns:auto 1fr;gap:.55rem;padding:.7rem;box-shadow:none}.web-foundation-card h3{font-size:.98rem}.web-foundation-card p{margin-top:.08rem;font-size:var(--fs-caption);line-height:1.38;color:var(--color-text-muted)}
+.web-build-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem}.web-build-card{display:grid;grid-template-columns:minmax(9rem,.76fr) minmax(0,1.24fr);overflow:hidden;box-shadow:none}.web-build-card__media{min-height:12rem;background:#eef2f7}.web-build-card__media img{width:100%;height:100%;object-fit:cover}.web-build-card__media--technical{background:#0f172a}.web-build-card__body{display:grid;align-content:center;gap:.35rem;padding:.85rem}.web-build-card__body h3{font-size:1.12rem}.web-build-card__body>p:not(.eyebrow){font-size:var(--fs-body-sm);line-height:1.42;color:var(--color-text-muted)}.web-build-card ul{display:grid;gap:.25rem;list-style:none;margin-top:.15rem}.web-build-card li{display:flex;gap:.3rem;align-items:flex-start;font-size:var(--fs-body-sm);line-height:1.35;color:#475569}.web-build-card li :global(svg){flex:0 0 auto;margin-top:.12rem;color:#2563eb}.web-inline-action{margin-top:.7rem}
+.web-work-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.55rem}.web-work-grid> :global(.project-card){height:100%}.web-honest-state{padding:1rem;box-shadow:none}.web-honest-state h3{font-size:1.05rem}.web-honest-state p{margin-top:.2rem;color:var(--color-text-muted);font-size:var(--fs-body-sm)}
+.web-responsive-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(22rem,.65fr);gap:2rem;align-items:center}.web-responsive-scene{position:relative;min-height:16rem;padding:1rem 5.5rem 1rem .5rem}.web-responsive-device{position:absolute;overflow:hidden;background:#fff}.web-responsive-device img{width:100%;height:100%;object-fit:cover}.web-responsive-device--desktop{left:.5rem;top:1rem;width:70%;aspect-ratio:16/9;padding:.35rem}.web-responsive-device--tablet{right:3.5rem;top:3.2rem;width:28%;aspect-ratio:4/3;padding:.28rem}.web-responsive-device--mobile{right:.2rem;bottom:1.1rem;width:16%;aspect-ratio:9/16;padding:.22rem;border-radius:.7rem}.web-responsive-points{display:grid;gap:.55rem}.web-responsive-points article{display:grid;grid-template-columns:auto 1fr;gap:.6rem;align-items:start}.web-responsive-points h3{font-size:1rem}.web-responsive-points p{font-size:var(--fs-body-sm);line-height:1.4;color:var(--color-text-muted)}
+.web-performance-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.55rem}.web-technical-card{display:grid;gap:.4rem;padding:.75rem;box-shadow:none}.web-technical-card h3{font-size:1rem}.web-technical-card p{font-size:var(--fs-caption);line-height:1.4;color:var(--color-text-muted)}.web-seo-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:.45rem}.web-seo-item{display:grid;grid-template-columns:auto 1fr;gap:.45rem;padding:.6rem;box-shadow:none}.web-seo-item .web-icon{width:2rem;height:2rem;flex-basis:2rem}.web-seo-item h3{font-size:.92rem}.web-seo-item p{font-size:var(--fs-caption);line-height:1.34;color:var(--color-text-muted)}
+.web-process-section{padding-block:1.35rem}.web-process-grid{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr);gap:.45rem;align-items:center}.web-process-step{display:grid;grid-template-columns:auto 1fr;gap:.55rem;align-items:center;padding:.75rem;box-shadow:none}.web-process-step>strong{font-size:1.55rem;line-height:1;color:#2563eb}.web-process-step h3{font-size:.98rem}.web-process-step p{font-size:var(--fs-caption);line-height:1.38;color:var(--color-text-muted)}.web-process-arrow{color:#94a3b8}
+.web-receive-layout{display:grid;grid-template-columns:minmax(0,.95fr) minmax(28rem,1.05fr);gap:1.4rem;align-items:center}.web-receive-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.45rem .75rem;list-style:none}.web-receive-list li{display:flex;gap:.38rem;align-items:flex-start;font-size:var(--fs-body-sm);line-height:1.4;color:#475569}.web-receive-list li>span{display:grid;place-items:center;width:1.15rem;height:1.15rem;flex:0 0 1.15rem;margin-top:.1rem;border-radius:50%;background:#eff6ff;color:#2563eb}.web-featured-project{display:grid;grid-template-columns:minmax(11rem,.9fr) minmax(0,1.1fr);overflow:hidden;box-shadow:none}.web-featured-project>img{width:100%;height:100%;min-height:12rem;object-fit:cover}.web-featured-project>div{display:grid;align-content:center;gap:.35rem;padding:.9rem}.web-featured-project h3{font-size:1.15rem}.web-featured-project p:not(.eyebrow){font-size:var(--fs-body-sm);line-height:1.42;color:var(--color-text-muted)}.web-text-action{display:inline-flex;align-items:center;gap:.25rem;justify-self:start;color:var(--color-brand-strong);font-size:var(--fs-meta);font-weight:750}.web-pending-state{justify-self:start;padding:.28rem .48rem;border-radius:.28rem;background:#f1f5f9;color:#64748b;font-size:var(--fs-caption);font-weight:750;text-transform:uppercase;letter-spacing:.035em}
+.web-proof-section{padding-bottom:.95rem}.web-why-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.55rem}.web-why-card{display:grid;gap:.35rem;padding:.7rem;box-shadow:none}.web-why-card h3{font-size:.96rem}.web-why-card p{font-size:var(--fs-caption);line-height:1.38;color:var(--color-text-muted)}.web-review-state{display:grid;grid-template-columns:auto 1fr;gap:.75rem;margin-top:.8rem;padding:.85rem;box-shadow:none;background:#fbfcfd}.web-review-state__icon{display:grid;place-items:center;width:2.7rem;height:2.7rem;border-radius:50%;background:#fff7ed;color:#f59e0b}.web-review-state>div{display:grid;gap:.25rem}.web-review-state h2{font-size:1.15rem}.web-review-state p{font-size:var(--fs-body-sm);line-height:1.4;color:var(--color-text-muted)}.web-review-state a{display:inline-flex;align-items:center;gap:.25rem;justify-self:start;color:#2563eb;font-size:var(--fs-meta);font-weight:700}
+.web-faq-section{border-top:1px solid #eef1f4}.web-faq-layout{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(19rem,.55fr);gap:2rem;align-items:start}.web-custom{display:grid;grid-template-columns:auto 1fr;gap:.75rem;padding:1rem;box-shadow:none;background:#fff}.web-custom__icon{display:grid;place-items:center;width:2.8rem;height:2.8rem;border-radius:50%;background:#eff6ff;color:#2563eb}.web-custom>div{display:grid;gap:.45rem}.web-custom h2{font-size:1.2rem}.web-custom p{font-size:var(--fs-body-sm);line-height:1.44;color:var(--color-text-muted)}.web-custom .button{justify-self:start}.web-final-cta{padding-block:.75rem 1rem}
+@media(max-width:74rem){.web-hero{grid-template-columns:minmax(0,.95fr) minmax(27rem,1.05fr)}.web-type-grid,.web-foundation-grid,.web-seo-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.web-work-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.web-why-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.web-responsive-grid,.web-receive-layout{grid-template-columns:1fr}.web-responsive-scene{max-width:44rem}.web-faq-layout{grid-template-columns:1fr}}
+@media(max-width:63.99rem){.web-hero{grid-template-columns:1fr}.web-hero__copy h1{max-width:17ch}.web-device-scene{max-width:40rem;min-height:18rem}.web-build-grid{grid-template-columns:1fr}.web-performance-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.web-process-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem}.web-process-arrow{display:none}.web-why-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:47.99rem){.web-top{padding-block:.6rem .8rem}.web-top :global(.breadcrumbs){margin-bottom:.5rem}.web-hero{gap:.8rem}.web-hero__copy{gap:.55rem}.web-hero__copy h1{font-size:var(--fs-h1);max-width:none}.web-hero__lede{font-size:var(--fs-body);line-height:1.48}.web-hero__actions{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}.web-hero__actions .button{width:100%;min-width:0}.web-device-scene{min-height:14.5rem;padding:.4rem 3.8rem .8rem 0}.web-laptop{width:100%}.web-phone{width:5.3rem;right:.1rem;bottom:.1rem}.web-section{padding-block:1rem}.web-section-heading{margin-bottom:.55rem;align-items:flex-start}.web-section-heading h2{font-size:1.45rem}.web-section-heading p{font-size:var(--fs-body-sm)}.web-section-heading--with-link>a{font-size:var(--fs-caption)}.web-type-grid,.web-foundation-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:.4rem}.web-type-card{padding:.55rem .35rem;text-align:center;justify-items:center}.web-type-card .web-icon{width:2rem;height:2rem;flex-basis:2rem}.web-type-card h3{font-size:.9rem}.web-type-card p{display:none}.web-foundation-card{grid-template-columns:1fr;justify-items:center;text-align:center;padding:.55rem .35rem}.web-foundation-card .web-icon{width:2rem;height:2rem;flex-basis:2rem}.web-foundation-card h3{font-size:.9rem}.web-foundation-card p{display:none}.web-build-card{grid-template-columns:8.5rem 1fr}.web-build-card__media{min-height:10.5rem}.web-build-card__body{padding:.65rem;gap:.25rem}.web-build-card__body h3{font-size:1rem}.web-build-card__body>p:not(.eyebrow){display:none}.web-build-card li{font-size:var(--fs-caption)}.web-work-grid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:.5rem;padding-right:1rem;scrollbar-width:none}.web-work-grid::-webkit-scrollbar{display:none}.web-work-grid> :global(.project-card){flex:0 0 88%;scroll-snap-align:start}.web-responsive-scene{min-height:12rem;padding:.5rem 4.2rem .5rem 0}.web-responsive-device--desktop{left:0;top:.5rem;width:74%}.web-responsive-device--tablet{right:2.2rem;top:2rem;width:28%}.web-responsive-device--mobile{right:0;bottom:.4rem;width:18%}.web-responsive-points{grid-template-columns:repeat(3,minmax(0,1fr));gap:.4rem}.web-responsive-points article{grid-template-columns:1fr;justify-items:center;text-align:center;gap:.25rem}.web-responsive-points .web-icon{width:2rem;height:2rem;flex-basis:2rem}.web-responsive-points h3{font-size:.9rem}.web-responsive-points p{display:none}.web-performance-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:.4rem}.web-technical-card{padding:.55rem .35rem;text-align:center;justify-items:center}.web-technical-card:nth-child(4){grid-column:auto}.web-technical-card .web-icon{width:2rem;height:2rem;flex-basis:2rem}.web-technical-card h3{font-size:.9rem}.web-technical-card p{display:none}.web-seo-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:.4rem}.web-seo-item{grid-template-columns:1fr;justify-items:center;text-align:center;padding:.5rem .3rem}.web-seo-item h3{font-size:.875rem}.web-seo-item p{display:none}.web-process-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:.3rem}.web-process-step{grid-template-columns:1fr;justify-items:center;text-align:center;padding:.5rem .25rem;gap:.25rem}.web-process-step>strong{font-size:1.25rem}.web-process-step h3{font-size:.875rem}.web-process-step p{display:none}.web-receive-list{grid-template-columns:1fr}.web-featured-project{grid-template-columns:7.5rem 1fr}.web-featured-project>img{min-height:8rem}.web-featured-project>div{padding:.65rem}.web-featured-project h3{font-size:1rem}.web-featured-project p:not(.eyebrow){display:none}.web-why-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:.4rem}.web-why-card{padding:.55rem .3rem;text-align:center;justify-items:center}.web-why-card h3{font-size:.875rem}.web-why-card p{display:none}.web-review-state{margin-top:.6rem}.web-faq-layout{gap:.7rem}.web-final-cta{padding-block:.35rem .75rem}}
+@media(max-width:23rem){.web-hero__actions{grid-template-columns:1fr}.web-type-grid,.web-foundation-grid,.web-seo-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.web-performance-grid,.web-responsive-points,.web-why-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.web-technical-card:nth-child(4){grid-column:auto}.web-process-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.web-build-card{grid-template-columns:1fr}.web-build-card__media{min-height:9rem}}
+</style>

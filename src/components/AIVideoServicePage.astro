@@ -1,0 +1,295 @@
+---
+import Breadcrumbs from './Breadcrumbs.astro';
+import Button from './Button.astro';
+import CTA from './CTA.astro';
+import FAQ from './FAQ.astro';
+import Icon from './Icon.astro';
+import ProjectCard from './ProjectCard.astro';
+import ReviewCard from './ReviewCard.astro';
+import TrustMetric from './TrustMetric.astro';
+import { homeTrustMetrics } from '@/data/home';
+import { publicReviewSummaries } from '@/data/reviews';
+import { featuredWorkProject, workProjects } from '@/data/work';
+import type { ServiceDefinition } from '@/data/services';
+
+const { service } = Astro.props as { service: ServiceDefinition };
+const detail = service.detail;
+if (!detail || detail.kind !== 'ai-video') {
+  throw new Error('AIVideoServicePage requires the AI Video Production service detail record.');
+}
+
+const allWork = [featuredWorkProject, ...workProjects];
+const caseStudyProject = allWork.find(
+  (project) =>
+    project.categories.includes('AI Video') &&
+    project.caseStudyStatus === 'available' &&
+    Boolean(project.detailHref),
+);
+const selectedAiVideoWork = allWork
+  .filter(
+    (project) =>
+      project.categories.includes('AI Video') &&
+      project.id !== caseStudyProject?.id,
+  )
+  .slice(0, 4);
+const aiVideoReview = publicReviewSummaries.find((review) => review.context.includes('AI Video'));
+---
+<div class="aivideo-page">
+  <section class="aivideo-top" aria-labelledby="aivideo-title">
+    <div class="container">
+      <Breadcrumbs items={[{ label: 'Services', href: '/services/' }, { label: service.title, href: service.href }]} />
+
+      <div class="aivideo-hero">
+        <div class="aivideo-hero__copy">
+          <p class="eyebrow">{detail.eyebrow}</p>
+          <h1 id="aivideo-title">{detail.heroTitle}</h1>
+          <p class="aivideo-hero__lede">{detail.heroDescription}</p>
+          <div class="aivideo-hero__actions">
+            <Button href="/contact/">Start a Project <Icon name="arrow" size={16} /></Button>
+            <Button href="/work/" variant="secondary">View AI Video Work</Button>
+          </div>
+        </div>
+
+        <div class="aivideo-hero-media" role="group" aria-label="Development preview media illustrating AI video production directions">
+          <span class="aivideo-preview-label">Development preview media</span>
+          {detail.heroMedia.map((media, index) => (
+            <figure class:list={['aivideo-hero-media__item', 'surface', { 'aivideo-hero-media__item--main': index === 0 }]}> 
+              <img
+                src={media.src}
+                alt={media.alt}
+                width={media.width}
+                height={media.height}
+                loading={index === 0 ? 'eager' : 'lazy'}
+                fetchpriority={index === 0 ? 'high' : undefined}
+                decoding="async"
+              />
+              <span class="aivideo-media-state">Preview</span>
+            </figure>
+          ))}
+        </div>
+      </div>
+
+      <div class="aivideo-trust surface" aria-label="Accepted trust indicators">
+        {homeTrustMetrics.map((metric) => <TrustMetric {...metric} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="aivideo-section aivideo-explainer-section" aria-labelledby="aivideo-explainer-title">
+    <div class="container aivideo-explainer">
+      <div class="aivideo-copy-block">
+        <h2 id="aivideo-explainer-title">{detail.explanation.title}</h2>
+        <p>{detail.explanation.description}</p>
+        <a class="aivideo-text-link" href="/contact/">Discuss your video idea <Icon name="arrow" size={15} /></a>
+      </div>
+      <div class="aivideo-capabilities" role="list" aria-label="AI video production capabilities">
+        {detail.explanation.capabilities.map((item) => (
+          <article class="aivideo-capability surface" role="listitem">
+            <span aria-hidden="true"><Icon name={item.icon} size={26} /></span>
+            <h3>{item.title}</h3>
+            <p>{item.description}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="aivideo-section aivideo-create-section" aria-labelledby="aivideo-create-title">
+    <div class="container">
+      <div class="aivideo-section-heading aivideo-section-heading--with-link">
+        <div>
+          <h2 id="aivideo-create-title">What I Can Create</h2>
+          <p>A broader range of professional AI-assisted video directions for marketing, product and brand communication.</p>
+        </div>
+        <a href="/work/">View All Work <Icon name="arrow" size={15} /></a>
+      </div>
+      <div class="aivideo-create-grid" role="list">
+        {detail.creationTypes.map((item) => (
+          <article class="aivideo-create-card surface" role="listitem">
+            <div class="aivideo-create-card__media">
+              <img src={item.media.src} alt={item.media.alt} width={item.media.width} height={item.media.height} loading="lazy" decoding="async" />
+              <span>Preview</span>
+            </div>
+            <div><h3>{item.title}</h3><p>{item.description}</p></div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="aivideo-section aivideo-needs-section" aria-labelledby="aivideo-needs-title">
+    <div class="container">
+      <div class="aivideo-section-heading aivideo-section-heading--compact">
+        <h2 id="aivideo-needs-title">Built for Businesses That Need…</h2>
+        <p>Professional video production needs that go beyond creator-native UGC-style execution.</p>
+      </div>
+      <div class="aivideo-needs-grid" role="list">
+        {detail.buyerNeeds.map((item) => (
+          <article class="aivideo-need" role="listitem">
+            <span class="aivideo-need__icon" aria-hidden="true"><Icon name={item.icon} size={23} /></span>
+            <div><h3>{item.title}</h3><p>{item.description}</p></div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="aivideo-section aivideo-included-section" aria-labelledby="aivideo-included-title">
+    <div class="container">
+      <div class="aivideo-section-heading aivideo-section-heading--compact">
+        <h2 id="aivideo-included-title">What’s Included in This Service?</h2>
+        <p>End-to-end production stages from concept and scene direction through final delivery.</p>
+      </div>
+      <div class="aivideo-phases" role="list">
+        {detail.productionPhases.map((phase) => (
+          <article class="aivideo-phase surface" role="listitem">
+            <div class="aivideo-phase__head">
+              <span aria-hidden="true"><Icon name={phase.icon} size={24} /></span>
+              <div><h3>{phase.title}</h3><p>{phase.description}</p></div>
+            </div>
+            <ul>
+              {phase.items.map((item) => <li><Icon name="check" size={14} /><span>{item}</span></li>)}
+            </ul>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="aivideo-section aivideo-work-section" aria-label="Selected AI video work and case study state">
+    <div class="container aivideo-work-layout">
+      <div>
+        <div class="aivideo-section-heading aivideo-section-heading--with-link">
+          <div>
+            <h2>Selected AI Video Work</h2>
+            <p>Existing structured Work records tagged for AI Video. Development-preview status remains explicit.</p>
+          </div>
+          <a href="/work/">View All Work <Icon name="arrow" size={15} /></a>
+        </div>
+        {selectedAiVideoWork.length > 0 ? (
+          <div class="aivideo-work-grid">
+            {selectedAiVideoWork.map((project) => <ProjectCard project={project} />)}
+          </div>
+        ) : (
+          <div class="aivideo-honest-state surface"><h3>AI Video work is pending migration</h3><p>Verified project records will appear here after the production portfolio data is migrated.</p></div>
+        )}
+      </div>
+
+      <aside class="aivideo-case-wrap" aria-labelledby="aivideo-case-title">
+        <div class="aivideo-section-heading aivideo-section-heading--compact">
+          <p class="eyebrow">Case Study State</p>
+          <h2 id="aivideo-case-title">Related Case Study</h2>
+        </div>
+        {caseStudyProject ? (
+          <article class="aivideo-case surface">
+            {caseStudyProject.poster && <img src={caseStudyProject.poster.src} alt={caseStudyProject.poster.alt} width={caseStudyProject.poster.width || 800} height={caseStudyProject.poster.height || 450} loading="lazy" decoding="async" />}
+            <div class="aivideo-case__body">
+              <span>Development preview case study</span>
+              <h3>{caseStudyProject.title}</h3>
+              <p>This existing reusable Case Study preview is linked because the project record includes AI Video. It is not presented as a verified AI Video client campaign.</p>
+              <a href={caseStudyProject.detailHref!}>Preview Case Study <Icon name="arrow" size={14} /></a>
+            </div>
+          </article>
+        ) : (
+          <div class="aivideo-honest-state surface"><h3>No AI Video case study published yet</h3><p>No fake project route is created. A verified or approved development Case Study can be connected later.</p></div>
+        )}
+      </aside>
+    </div>
+  </section>
+
+  <section class="aivideo-section aivideo-process-section" aria-labelledby="aivideo-process-title">
+    <div class="container">
+      <div class="aivideo-section-heading aivideo-section-heading--compact">
+        <h2 id="aivideo-process-title">A Simple Production Process</h2>
+        <p>Four clear stages from project brief to final video delivery.</p>
+      </div>
+      <div class="aivideo-process-grid">
+        {detail.process.map((step, index) => (
+          <>
+            <article class="aivideo-process-step surface">
+              <strong>{step.number}</strong>
+              <div><h3>{step.title}</h3><p>{step.description}</p></div>
+            </article>
+            {index < detail.process.length - 1 && <span class="aivideo-process-arrow" aria-hidden="true"><Icon name="arrow" size={20} /></span>}
+          </>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="aivideo-section aivideo-proof-section" aria-label="Review, reasons to work with Raju and custom project support">
+    <div class="container aivideo-proof-grid">
+      <div>
+        <div class="aivideo-section-heading aivideo-section-heading--compact">
+          <h2>Client Review</h2>
+          <p>Verified public review summary related to AI Video; it is not presented as proof for the preview project above.</p>
+        </div>
+        {aiVideoReview ? (
+          <ReviewCard review={aiVideoReview} />
+        ) : (
+          <div class="aivideo-honest-state surface"><h3>Verified review mapping pending</h3><p>No testimonial is fabricated when a suitable source record is unavailable.</p></div>
+        )}
+      </div>
+
+      <div>
+        <div class="aivideo-section-heading aivideo-section-heading--compact">
+          <h2>Why Work With Raju?</h2>
+          <p>Service qualities grounded in the accepted creative-production positioning.</p>
+        </div>
+        <ul class="aivideo-why-list">
+          {detail.whyRaju.map((item) => (
+            <li><span aria-hidden="true"><Icon name="check" size={15} /></span><div><strong>{item.title}</strong><small>{item.description}</small></div></li>
+          ))}
+        </ul>
+      </div>
+
+      <aside class="aivideo-custom surface">
+        <span class="aivideo-custom__icon" aria-hidden="true"><Icon name="spark" size={25} /></span>
+        <div>
+          <h2>{detail.customRequirement.title}</h2>
+          <p>{detail.customRequirement.description}</p>
+          <Button href="/contact/" variant="secondary">Discuss Your Project <Icon name="arrow" size={15} /></Button>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="aivideo-section aivideo-faq-section" aria-labelledby="aivideo-faq-title">
+    <div class="container aivideo-faq-layout">
+      <div class="aivideo-section-heading aivideo-section-heading--compact">
+        <p class="eyebrow">Common Questions</p>
+        <h2 id="aivideo-faq-title">AI Video Production FAQs</h2>
+        <p>Service-specific answers without adding unapproved guarantees or fixed commitments.</p>
+      </div>
+      <FAQ items={detail.faqs} />
+    </div>
+  </section>
+
+  <div class="container aivideo-final-cta">
+    <CTA
+      title="Ready to bring your ideas to life with AI video?"
+      description="Share the product, story or campaign direction and I’ll review the best production approach."
+      primaryHref="/contact/"
+      primaryLabel="Start a Project"
+      secondaryHref="/work/"
+      secondaryLabel="View More Work"
+    />
+  </div>
+</div>
+
+<style>
+.aivideo-page{background:#fff}.aivideo-top{padding-block:.85rem 1rem;border-bottom:1px solid var(--color-border)}.aivideo-top :global(.breadcrumbs){margin-bottom:.75rem}.aivideo-hero{display:grid;grid-template-columns:minmax(0,.86fr) minmax(31rem,1.14fr);gap:2rem;align-items:center}.aivideo-hero__copy{display:grid;gap:.72rem;align-content:center}.aivideo-hero__copy .eyebrow{color:var(--color-brand-strong)}.aivideo-hero__copy h1{font-size:var(--fs-h1);max-width:13ch}.aivideo-hero__lede{max-width:42rem;color:#536179;font-size:var(--fs-body-lg);line-height:1.5}.aivideo-hero__actions{display:flex;flex-wrap:wrap;gap:.65rem;margin-top:.1rem}.aivideo-hero-media{position:relative;display:grid;grid-template-columns:1.5fr .9fr;grid-template-rows:1fr 1fr;gap:.5rem;min-width:0}.aivideo-hero-media__item{position:relative;overflow:hidden;margin:0;aspect-ratio:16/9;box-shadow:none}.aivideo-hero-media__item--main{grid-row:1/3;aspect-ratio:1.18}.aivideo-hero-media img{width:100%;height:100%;object-fit:cover}.aivideo-preview-label{position:absolute;z-index:2;right:.55rem;top:.55rem;padding:.25rem .4rem;border-radius:.28rem;background:rgba(255,255,255,.92);border:1px solid rgba(226,232,240,.95);color:#475569;font-size:var(--fs-caption);font-weight:750;text-transform:uppercase;letter-spacing:.035em}.aivideo-media-state{position:absolute;right:.45rem;bottom:.45rem;padding:.2rem .35rem;border-radius:.24rem;background:rgba(15,23,42,.72);color:#fff;font-size:var(--fs-caption);font-weight:750;text-transform:uppercase;letter-spacing:.03em}.aivideo-trust{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-top:.9rem;box-shadow:none;background:#fbfcfd}.aivideo-trust> :global(.trust){border-right:1px solid var(--color-border)}.aivideo-trust> :global(.trust:last-child){border-right:0}
+.aivideo-section{padding-block:1.2rem}.aivideo-section-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;margin-bottom:.7rem}.aivideo-section-heading>div{display:grid;gap:.18rem}.aivideo-section-heading h2{font-size:clamp(1.55rem,2vw,1.95rem)}.aivideo-section-heading p{color:var(--color-text-muted);font-size:var(--fs-body-sm);line-height:1.45}.aivideo-section-heading--compact{display:grid;justify-content:start;align-items:start;gap:.12rem}.aivideo-section-heading--with-link>a,.aivideo-text-link{display:inline-flex;align-items:center;gap:.3rem;color:#2563eb;font-size:var(--fs-meta);font-weight:750}.aivideo-copy-block{display:grid;align-content:start;gap:.45rem}.aivideo-copy-block h2{font-size:clamp(1.65rem,2.25vw,2.05rem)}.aivideo-copy-block>p{color:#536179;line-height:1.55;font-size:var(--fs-body)}
+.aivideo-explainer-section{background:#fff}.aivideo-explainer{display:grid;grid-template-columns:minmax(0,.9fr) minmax(31rem,1.1fr);gap:2rem;align-items:center}.aivideo-capabilities{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.55rem}.aivideo-capability{display:grid;justify-items:center;text-align:center;gap:.26rem;padding:1rem .7rem;box-shadow:none;background:#fbfcfd}.aivideo-capability>span{display:grid;place-items:center;color:#17365c}.aivideo-capability h3{font-size:1.05rem}.aivideo-capability p{color:var(--color-text-muted);font-size:var(--fs-body-sm);line-height:1.4}
+.aivideo-create-section{border-block:1px solid #f0f2f4;background:#fbfcfd}.aivideo-create-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.52rem}.aivideo-create-card{overflow:hidden;box-shadow:none}.aivideo-create-card__media{position:relative;aspect-ratio:16/9;background:#eef2f7;overflow:hidden}.aivideo-create-card img{width:100%;height:100%;object-fit:cover}.aivideo-create-card__media span{position:absolute;right:.35rem;bottom:.35rem;padding:.18rem .3rem;background:rgba(15,23,42,.72);color:#fff;border-radius:.22rem;font-size:var(--fs-caption);font-weight:700;text-transform:uppercase}.aivideo-create-card>div:last-child{display:grid;gap:.12rem;padding:.55rem}.aivideo-create-card h3{font-size:1rem;line-height:1.2}.aivideo-create-card p{font-size:var(--fs-body-sm);line-height:1.38;color:var(--color-text-muted)}
+.aivideo-needs-section{padding-bottom:1rem}.aivideo-needs-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.25rem}.aivideo-need{display:grid;grid-template-columns:auto 1fr;align-items:start;gap:.5rem;padding:.65rem .55rem;border-right:1px solid var(--color-border)}.aivideo-need:last-child{border-right:0}.aivideo-need__icon{display:grid;place-items:center;width:2rem;height:2rem;border:1px solid var(--color-border);border-radius:50%;color:#17365c;background:#fff}.aivideo-need h3{font-size:.98rem;line-height:1.2}.aivideo-need p{margin-top:.12rem;font-size:var(--fs-body-sm);line-height:1.38;color:var(--color-text-muted)}
+.aivideo-included-section{border-top:1px solid #f0f2f4}.aivideo-phases{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.6rem}.aivideo-phase{padding:.8rem;box-shadow:none;background:#fbfcfd}.aivideo-phase__head{display:grid;grid-template-columns:auto 1fr;gap:.55rem;align-items:start}.aivideo-phase__head>span{display:grid;place-items:center;width:2.5rem;height:2.5rem;border-radius:50%;background:#fff2f1;color:var(--color-brand-strong)}.aivideo-phase:nth-child(2) .aivideo-phase__head>span,.aivideo-phase:nth-child(4) .aivideo-phase__head>span{background:#eff6ff;color:#2563eb}.aivideo-phase h3{font-size:1.05rem}.aivideo-phase__head p{font-size:var(--fs-caption);color:var(--color-text-muted)}.aivideo-phase ul{display:grid;gap:.27rem;list-style:none;margin-top:.55rem}.aivideo-phase li{display:flex;gap:.35rem;align-items:flex-start;font-size:var(--fs-body-sm);line-height:1.38;color:#475569}.aivideo-phase li :global(svg){flex:0 0 auto;margin-top:.15rem;color:var(--color-brand-strong)}
+.aivideo-work-section{background:#fbfcfd;border-block:1px solid #f0f2f4}.aivideo-work-layout{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(18rem,.6fr);gap:1rem}.aivideo-work-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.55rem}.aivideo-work-grid> :global(.project-card){height:100%}.aivideo-case-wrap{min-width:0}.aivideo-case{overflow:hidden;box-shadow:none}.aivideo-case>img{width:100%;aspect-ratio:16/9;object-fit:cover;background:#eef2f7}.aivideo-case__body{display:grid;gap:.32rem;padding:.75rem}.aivideo-case__body>span{font-size:var(--fs-caption);font-weight:800;letter-spacing:.035em;text-transform:uppercase;color:var(--color-brand-strong)}.aivideo-case h3{font-size:1.05rem}.aivideo-case p,.aivideo-honest-state p{font-size:var(--fs-body-sm);line-height:1.43;color:var(--color-text-muted)}.aivideo-case a{display:inline-flex;align-items:center;gap:.28rem;color:var(--color-brand-strong);font-size:var(--fs-meta);font-weight:750}.aivideo-honest-state{display:grid;gap:.35rem;padding:1rem;box-shadow:none}.aivideo-honest-state h3{font-size:1.05rem}
+.aivideo-process-section{padding-block:1.1rem}.aivideo-process-grid{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:.45rem}.aivideo-process-step{display:grid;grid-template-columns:auto 1fr;gap:.55rem;align-items:center;padding:.75rem;box-shadow:none}.aivideo-process-step>strong{font-size:1.55rem;line-height:1;color:var(--color-brand-strong)}.aivideo-process-step h3{font-size:1rem}.aivideo-process-step p{font-size:var(--fs-body-sm);line-height:1.38;color:var(--color-text-muted)}.aivideo-process-arrow{color:#94a3b8}
+.aivideo-proof-section{padding-top:.35rem}.aivideo-proof-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr) minmax(18rem,.8fr);gap:1rem;align-items:start}.aivideo-why-list{display:grid;gap:.35rem;list-style:none}.aivideo-why-list li{display:flex;gap:.45rem;align-items:flex-start}.aivideo-why-list li>span{display:grid;place-items:center;width:1.2rem;height:1.2rem;flex:0 0 1.2rem;margin-top:.08rem;border-radius:50%;background:#fff0ee;color:var(--color-brand-strong)}.aivideo-why-list li>div{display:grid;gap:.02rem}.aivideo-why-list strong{font-size:var(--fs-meta)}.aivideo-why-list small{font-size:var(--fs-caption);line-height:1.35;color:var(--color-text-muted)}.aivideo-custom{display:grid;grid-template-columns:auto 1fr;gap:.75rem;padding:1rem;box-shadow:none;background:#fbfcfd}.aivideo-custom__icon{display:grid;place-items:center;width:2.8rem;height:2.8rem;border-radius:50%;background:#fff1f2;color:var(--color-brand-strong)}.aivideo-custom>div{display:grid;gap:.45rem}.aivideo-custom h2{font-size:1.2rem}.aivideo-custom p{font-size:var(--fs-body-sm);line-height:1.44;color:var(--color-text-muted)}.aivideo-custom .button{justify-self:start}
+.aivideo-faq-section{background:#fbfcfd;border-top:1px solid #f0f2f4}.aivideo-faq-layout{display:grid;grid-template-columns:minmax(18rem,.55fr) minmax(0,1.45fr);gap:2rem;align-items:start}.aivideo-final-cta{padding-block:.75rem 1rem}
+@media(max-width:74rem){.aivideo-hero{grid-template-columns:minmax(0,.9fr) minmax(27rem,1.1fr)}.aivideo-create-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.aivideo-needs-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.aivideo-need:nth-child(3n){border-right:0}.aivideo-phases{grid-template-columns:repeat(2,minmax(0,1fr))}.aivideo-work-layout{grid-template-columns:1fr}.aivideo-work-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.aivideo-case{display:grid;grid-template-columns:minmax(15rem,.7fr) minmax(0,1.3fr)}.aivideo-case>img{height:100%;aspect-ratio:auto}.aivideo-proof-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.aivideo-custom{grid-column:1/-1}.aivideo-faq-layout{grid-template-columns:1fr}}
+@media(max-width:63.99rem){.aivideo-hero{grid-template-columns:1fr}.aivideo-hero__copy h1{max-width:15ch}.aivideo-explainer{grid-template-columns:1fr}.aivideo-work-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.aivideo-process-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem}.aivideo-process-arrow{display:none}.aivideo-proof-grid{grid-template-columns:1fr}.aivideo-custom{grid-column:auto}}
+@media(max-width:47.99rem){.aivideo-top{padding-block:.6rem .75rem}.aivideo-top :global(.breadcrumbs){margin-bottom:.5rem}.aivideo-hero{gap:.75rem}.aivideo-hero__copy{gap:.5rem}.aivideo-hero__copy h1{font-size:var(--fs-h1);max-width:none}.aivideo-hero__lede{font-size:var(--fs-body);line-height:1.48}.aivideo-hero__actions{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}.aivideo-hero__actions .button{width:100%;min-width:0}.aivideo-hero-media{grid-template-columns:1.12fr .88fr;grid-template-rows:1fr 1fr;gap:.4rem}.aivideo-hero-media__item{aspect-ratio:16/9}.aivideo-hero-media__item--main{grid-row:1/3;aspect-ratio:.98}.aivideo-preview-label{right:.35rem;top:.35rem;padding:.18rem .3rem}.aivideo-trust{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:.7rem}.aivideo-trust> :global(.trust){border-right:1px solid var(--color-border);border-bottom:1px solid var(--color-border)}.aivideo-trust> :global(.trust:nth-child(2n)){border-right:0}.aivideo-trust> :global(.trust:nth-last-child(-n+2)){border-bottom:0}.aivideo-section{padding-block:1rem}.aivideo-section-heading{margin-bottom:.55rem;align-items:flex-start}.aivideo-section-heading h2,.aivideo-copy-block h2{font-size:1.45rem}.aivideo-section-heading p{font-size:var(--fs-body-sm)}.aivideo-section-heading--with-link>a{font-size:var(--fs-caption)}.aivideo-capabilities{grid-template-columns:repeat(3,minmax(0,1fr));gap:.4rem}.aivideo-capability{padding:.7rem .4rem}.aivideo-capability h3{font-size:.95rem}.aivideo-capability p{font-size:var(--fs-caption);line-height:1.35}.aivideo-create-grid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:.5rem;padding-right:1rem;scrollbar-width:none}.aivideo-create-grid::-webkit-scrollbar{display:none}.aivideo-create-card{flex:0 0 43%;scroll-snap-align:start}.aivideo-create-card h3{font-size:.95rem}.aivideo-create-card p{font-size:var(--fs-caption)}.aivideo-needs-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:.25rem}.aivideo-need{border-right:0;border-bottom:1px solid var(--color-border);padding:.55rem .35rem}.aivideo-need:nth-last-child(-n+2){border-bottom:0}.aivideo-need h3{font-size:.95rem}.aivideo-need p{display:none}.aivideo-phases{grid-template-columns:repeat(4,minmax(0,1fr));gap:.35rem}.aivideo-phase{padding:.55rem .3rem;text-align:center}.aivideo-phase__head{display:grid;grid-template-columns:1fr;justify-items:center;gap:.25rem}.aivideo-phase__head>span{width:2.3rem;height:2.3rem}.aivideo-phase h3{font-size:.88rem}.aivideo-phase__head p,.aivideo-phase ul{display:none}.aivideo-work-grid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:.5rem;padding-right:1rem;scrollbar-width:none}.aivideo-work-grid::-webkit-scrollbar{display:none}.aivideo-work-grid> :global(.project-card){flex:0 0 88%;scroll-snap-align:start}.aivideo-case{grid-template-columns:7.25rem minmax(0,1fr)}.aivideo-case__body{padding:.6rem}.aivideo-case__body p{display:none}.aivideo-process-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:.3rem}.aivideo-process-step{grid-template-columns:1fr;justify-items:center;text-align:center;padding:.5rem .25rem;gap:.25rem}.aivideo-process-step>strong{font-size:1.25rem}.aivideo-process-step h3{font-size:.85rem}.aivideo-process-step p{display:none}.aivideo-proof-section{padding-top:.3rem}.aivideo-why-list small{display:none}.aivideo-faq-layout{gap:.7rem}.aivideo-final-cta{padding-block:.35rem .75rem}}
+@media(max-width:23rem){.aivideo-hero__actions{grid-template-columns:1fr}.aivideo-capabilities{grid-template-columns:1fr}.aivideo-create-card{flex-basis:78%}.aivideo-needs-grid{grid-template-columns:1fr}.aivideo-needs-grid .aivideo-need{border-bottom:1px solid var(--color-border)}.aivideo-phases,.aivideo-process-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.aivideo-case{grid-template-columns:1fr}.aivideo-case>img{aspect-ratio:16/9}.aivideo-section-heading--with-link{display:grid}.aivideo-proof-grid{grid-template-columns:1fr}}
+</style>

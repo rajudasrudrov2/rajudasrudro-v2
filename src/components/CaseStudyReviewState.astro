@@ -1,0 +1,27 @@
+---
+import type { Review } from '@/types/content';
+const { review, developmentPreview = false } = Astro.props as { review?: Review; developmentPreview?: boolean };
+const hasRating = typeof review?.rating === 'number' && Number.isFinite(review.rating) && review.rating >= 1 && review.rating <= 5;
+---
+<section class="case-review" aria-labelledby="case-review-title">
+  <h2 id="case-review-title">Client Feedback</h2>
+  {review ? (
+    <article class="case-review__card surface">
+      {hasRating && <p class="case-review__stars" aria-label={`${review.rating} out of 5 stars`}>{'★'.repeat(Math.round(review.rating!))}</p>}
+      <blockquote>“{review.text}”</blockquote>
+      <footer>
+        <strong>{review.publicBuyerIdentity || review.name || 'Public reviewer'}</strong>
+        <span>{review.context || review.source}</span>
+      </footer>
+    </article>
+  ) : (
+    <div class="case-review__empty surface" role="status">
+      <strong>Project-specific review not mapped yet.</strong>
+      <p>{developmentPreview ? 'No general testimonial is being assigned to this development preview. A verified project-specific review can appear here after authoritative migration.' : 'This project currently has no verified project-specific testimonial.'}</p>
+    </div>
+  )}
+</section>
+<style>
+.case-review{display:grid;gap:.4rem}.case-review>h2{font-size:1.5rem}.case-review__card,.case-review__empty{padding:.75rem .85rem;box-shadow:none}.case-review__stars{color:#f59e0b;font-size:1.4rem;letter-spacing:.08em}.case-review blockquote{margin:.3rem 0 .55rem;font-size:var(--fs-body-sm);line-height:1.45;color:#475569}.case-review footer{display:grid;gap:.05rem}.case-review footer strong{font-size:var(--fs-body-sm)}.case-review footer span{font-size:var(--fs-caption);color:var(--color-text-muted)}.case-review__empty{display:grid;gap:.24rem;background:#fbfcfd}.case-review__empty strong{font-size:var(--fs-meta)}.case-review__empty p{font-size:var(--fs-meta);line-height:1.4;color:var(--color-text-muted)}
+@media(max-width:47.99rem){.case-review>h2{font-size:1.4rem}.case-review__card,.case-review__empty{padding:.68rem}.case-review__empty p{font-size:var(--fs-caption)}}
+</style>
