@@ -25,6 +25,8 @@ final class Plugin {
     private $rest_api;
     /** @var Headless */
     private $headless;
+    /** @var DeploymentWebhook */
+    private $deployment;
     /** @var \RDR\V2\HeadlessCMS\Portal\Portal */
     private $portal;
 
@@ -60,7 +62,8 @@ final class Plugin {
         $this->admin = new Admin( $this->meta, $this->settings );
         $this->rest_api = new RestApi( $this->media, $this->settings );
         $this->headless = new Headless();
-        $this->portal = new \RDR\V2\HeadlessCMS\Portal\Portal( $this->settings );
+        $this->deployment = new DeploymentWebhook();
+        $this->portal = new \RDR\V2\HeadlessCMS\Portal\Portal( $this->settings, $this->deployment );
 
         add_action( 'init', array( $this->post_types, 'register' ), 5 );
         add_action( 'init', array( $this->taxonomies, 'register' ), 6 );
@@ -70,6 +73,7 @@ final class Plugin {
         $this->admin->hooks();
         $this->rest_api->hooks();
         $this->headless->hooks();
+        $this->deployment->hooks();
         $this->portal->hooks();
     }
 
@@ -82,6 +86,7 @@ final class Plugin {
         require_once RDR_V2_CMS_DIR . 'src/Admin.php';
         require_once RDR_V2_CMS_DIR . 'src/RestApi.php';
         require_once RDR_V2_CMS_DIR . 'src/Headless.php';
+        require_once RDR_V2_CMS_DIR . 'src/DeploymentWebhook.php';
         require_once RDR_V2_CMS_DIR . 'src/Portal/Support.php';
         require_once RDR_V2_CMS_DIR . 'src/Portal/Assets.php';
         require_once RDR_V2_CMS_DIR . 'src/Portal/Shell.php';
