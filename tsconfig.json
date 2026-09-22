@@ -1,0 +1,17 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/content-or-cms/client": ["src/content-or-cms/selected/client.ts"],
+      "@/data/site": ["src/content-or-cms/selected/site.ts"],
+      "@/data/home": ["src/content-or-cms/selected/home.ts"],
+      "@/data/services": ["src/content-or-cms/selected/services.ts"],
+      "@/data/work": ["src/content-or-cms/selected/work.ts"],
+      "@/data/reviews": ["src/content-or-cms/selected/reviews.ts"],
+      "@/data/about": ["src/content-or-cms/selected/about.ts"],
+      "@/lib/work-projects": ["src/content-or-cms/selected/work.ts"],
+      "@/*": ["src/*"]
+    }
+  }
+}
