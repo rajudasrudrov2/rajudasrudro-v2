@@ -2,12 +2,14 @@
 namespace RDR\V2\HeadlessCMS\Portal;
 
 use RDR\V2\HeadlessCMS\Settings as CoreSettings;
+use RDR\V2\HeadlessCMS\DeploymentWebhook;
 
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 final class Router {
     private $settings;
-    public function __construct( CoreSettings $settings ) { $this->settings = $settings; }
+    private $deployment;
+    public function __construct( CoreSettings $settings, DeploymentWebhook $deployment ) { $this->settings = $settings; $this->deployment = $deployment; }
 
     public static function register_rewrites() {
         add_rewrite_rule( '^admin-portal/?$', 'index.php?rdr_portal_route=dashboard', 'top' );
@@ -54,7 +56,7 @@ final class Router {
         if ( 'insights/add' === $route ) { ( new Articles() )->add_page(); }
         if ( preg_match( '#^insights/edit/(\d+)$#', $route, $m ) ) { ( new Articles() )->edit_page( absint( $m[1] ) ); }
         if ( 'about' === $route ) { ( new About( $this->settings ) )->render(); }
-        if ( 'settings' === $route ) { ( new SiteSettings( $this->settings ) )->render(); }
+        if ( 'settings' === $route ) { ( new SiteSettings( $this->settings, $this->deployment ) )->render(); }
 
         Shell::simple_error( 404, 'Portal page not found', 'The requested Admin Portal route does not exist.' );
     }
