@@ -142,7 +142,7 @@ final class DeploymentWebhook {
             $response = wp_remote_post(
                 $config['value'],
                 array(
-                    'timeout'     => 5,
+                    'timeout'     => 15,
                     'redirection' => 0,
                     'sslverify'   => true,
                     'headers'     => array( 'Accept' => 'application/json' ),
