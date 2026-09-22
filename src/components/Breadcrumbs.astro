@@ -1,5 +1,0 @@
----
-const { items = [] } = Astro.props;
----
-<nav class="breadcrumbs" aria-label="Breadcrumb"><ol>{items.map((item:any, index:number) => <li>{index < items.length - 1 ? <><a href={item.href}>{item.label}</a><span aria-hidden="true">/</span></> : <span aria-current="page">{item.label}</span>}</li>)}</ol></nav>
-<style>.breadcrumbs ol{display:flex;flex-wrap:wrap;gap:.45rem;list-style:none;color:var(--color-text-muted);font-size:var(--fs-caption)}.breadcrumbs li{display:flex;gap:.45rem}.breadcrumbs a:hover{color:var(--color-brand)}</style>
