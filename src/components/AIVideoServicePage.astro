@@ -32,7 +32,7 @@ const selectedAiVideoWork = allWork
       project.id !== caseStudyProject?.id,
   )
   .slice(0, 4);
-const aiVideoReview = publicReviewSummaries.find((review) => review.context.includes('AI Video'));
+const aiVideoReview = publicReviewSummaries.find((review) => (review.context ?? '').includes('AI Video'));
 ---
 <div class="aivideo-page">
   <section class="aivideo-top" aria-labelledby="aivideo-title">
