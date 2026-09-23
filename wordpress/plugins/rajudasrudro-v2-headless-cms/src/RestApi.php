@@ -156,6 +156,8 @@ final class RestApi {
         return array_merge( $this->service_list_dto( $post ), array(
             'positioning'     => (string) get_post_meta( $post->ID, '_rdr_positioning', true ),
             'heroHtml'        => wp_kses_post( (string) get_post_meta( $post->ID, '_rdr_hero_copy', true ) ),
+            'heroTitle'       => sanitize_text_field( (string) get_post_meta( $post->ID, '_rdr_hero_title', true ) ),
+            'heroContent'     => wp_kses_post( (string) get_post_meta( $post->ID, '_rdr_hero_content', true ) ),
             'capabilities'    => $this->array_meta( $post->ID, '_rdr_capabilities' ),
             'deliverables'    => $this->array_meta( $post->ID, '_rdr_deliverables' ),
             'useCases'        => $this->array_meta( $post->ID, '_rdr_use_cases' ),

@@ -42,8 +42,8 @@ final class Meta {
         );
     }
 
-    public static function service_fields() {
-        return array(
+    public static function service_fields( $include_hero_fields = false ) {
+        $fields = array(
             '_rdr_short_description'    => array( 'type' => 'string',  'sanitize' => 'sanitize_textarea_field' ),
             '_rdr_positioning'          => array( 'type' => 'string',  'sanitize' => 'sanitize_textarea_field' ),
             '_rdr_hero_copy'            => array( 'type' => 'string',  'sanitize' => 'wp_kses_post' ),
@@ -62,6 +62,13 @@ final class Meta {
             '_rdr_og_image_id'          => array( 'type' => 'integer', 'sanitize' => 'absint' ),
             self::PUBLICATION_STATE     => array( 'type' => 'string',  'sanitize' => array( __CLASS__, 'sanitize_publication_state' ) ),
         );
+
+        if ( $include_hero_fields ) {
+            $fields['_rdr_hero_title'] = array( 'type' => 'string', 'sanitize' => 'sanitize_text_field' );
+            $fields['_rdr_hero_content'] = array( 'type' => 'string', 'sanitize' => 'wp_kses_post' );
+        }
+
+        return $fields;
     }
 
     public static function review_fields() {
@@ -98,7 +105,7 @@ final class Meta {
         foreach ( self::project_fields() as $key => $schema ) {
             $this->register_field( PostTypes::PROJECT, $key, $schema );
         }
-        foreach ( self::service_fields() as $key => $schema ) {
+        foreach ( self::service_fields( true ) as $key => $schema ) {
             $this->register_field( PostTypes::SERVICE, $key, $schema );
         }
         foreach ( self::review_fields() as $key => $schema ) {
