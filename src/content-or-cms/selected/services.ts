@@ -59,6 +59,23 @@ function valuePoints(items: unknown[], fallbackDescription = ''): ServiceValuePo
   return asStrings(items).map((title, index) => ({ title, description: fallbackDescription, icon: icons[index % icons.length] }));
 }
 
+function structuredValuePoints(items: unknown[]): ServiceValuePoint[] {
+  const points = items.map((item, index) => {
+    if (!item || typeof item !== 'object') return null;
+    const record = item as Record<string, unknown>;
+    const title = typeof record.title === 'string' ? record.title.trim() : '';
+    const rawDescription = typeof record.description === 'string'
+      ? record.description
+      : typeof record.body === 'string'
+        ? record.body
+        : '';
+    const description = stripHtmlToText(rawDescription).trim();
+    return title && description ? { title, description, icon: icons[index % icons.length] } : null;
+  });
+
+  return points.every((point): point is ServiceValuePoint => Boolean(point)) ? points : [];
+}
+
 function processRows(rows: CmsServiceDetail['process']): ServiceProcessStep[] {
   return rows.map((row, index) => ({ number: String(index + 1).padStart(2, '0'), title: row.title, description: row.body }));
 }
@@ -99,7 +116,8 @@ function applyCmsDetail(local: ServiceDefinition, cms: CmsServiceDetail): Servic
   const description = firstNonBlank(stripHtmlToText(cms.heroContent), cms.positioning, cms.shortDescription);
   const process = processRows(cms.process);
   const faqs = faqRows(cms.faq);
-  const why = valuePoints(cms.capabilities.length ? cms.capabilities : cms.useCases, stripHtmlToText(cms.whyRajuHtml));
+  const cmsWhyRaju = structuredValuePoints(cms.capabilities.length ? cms.capabilities : cms.useCases);
+  const why = cmsWhyRaju.length ? cmsWhyRaju : detail.whyRaju;
   const formats: ServiceFormat[] = asStrings(cms.formats).map((title) => ({ title, description: '', media: visual }));
 
   if (detail.kind === 'ai-ugc') {
