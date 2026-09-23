@@ -65,6 +65,8 @@ export type CmsRow = {
 export type CmsServiceDetail = CmsServiceListItem & {
   positioning: string;
   heroHtml: string;
+  heroTitle: string;
+  heroContent: string;
   capabilities: unknown[];
   deliverables: unknown[];
   useCases: unknown[];
