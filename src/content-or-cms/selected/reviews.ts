@@ -5,8 +5,15 @@ import { getWordPressReviews } from '../wordpress';
 
 export type PublicReviewSummary = Review & { name: string; order?: number; relatedServiceId?: string; relatedProjectId?: string };
 
+const relatedServiceIdsBySlug = new Map<string, string>();
+
 async function loadWordPressReviews(): Promise<PublicReviewSummary[]> {
   const reviews = await getWordPressReviews();
+  for (const review of reviews) {
+    if (review.relatedService) {
+      relatedServiceIdsBySlug.set(review.relatedService.slug, String(review.relatedService.id));
+    }
+  }
   return reviews.map((review) => ({
     id: String(review.id),
     name: review.reviewer,
@@ -35,11 +42,27 @@ const localNormalized: PublicReviewSummary[] = localReviewSummaries.map((review,
   source: 'Fiverr',
 }));
 
+const localServiceContextMarkers: Partial<Record<string, string>> = {
+  'ai-video-production': 'AI Video',
+};
+
 export const reviewsUseCms = getContentSource() === 'wordpress';
 
 export const publicReviewSummaries: PublicReviewSummary[] = reviewsUseCms
   ? await loadWordPressReviews()
   : localNormalized;
+
+export function resolveServiceReview(serviceSlug: string): Review | undefined {
+  if (reviewsUseCms) {
+    const relatedServiceId = relatedServiceIdsBySlug.get(serviceSlug);
+    if (!relatedServiceId) return undefined;
+    return publicReviewSummaries.find((review) => review.relatedServiceId === relatedServiceId);
+  }
+
+  const contextMarker = localServiceContextMarkers[serviceSlug];
+  if (!contextMarker) return undefined;
+  return publicReviewSummaries.find((review) => (review.context ?? '').includes(contextMarker));
+}
 
 export function resolveProjectReview(project: WorkProject): Review | undefined {
   if (project.caseStudyStatus !== 'available' || !project.caseStudy) return undefined;
