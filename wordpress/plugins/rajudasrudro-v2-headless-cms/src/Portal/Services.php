@@ -40,7 +40,8 @@ final class Services extends ContentModule {
         </div>
         <?php echo $this->textarea('meta[_rdr_short_description]','Short Description',$this->meta($post,'_rdr_short_description',$meta),4); ?>
         <?php echo $this->textarea('meta[_rdr_positioning]','Positioning',$this->meta($post,'_rdr_positioning',$meta),4); ?>
-        <?php echo $this->textarea('meta[_rdr_hero_copy]','Hero Copy',$this->meta($post,'_rdr_hero_copy',$meta),6); ?>
+        <?php echo $this->field('meta[_rdr_hero_title]','Hero Title',$this->meta($post,'_rdr_hero_title',$meta),'text'); ?>
+        <?php echo $this->textarea('meta[_rdr_hero_content]','Hero Content',$this->meta($post,'_rdr_hero_content',$meta),6); ?>
         </section>
         <section class="rdr-card"><h2>Media</h2><?php echo Support::media_field('meta[_rdr_hero_media_id]','Hero / Supporting Media',$this->meta($post,'_rdr_hero_media_id',$meta)); ?></section>
         <section class="rdr-card"><h2>Structured Content</h2>
@@ -67,7 +68,7 @@ final class Services extends ContentModule {
         if(!array_key_exists($post->post_name,Plugin::primary_services()))$errors[]='This Service does not match one of the four locked primary identities.';
         if($errors)return array('errors'=>$errors,'submitted'=>$submitted);
         $mapped=Support::state_to_storage($state); $result=wp_update_post(array('ID'=>$post->ID,'post_title'=>$title,'post_status'=>$mapped['post_status'],'post_name'=>$post->post_name),true); if(is_wp_error($result))return array('errors'=>array('WordPress could not save the Service: '.$result->get_error_message()),'submitted'=>$submitted);
-        $meta=isset($submitted['meta'])&&is_array($submitted['meta'])?$submitted['meta']:array(); $meta[Meta::PUBLICATION_STATE]=$mapped['rdr_state']; Support::save_meta_fields($post->ID,Meta::service_fields(),$meta);
+        $meta=isset($submitted['meta'])&&is_array($submitted['meta'])?$submitted['meta']:array(); $meta[Meta::PUBLICATION_STATE]=$mapped['rdr_state']; $fields=Meta::service_fields(true); unset($fields['_rdr_hero_copy']); Support::save_meta_fields($post->ID,$fields,$meta);
         return array('redirect'=>Support::url('services/edit/'.$post->ID).'?rdr_notice=saved');
     }
 }
