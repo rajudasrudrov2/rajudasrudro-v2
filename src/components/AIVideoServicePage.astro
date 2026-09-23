@@ -8,7 +8,7 @@ import ProjectCard from './ProjectCard.astro';
 import ReviewCard from './ReviewCard.astro';
 import TrustMetric from './TrustMetric.astro';
 import { homeTrustMetrics } from '@/data/home';
-import { publicReviewSummaries } from '@/data/reviews';
+import { resolveServiceReview } from '@/content-or-cms/selected/reviews';
 import { featuredWorkProject, workProjects } from '@/data/work';
 import type { ServiceDefinition } from '@/data/services';
 
@@ -32,7 +32,7 @@ const selectedAiVideoWork = allWork
       project.id !== caseStudyProject?.id,
   )
   .slice(0, 4);
-const aiVideoReview = publicReviewSummaries.find((review) => (review.context ?? '').includes('AI Video'));
+const aiVideoReview = resolveServiceReview(service.slug);
 ---
 <div class="aivideo-page">
   <section class="aivideo-top" aria-labelledby="aivideo-title">
