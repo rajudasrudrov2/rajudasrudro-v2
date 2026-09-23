@@ -67,6 +67,14 @@ function faqRows(rows: CmsServiceDetail['faq']): ServiceFaqItem[] {
   return rows.map((row) => ({ question: row.title, answer: row.body }));
 }
 
+function firstNonBlank(...values: Array<string | null | undefined>): string {
+  for (const value of values) {
+    const normalized = String(value ?? '').trim();
+    if (normalized) return normalized;
+  }
+  return '';
+}
+
 function serviceMedia(cms: CmsServiceListItem, local: ServiceDefinition) {
   const media = normalizeCmsMedia(cms.heroMedia);
   return media
@@ -87,8 +95,8 @@ function applyCmsDetail(local: ServiceDefinition, cms: CmsServiceDetail): Servic
   const visual = heroMedia
     ? { src: heroMedia.src, alt: heroMedia.alt, width: heroMedia.width || local.media.width, height: heroMedia.height || local.media.height }
     : local.media;
-  const titleText = stripHtmlToText(cms.heroHtml) || cms.title;
-  const description = cms.positioning || cms.shortDescription;
+  const titleText = firstNonBlank(cms.heroTitle, stripHtmlToText(cms.heroHtml), cms.title);
+  const description = firstNonBlank(stripHtmlToText(cms.heroContent), cms.positioning, cms.shortDescription);
   const process = processRows(cms.process);
   const faqs = faqRows(cms.faq);
   const why = valuePoints(cms.capabilities.length ? cms.capabilities : cms.useCases, stripHtmlToText(cms.whyRajuHtml));
