@@ -2,7 +2,7 @@
 /**
  * Plugin Name: RajuDasRudro V2 — Headless CMS Core
  * Description: Structured content models and versioned REST DTOs for the Raju Das Rudro V2 headless WordPress CMS.
- * Version: 1.2.0
+ * Version: 1.2.2
  * Requires at least: 6.2
  * Requires PHP: 7.4
  * Author: Raju Das Rudro
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'RDR_V2_CMS_VERSION', '1.2.0' );
+define( 'RDR_V2_CMS_VERSION', '1.2.2' );
 define( 'RDR_V2_CMS_FILE', __FILE__ );
 define( 'RDR_V2_CMS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'RDR_V2_CMS_REST_NAMESPACE', 'rdr/v1' );
