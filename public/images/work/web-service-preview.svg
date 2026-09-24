@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450" role="img" aria-labelledby="t d">
+<title id="t">Service website development preview</title>
+<desc id="d">Stylized generic service-business website artwork for development preview use only.</desc>
+<rect width="800" height="450" fill="#eef6f4"/>
+<rect x="42" y="42" width="716" height="366" rx="22" fill="#ffffff" stroke="#dbe2ea" stroke-width="2"/>
+<rect x="42" y="42" width="716" height="44" rx="22" fill="#111827"/>
+<circle cx="66" cy="64" r="5" fill="#94a3b8"/><circle cx="84" cy="64" r="5" fill="#94a3b8"/><circle cx="102" cy="64" r="5" fill="#94a3b8"/>
+<rect x="132" y="58" width="84" height="12" rx="6" fill="#ffffff" opacity=".82"/>
+<rect x="604" y="58" width="50" height="10" rx="5" fill="#ffffff" opacity=".34"/><rect x="668" y="58" width="46" height="10" rx="5" fill="#ffffff" opacity=".34"/>
+<rect x="74" y="116" width="652" height="102" rx="16" fill="#0f766e"/>
+<rect x="98" y="140" width="248" height="18" rx="9" fill="#ffffff" opacity=".95"/>
+<rect x="98" y="171" width="286" height="10" rx="5" fill="#ffffff" opacity=".24"/>
+<rect x="594" y="148" width="108" height="30" rx="8" fill="#ffffff" opacity=".96"/>
+<rect x="74" y="244" width="200" height="118" rx="14" fill="#ffffff" stroke="#dbe2ea"/>
+<rect x="300" y="244" width="200" height="118" rx="14" fill="#ffffff" stroke="#dbe2ea"/>
+<rect x="526" y="244" width="200" height="118" rx="14" fill="#ffffff" stroke="#dbe2ea"/>
+<circle cx="104" cy="274" r="14" fill="#0f766e" opacity=".18"/><circle cx="330" cy="274" r="14" fill="#0f766e" opacity=".18"/><circle cx="556" cy="274" r="14" fill="#0f766e" opacity=".18"/>
+<rect x="128" y="268" width="90" height="10" rx="5" fill="#111827" opacity=".24"/><rect x="354" y="268" width="90" height="10" rx="5" fill="#111827" opacity=".24"/><rect x="580" y="268" width="90" height="10" rx="5" fill="#111827" opacity=".24"/>
+<rect x="94" y="302" width="132" height="8" rx="4" fill="#111827" opacity=".12"/><rect x="94" y="320" width="108" height="8" rx="4" fill="#111827" opacity=".1"/>
+<rect x="320" y="302" width="132" height="8" rx="4" fill="#111827" opacity=".12"/><rect x="320" y="320" width="108" height="8" rx="4" fill="#111827" opacity=".1"/>
+<rect x="546" y="302" width="132" height="8" rx="4" fill="#111827" opacity=".12"/><rect x="546" y="320" width="108" height="8" rx="4" fill="#111827" opacity=".1"/>
+<text x="74" y="392" fill="#111827" opacity=".55" font-family="Arial, sans-serif" font-size="10">SERVICE WEBSITE · DEVELOPMENT PREVIEW</text>
+</svg>
