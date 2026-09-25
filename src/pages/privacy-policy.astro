@@ -7,7 +7,7 @@ const emailHref = `mailto:${site.email}?subject=${encodeURIComponent('Privacy qu
 <BaseLayout
   meta={{
     title: 'Privacy Policy — Raju Das Rudro',
-    description: 'How Raju Das Rudro handles information submitted through this website, direct email and external contact links.',
+    description: 'How Raju Das Rudro handles information submitted through this website, direct email and optional analytics.',
     pathname: '/privacy-policy/',
   }}
 >
@@ -58,13 +58,16 @@ const emailHref = `mailto:${site.email}?subject=${encodeURIComponent('Privacy qu
 
       <section aria-labelledby="privacy-tracking">
         <h2 id="privacy-tracking">Analytics and Cookies</h2>
-        <p>The current website source does not intentionally implement Google Analytics, Google Tag Manager, Meta Pixel, advertising trackers, behavioral analytics, session replay or a cookie-consent system.</p>
-        <p>If analytics, advertising technology, a CMS integration or another tracking-related feature is added later, this policy should be reviewed and updated to reflect the actual implementation.</p>
+        <p>This website can use Google Analytics 4 to understand aggregate website usage and improve the experience. Google Analytics is optional and is not loaded until you choose <strong>Accept analytics</strong> in the website’s privacy choice banner.</p>
+        <p>If you reject analytics, the website keeps analytics storage denied and does not intentionally load the Google Analytics tag. Advertising storage, ad-user-data and ad-personalization consent remain denied in this implementation.</p>
+        <p>Your analytics choice is saved in your browser so the website can remember it. You can reopen the privacy choice at any time through <strong>Cookie preferences</strong> in the footer and change your selection.</p>
+        <p>Contact-form fields such as your name, email address, company or project message are not intentionally sent to Google Analytics by this consent implementation.</p>
       </section>
 
       <section aria-labelledby="privacy-third-party">
         <h2 id="privacy-third-party">Third-Party Services and Links</h2>
         <p>This website includes links to external services, including Fiverr. When you follow an external link, that destination operates under its own terms and privacy practices. This website does not control third-party policies or data handling.</p>
+        <p>If you accept optional analytics, Google Analytics is also used as a third-party analytics service and may process analytics data under Google’s own terms and privacy practices.</p>
       </section>
 
       <section aria-labelledby="privacy-security">
@@ -75,6 +78,7 @@ const emailHref = `mailto:${site.email}?subject=${encodeURIComponent('Privacy qu
       <section aria-labelledby="privacy-retention">
         <h2 id="privacy-retention">Data Retention</h2>
         <p>The current website implementation does not intentionally store Contact form submissions in WordPress, a site database, browser <code>localStorage</code>, or the GitHub repository.</p>
+        <p>The browser does store the optional analytics consent choice locally so the website can remember whether analytics was accepted or rejected.</p>
         <p>Messages delivered through an external delivery destination or email service may be retained as needed for communication, project evaluation, reasonable record-keeping or applicable obligations, subject to the actual service used. This policy does not claim a fixed deletion period.</p>
       </section>
 
