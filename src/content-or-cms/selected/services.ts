@@ -92,6 +92,13 @@ function firstNonBlank(...values: Array<string | null | undefined>): string {
   return '';
 }
 
+function plainText(value: string): string {
+  const normalized = stripHtmlToText(value)
+    .replace(/&#0*38;|&#x0*26;/gi, '&')
+    .trim();
+  return normalized || value.trim();
+}
+
 function serviceMedia(cms: CmsServiceListItem, local: ServiceDefinition) {
   const media = normalizeCmsMedia(cms.heroMedia);
   return media
@@ -108,11 +115,12 @@ function applyCmsDetail(local: ServiceDefinition, cms: CmsServiceDetail): Servic
   const detail = local.detail;
   if (!detail) return undefined;
 
+  const cmsTitle = plainText(cms.title);
   const heroMedia = normalizeCmsMedia(cms.heroMedia);
   const visual = heroMedia
     ? { src: heroMedia.src, alt: heroMedia.alt, width: heroMedia.width || local.media.width, height: heroMedia.height || local.media.height }
     : local.media;
-  const titleText = firstNonBlank(cms.heroTitle, stripHtmlToText(cms.heroHtml), cms.title);
+  const titleText = firstNonBlank(plainText(cms.heroTitle), stripHtmlToText(cms.heroHtml), cmsTitle);
   const description = firstNonBlank(stripHtmlToText(cms.heroContent), cms.positioning, cms.shortDescription);
   const process = processRows(cms.process);
   const faqs = faqRows(cms.faq);
@@ -123,10 +131,10 @@ function applyCmsDetail(local: ServiceDefinition, cms: CmsServiceDetail): Servic
   if (detail.kind === 'ai-ugc') {
     return {
       ...detail,
-      eyebrow: cms.title,
+      eyebrow: cmsTitle,
       heroTitle: titleText,
       heroDescription: description,
-      seoTitle: cms.seo.title || cms.title,
+      seoTitle: cms.seo.title || cmsTitle,
       metaDescription: cms.seo.description || cms.shortDescription,
       heroMedia: [visual],
       buyerNeeds: valuePoints(cms.useCases),
@@ -140,13 +148,13 @@ function applyCmsDetail(local: ServiceDefinition, cms: CmsServiceDetail): Servic
   if (detail.kind === 'ai-video') {
     return {
       ...detail,
-      eyebrow: cms.title,
+      eyebrow: cmsTitle,
       heroTitle: titleText,
       heroDescription: description,
-      seoTitle: cms.seo.title || cms.title,
+      seoTitle: cms.seo.title || cmsTitle,
       metaDescription: cms.seo.description || cms.shortDescription,
       heroMedia: [visual],
-      explanation: { ...detail.explanation, title: cms.title, description, capabilities: valuePoints(cms.capabilities) },
+      explanation: { ...detail.explanation, title: cmsTitle, description, capabilities: valuePoints(cms.capabilities) },
       creationTypes: formats,
       buyerNeeds: valuePoints(cms.useCases),
       process,
@@ -157,13 +165,13 @@ function applyCmsDetail(local: ServiceDefinition, cms: CmsServiceDetail): Servic
   if (detail.kind === 'ai-spokesperson') {
     return {
       ...detail,
-      eyebrow: cms.title,
+      eyebrow: cmsTitle,
       heroTitle: titleText,
       heroDescription: description,
-      seoTitle: cms.seo.title || cms.title,
+      seoTitle: cms.seo.title || cmsTitle,
       metaDescription: cms.seo.description || cms.shortDescription,
       heroMedia: [visual],
-      explanation: { ...detail.explanation, title: cms.title, description },
+      explanation: { ...detail.explanation, title: cmsTitle, description },
       useCases: valuePoints(cms.useCases),
       presenterOptions: formats,
       process,
@@ -173,10 +181,10 @@ function applyCmsDetail(local: ServiceDefinition, cms: CmsServiceDetail): Servic
   }
   return {
     ...detail,
-    eyebrow: cms.title,
+    eyebrow: cmsTitle,
     heroTitle: titleText,
     heroDescription: description,
-    seoTitle: cms.seo.title || cms.title,
+    seoTitle: cms.seo.title || cmsTitle,
     metaDescription: cms.seo.description || cms.shortDescription,
     heroMedia: [visual],
     projectTypes: valuePoints(cms.useCases),
@@ -218,10 +226,11 @@ async function loadWordPressServices(): Promise<ServiceDefinition[]> {
   return details.map((cms) => {
     const local = localServices.find((item) => item.slug === cms.slug);
     if (!local) throw new Error(`No approved dedicated Service presentation exists for ${cms.slug}.`);
+    const cmsTitle = plainText(cms.title);
     return {
       ...local,
       slug: cms.slug,
-      title: cms.title,
+      title: cmsTitle,
       short: cms.shortDescription,
       href: `/services/${cms.slug}/`,
       bullets: asStrings(cms.deliverables).slice(0, 4),
