@@ -3,5 +3,9 @@
   "framework": "astro",
   "installCommand": "npm ci",
   "buildCommand": "npm run build",
-  "outputDirectory": "dist"
+  "outputDirectory": "dist",
+  "redirects": [
+    { "source": "/portfolio-page/", "destination": "/work/", "statusCode": 301 },
+    { "source": "/blog/", "destination": "/insights/", "statusCode": 301 }
+  ]
 }
