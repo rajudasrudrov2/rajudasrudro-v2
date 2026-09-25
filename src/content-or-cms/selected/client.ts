@@ -1,6 +1,6 @@
 import * as localClient from '../client';
 import type { Article, Project, Review } from '@/types/content';
-import { cmsHtmlToArticleSections, sanitizeCmsHtml } from '../html';
+import { cmsHtmlToArticleSections, sanitizeCmsHtml, stripHtmlToText } from '../html';
 import { getContentSource } from '../source';
 import {
   getWordPressArticleBySlug,
@@ -19,7 +19,7 @@ function normalizeArticle(detail: Awaited<ReturnType<typeof getWordPressArticleB
     excerpt: detail.excerpt,
     bodyHtml: sanitizeCmsHtml(detail.bodyHtml),
     body: cmsHtmlToArticleSections(detail.bodyHtml),
-    category: detail.categories[0]?.name,
+    category: detail.categories[0]?.name ? stripHtmlToText(detail.categories[0].name) : undefined,
     publishedDate: detail.publishedAt,
     updatedDate: detail.updatedAt,
     author: detail.author?.name,
