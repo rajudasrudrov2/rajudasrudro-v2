@@ -22,6 +22,17 @@ export async function getStaticPaths() {
     .map((article: Article) => ({ params: { slug: article.slug }, props: { article } }));
 }
 
+const formatArticleDate = (value: string): string => {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '';
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(date);
+};
+
 const { article } = Astro.props as { article: Article };
 const allArticles = await getArticles();
 const isDevelopmentPreview = article.publicationStatus === 'development-preview' && article.developmentPreview === true;
@@ -95,7 +106,7 @@ const articleSchema = schemaEligible
               <div class="article-meta" aria-label="Article metadata">
                 {metadataItems.map((item) => (
                   item.type === 'date'
-                    ? <time datetime={item.value}>{item.value}</time>
+                    ? <time datetime={item.value}>{formatArticleDate(item.value)}</time>
                     : <span>{item.value}</span>
                 ))}
               </div>

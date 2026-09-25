@@ -9,6 +9,17 @@ import { getArticles } from '@/content-or-cms/client';
 import { isProductionEnvironment } from '@/config/environment';
 import { isArticleRouteEligible } from '@/lib/articles';
 
+const formatArticleDate = (value: string): string => {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '';
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(date);
+};
+
 const articles = await getArticles();
 const featuredArticle = articles.find((article) => article.featured) ?? articles[0];
 const listingArticles = featuredArticle
@@ -91,7 +102,7 @@ const topicCards = [
               <p>{featuredArticle.excerpt}</p>
               <div class="insights-featured__meta">
                 {featuredArticle.developmentPreview && <span>Development preview — not migrated production content</span>}
-                {featuredArticle.publishedDate && <time datetime={featuredArticle.publishedDate}>{featuredArticle.publishedDate}</time>}
+                {featuredArticle.publishedDate && <time datetime={featuredArticle.publishedDate}>{formatArticleDate(featuredArticle.publishedDate)}</time>}
                 {featuredArticle.readingTime && <span>{featuredArticle.readingTime}</span>}
               </div>
               {featuredHref ? (
