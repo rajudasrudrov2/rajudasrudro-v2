@@ -43,7 +43,7 @@ const featuredCaseMediaHeight = featuredCaseMedia?.height && featuredCaseMedia.h
           <span><strong>4.9 Fiverr rating · 470 reviews</strong><small>Verified trust data from the accepted Foundation source</small></span>
         </div>
       </div>
-      <HomeHeroMedia />
+      <div class="home-hero__media"><HomeHeroMedia /></div>
     </div>
   </section>
 
@@ -167,6 +167,7 @@ const featuredCaseMediaHeight = featuredCaseMedia?.height && featuredCaseMedia.h
 .home-hero{padding-block:1.45rem 1.25rem;background:linear-gradient(110deg,#fff 0%,#fff 58%,#fbfaf8 100%)}
 .home-hero__grid{display:grid;grid-template-columns:minmax(0,1.03fr) minmax(25rem,.97fr);align-items:center;gap:2.2rem}
 .home-hero__copy{display:grid;gap:.78rem;min-width:0}
+.home-hero__media{min-width:0}
 .home-hero__copy h1{font-size:var(--fs-hero);max-width:12.2ch;font-weight:800;letter-spacing:-.048em;line-height:.98}
 .home-hero__copy .lede{max-width:35rem;font-size:var(--fs-body);line-height:var(--lh-body-tight)}
 .home-hero__actions{display:flex;align-items:center;gap:.72rem;margin-top:.2rem}
@@ -195,12 +196,12 @@ const featuredCaseMediaHeight = featuredCaseMedia?.height && featuredCaseMedia.h
 }
 
 @media(max-width:47.99rem){
-  .home-hero{padding-block:.75rem .75rem;background:#fff}.home-hero__grid{grid-template-columns:1fr;gap:.8rem}.home-hero__copy{gap:.55rem}.home-hero__copy h1{font-size:var(--fs-hero);max-width:none;line-height:.99;letter-spacing:-.045em}.home-hero__copy .lede{font-size:var(--fs-body);line-height:var(--lh-body-tight)}.home-hero__actions{display:grid;grid-template-columns:1fr 1fr;gap:.55rem;margin-top:.05rem}.home-hero__actions .button{min-width:0;width:100%}.home-hero__proof{display:none}
+  .home-hero{padding-block:.75rem .75rem;background:#fff}.home-hero__grid{grid-template-columns:1fr;gap:.8rem}.home-hero__media{display:none}.home-hero__copy{gap:.55rem}.home-hero__copy h1{font-size:var(--fs-hero);max-width:none;line-height:.99;letter-spacing:-.045em}.home-hero__copy .lede{font-size:var(--fs-body);line-height:var(--lh-body-tight)}.home-hero__actions{display:grid;grid-template-columns:1fr 1fr;gap:.55rem;margin-top:.05rem}.home-hero__actions .button{min-width:0;width:100%}.home-hero__proof{display:none}
   .home-metrics__grid{grid-template-columns:repeat(2,1fr)}.home-metrics__grid>*{border-bottom:1px solid var(--color-border)}.home-metrics__grid>*:nth-child(3){border-left:0}.home-metrics__grid>*:nth-last-child(-n+2){border-bottom:0}
   .home-section{padding-block:1.15rem}.home-work-grid{display:flex;gap:.55rem;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding-right:1rem}.home-work-grid::-webkit-scrollbar{display:none}.home-scroll-dots{display:flex;justify-content:center;gap:.28rem;margin-top:.55rem}.home-scroll-dots span{width:.32rem;height:.32rem;border-radius:50%;background:#d1d5db}.home-scroll-dots span.active{background:var(--color-brand)}
-  .home-services-grid{grid-template-columns:1fr;gap:.5rem}.home-services-grid>*:last-child{grid-column:auto}
+  .home-services-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem}.home-services-grid>*:last-child{grid-column:1/-1}
   .home-case{padding-top:.7rem}.home-case__grid{grid-template-columns:1fr;gap:.6rem}.home-case__copy{gap:.42rem}.home-case__copy h2{font-size:1.4rem}.home-case__detail{display:none}.home-case__copy .button{display:none}.home-case__tags span{font-size:var(--fs-caption)}.home-case__media{border-radius:.5rem}
-  .home-process{padding-top:.7rem}.home-process__grid{grid-template-columns:1fr;gap:.42rem}.home-process__arrow{display:none}.home-process__step{padding:.56rem .62rem;gap:.62rem}.home-process__step>strong{font-size:1.35rem}.home-process__step h3{font-size:1rem}.home-process__step p{font-size:var(--fs-meta)}
+  .home-process{padding-top:.7rem}.home-process__grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:.42rem}.home-process__arrow{display:none}.home-process__step{padding:.56rem .62rem;gap:.62rem}.home-process__step:last-of-type{grid-column:1/-1}.home-process__step>strong{font-size:1.35rem}.home-process__step h3{font-size:1rem}.home-process__step p{font-size:var(--fs-meta)}
   .home-reviews-grid{grid-template-columns:1fr}.home-reviews-grid>*:not(:first-child){display:none}
   .home-about{padding-block:.2rem .75rem}.home-about__grid{grid-template-columns:5.4rem 1fr;gap:.7rem;padding-top:.75rem}.home-about__portrait{aspect-ratio:1/1}.home-about__copy{gap:.26rem}.home-about__copy h2{font-size:1.25rem}.home-about__copy p{font-size:var(--fs-body-sm);line-height:var(--lh-body-tight);display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}.home-about__copy a{font-size:var(--fs-meta)}.home-cta-wrap{padding-block:.1rem .75rem}
 }

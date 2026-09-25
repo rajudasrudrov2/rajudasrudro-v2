@@ -71,10 +71,6 @@ const emailHref = `mailto:${site.email}?subject=${encodeURIComponent('Project in
           <div><Icon name="check" size={21} /><span><strong>No Obligation</strong><small>A project conversation first</small></span></div>
         </div>
 
-        <div class="contact-portrait surface">
-          <img src="/images/raju-das-rudro.webp" width="635" height="640" alt="Raju Das Rudro" loading="eager" fetchpriority="high" decoding="async" />
-        </div>
-
         <div class="contact-note surface">
           <p>A clear brief helps, but you do not need every detail finalized before reaching out. Share the context you already have and we can clarify the rest together.</p>
           <strong>{site.name}</strong>
@@ -619,7 +615,7 @@ const emailHref = `mailto:${site.email}?subject=${encodeURIComponent('Project in
 <style>
 .form-card [hidden]{display:none!important}
 .contact-hero{padding-top:var(--space-8)}
-.contact-grid{display:grid;grid-template-columns:minmax(0,.82fr) minmax(34rem,1.18fr);gap:2rem;align-items:start}
+.contact-grid{display:grid;grid-template-columns:minmax(0,.72fr) minmax(34rem,1.28fr);gap:2rem;align-items:start}
 .contact-intro{padding-top:.9rem}
 .contact-intro h1{font-size:var(--fs-hero);max-width:9ch}
 .contact-intro .lede{max-width:34rem}
@@ -629,8 +625,6 @@ const emailHref = `mailto:${site.email}?subject=${encodeURIComponent('Project in
 .contact-benefits span{display:grid;gap:.08rem;min-width:0}
 .contact-benefits strong{font-size:var(--fs-meta);line-height:var(--lh-ui)}
 .contact-benefits small{font-size:var(--fs-caption);line-height:1.35;color:var(--color-text-muted)}
-.contact-portrait{overflow:hidden;margin-top:.5rem;box-shadow:none}
-.contact-portrait img{width:100%;aspect-ratio:1.6/1;object-fit:cover;object-position:center 25%}
 .contact-note{display:grid;gap:.35rem;padding:1rem 1.1rem;box-shadow:none}
 .contact-note p{color:#526174;font-size:var(--fs-body-sm);line-height:1.55}
 .contact-note strong{font-size:var(--fs-meta)}
@@ -719,7 +713,7 @@ html:not(.js) .form-card form{display:none}
 .contact-final p{margin-top:.2rem;color:#dbe5ea;font-size:var(--fs-meta)}
 
 @media(max-width:63.99rem){
-  .contact-grid{grid-template-columns:minmax(0,.85fr) minmax(28rem,1.15fr);gap:1.2rem}
+  .contact-grid{grid-template-columns:minmax(0,.78fr) minmax(28rem,1.22fr);gap:1.2rem}
   .option-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .project-types{grid-template-columns:repeat(3,minmax(0,1fr))}
   .context-grid{grid-template-columns:1fr}
@@ -735,8 +729,6 @@ html:not(.js) .form-card form{display:none}
   .contact-benefits>div{display:grid;justify-items:center;text-align:center;gap:.3rem}
   .contact-benefits strong{font-size:var(--fs-caption)}
   .contact-benefits small{font-size:var(--fs-caption)}
-  .contact-portrait{margin-top:.15rem}
-  .contact-portrait img{aspect-ratio:1.75/1;object-position:center 22%}
   .contact-note{display:none}
   .form-card{padding:1rem;scroll-margin-top:4.5rem}
   .field-grid{grid-template-columns:1fr}
@@ -750,9 +742,11 @@ html:not(.js) .form-card form{display:none}
   .steps article strong{grid-row:1/3}
   .steps h3{margin:.05rem 0 .15rem}
   .fiverr .button{width:100%}
-  .project-types{grid-template-columns:1fr}
-  .project-type{grid-template-columns:auto 1fr;column-gap:.65rem;align-items:center}
-  .project-type__icon{grid-row:1/3}
+  .project-types{grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem}
+  .project-type{grid-template-columns:1fr;align-items:start;padding:.7rem;gap:.3rem}
+  .project-type__icon{grid-row:auto}
+  .project-type:last-child{grid-column:1/-1;grid-template-columns:auto 1fr;column-gap:.65rem;align-items:center}
+  .project-type:last-child .project-type__icon{grid-row:1/3}
   .trust-items{grid-template-columns:1fr 1fr}
   .contact-final__inner{display:grid;text-align:center;padding-block:1rem}
   .contact-final__inner .cluster{justify-content:center;width:100%}
