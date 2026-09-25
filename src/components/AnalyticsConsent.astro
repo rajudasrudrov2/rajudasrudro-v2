@@ -1,5 +1,6 @@
 ---
-const gaMeasurementId = (import.meta.env.PUBLIC_GA_MEASUREMENT_ID ?? '').trim();
+const configuredMeasurementId = (import.meta.env.PUBLIC_GA_MEASUREMENT_ID ?? '').trim();
+const gaMeasurementId = configuredMeasurementId || 'G-LVFZLKGPTS';
 ---
 
 <section
@@ -35,6 +36,8 @@ const gaMeasurementId = (import.meta.env.PUBLIC_GA_MEASUREMENT_ID ?? '').trim();
 <script is:inline define:vars={{ gaMeasurementId }}>
   (() => {
     const CONSENT_KEY = 'rdr_analytics_consent_v1';
+    const PRODUCTION_HOSTS = new Set(['rajudasrudro.com', 'www.rajudasrudro.com']);
+    const isProductionHost = PRODUCTION_HOSTS.has(window.location.hostname);
     const banner = document.getElementById('analytics-consent');
     const acceptButton = banner?.querySelector('[data-consent-action="accept"]');
     const rejectButton = banner?.querySelector('[data-consent-action="reject"]');
@@ -87,18 +90,21 @@ const gaMeasurementId = (import.meta.env.PUBLIC_GA_MEASUREMENT_ID ?? '').trim();
     };
 
     const loadGoogleAnalytics = () => {
-      if (!hasValidMeasurementId) return;
-
-      if (document.querySelector('script[data-rdr-ga]')) return;
-
-      window.gtag('js', new Date());
-      window.gtag('config', gaMeasurementId);
+      if (!isProductionHost || !hasValidMeasurementId) return false;
+      if (document.querySelector('script[data-rdr-ga]')) return true;
 
       const script = document.createElement('script');
       script.async = true;
       script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(gaMeasurementId)}`;
       script.dataset.rdrGa = gaMeasurementId;
       document.head.appendChild(script);
+
+      window.gtag('js', new Date());
+      window.gtag('config', gaMeasurementId, {
+        send_page_view: true
+      });
+
+      return true;
     };
 
     const grantAnalytics = () => {
@@ -108,7 +114,7 @@ const gaMeasurementId = (import.meta.env.PUBLIC_GA_MEASUREMENT_ID ?? '').trim();
         ad_user_data: 'denied',
         ad_personalization: 'denied'
       });
-      loadGoogleAnalytics();
+      return loadGoogleAnalytics();
     };
 
     const denyAnalytics = () => {
@@ -142,9 +148,7 @@ const gaMeasurementId = (import.meta.env.PUBLIC_GA_MEASUREMENT_ID ?? '').trim();
       hideBanner();
       window.dispatchEvent(new CustomEvent('rdr:analytics-consent', { detail: { analytics: 'denied' } }));
 
-      // If Analytics was already loaded during this page view, reload so the next
-      // page lifecycle starts with the Google tag fully blocked.
-      if (wasGranted && hasValidMeasurementId) {
+      if (wasGranted && isProductionHost && hasValidMeasurementId) {
         window.location.reload();
       }
     });
@@ -155,7 +159,15 @@ const gaMeasurementId = (import.meta.env.PUBLIC_GA_MEASUREMENT_ID ?? '').trim();
 
     window.rdrAnalyticsConsent = {
       open: showBanner,
-      getChoice: () => currentChoice
+      getChoice: () => currentChoice,
+      debug: () => ({
+        measurementId: gaMeasurementId,
+        validMeasurementId: hasValidMeasurementId,
+        productionHost: isProductionHost,
+        choice: currentChoice,
+        tagLoaded: Boolean(document.querySelector('script[data-rdr-ga]')),
+        dataLayerLength: window.dataLayer.length
+      })
     };
   })();
 </script>
