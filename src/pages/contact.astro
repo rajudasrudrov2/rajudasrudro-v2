@@ -346,6 +346,24 @@ const emailHref = `mailto:${site.email}?subject=${encodeURIComponent('Project in
   let isSubmitting = false;
   let currentState = 'idle';
 
+  const trackSuccessfulLead = () => {
+    const analytics = window.rdrAnalyticsConsent;
+    const analyticsState = typeof analytics?.debug === 'function' ? analytics.debug() : null;
+
+    if (
+      analyticsState?.productionHost !== true
+      || analyticsState?.choice !== 'granted'
+      || analyticsState?.tagLoaded !== true
+      || typeof window.gtag !== 'function'
+    ) {
+      return;
+    }
+
+    window.gtag('event', 'generate_lead', {
+      form_name: 'project_inquiry',
+    });
+  };
+
   const setStatus = (message = '') => {
     if (status) status.textContent = message;
   };
@@ -585,6 +603,7 @@ const emailHref = `mailto:${site.email}?subject=${encodeURIComponent('Project in
       if (charCount) charCount.textContent = '0';
       ['name', 'email', 'service', 'projectDetails'].forEach((name) => setFieldError(name));
       setFormState('success', { focus: true });
+      trackSuccessfulLead();
     } catch {
       setFormState('network-error', { focus: true });
     } finally {
